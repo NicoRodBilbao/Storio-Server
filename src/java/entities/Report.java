@@ -4,23 +4,36 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
 
 
 @Entity
-//@Table(name="Report",schema="storio")
+@Table(name="Report",schema="storio")
 public class Report implements Serializable {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     private String description;
+    @Temporal(javax.persistence.TemporalType.DATE)
     private Date date;
+    @ManyToOne
     private Item item;
 
     public Report() {
         super();
     }
-    
+
+    public Report(Integer id, String description, Date date, Item item) {
+        this.id = id;
+        this.description = description;
+        this.date = date;
+        this.item = item;
+    }
 
     public Integer getId() {
         return id;
