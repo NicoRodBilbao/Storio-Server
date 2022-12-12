@@ -11,19 +11,28 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name="User",schema="storio")
-public abstract class User implements Serializable {
+@MappedSuperclass
+public class User implements Serializable {
     
-     @Id
-     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
+    
     private UserStatus status;
+    
     private String login;
+    
     private Integer phoneNumber;
+    
     private String fullName;
+    
     private String password;
+    
     private UserPrivilege privilege;
+    
     private String email;
-    private List<Booking> bookings;
+    
+    @OneToMany(mappedBy="user")
     private List<SignInHistory> history;
     
     public User() {
