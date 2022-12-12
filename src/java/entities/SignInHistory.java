@@ -1,7 +1,6 @@
 package entities;
 
 import java.io.Serializable;
-import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -10,12 +9,7 @@ import javax.persistence.Table;
 @Table(name="SignInHistory",schema="storio")
 public class SignInHistory implements Serializable {
 
-    private User user;
-
-    @Id
-    @Temporal(javax.persistance.TemporalType.Date)
-    @ManyToOne
-    private Date lastSignIn;
+    @EmbeddedId HistoryId id;
 
     public SignInHistory() {
         super();
