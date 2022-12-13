@@ -94,7 +94,13 @@ public class Item implements Serializable {
 
     @Override
     public int hashCode() {
-        int hash = 5;
+        int hash = 7;
+        hash = 61 * hash + Objects.hashCode(this.id);
+        hash = 61 * hash + Objects.hashCode(this.model);
+        hash = 61 * hash + Objects.hashCode(this.dateAdded);
+        hash = 61 * hash + Objects.hashCode(this.issues);
+        hash = 61 * hash + Objects.hashCode(this.report);
+        hash = 61 * hash + Objects.hashCode(this.pack);
         return hash;
     }
 

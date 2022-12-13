@@ -77,7 +77,12 @@ public class Model implements Serializable {
 
     @Override
     public int hashCode() {
-        int hash = 7;
+        int hash = 3;
+        hash = 71 * hash + Objects.hashCode(this.id);
+        hash = 71 * hash + Objects.hashCode(this.model);
+        hash = 71 * hash + Objects.hashCode(this.description);
+        hash = 71 * hash + Objects.hashCode(this.notes);
+        hash = 71 * hash + Objects.hashCode(this.items);
         return hash;
     }
 
