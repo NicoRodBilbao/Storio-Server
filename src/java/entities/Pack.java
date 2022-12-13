@@ -54,7 +54,6 @@ public class Pack implements Serializable {
         return items;
     }
 
-    @XmlTransient
     public void setItems(List<Item> items) {
         this.items = items;
     }
