@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -31,6 +33,9 @@ public class User implements Serializable {
     private UserPrivilege privilege;
     
     private String email;
+    
+    @OneToMany(mappedBy="user")
+    private List<Booking> bookings;
     
     @OneToMany(mappedBy="user")
     private List<SignInHistory> history;
