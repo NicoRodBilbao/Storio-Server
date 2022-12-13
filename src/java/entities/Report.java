@@ -66,10 +66,14 @@ public class Report implements Serializable {
     public void setItem(Item item) {
         this.item = item;
     }
-    
-     @Override
+
+    @Override
     public int hashCode() {
-        int hash = 3;
+        int hash = 7;
+        hash = 53 * hash + Objects.hashCode(this.id);
+        hash = 53 * hash + Objects.hashCode(this.description);
+        hash = 53 * hash + Objects.hashCode(this.date);
+        hash = 53 * hash + Objects.hashCode(this.item);
         return hash;
     }
     
