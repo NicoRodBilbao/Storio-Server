@@ -95,8 +95,17 @@ public class Booking implements Serializable {
     @Override
     public int hashCode() {
         int hash = 7;
+        hash = 89 * hash + Objects.hashCode(this.id);
+        hash = 89 * hash + Objects.hashCode(this.user);
+        hash = 89 * hash + Objects.hashCode(this.packs);
+        hash = 89 * hash + Objects.hashCode(this.startDate);
+        hash = 89 * hash + Objects.hashCode(this.endDate);
+        hash = 89 * hash + Objects.hashCode(this.description);
+        hash = 89 * hash + Objects.hashCode(this.state);
         return hash;
     }
+
+   
 
     @Override
     public boolean equals(Object obj) {
