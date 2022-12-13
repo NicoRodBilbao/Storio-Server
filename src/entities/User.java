@@ -13,8 +13,8 @@ import javax.persistence.Table;
 @Table(name="User",schema="storio")
 public abstract class User implements Serializable {
     
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+     @Id
+     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     private UserStatus status;
     private String login;
