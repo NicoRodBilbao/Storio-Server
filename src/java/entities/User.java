@@ -3,20 +3,16 @@ package entities;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
-import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
 
-@Entity
-@Table(name="User",schema="storio")
 @MappedSuperclass
 public class User implements Serializable {
     
-    @Id
+	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     
@@ -33,9 +29,6 @@ public class User implements Serializable {
     private UserPrivilege privilege;
     
     private String email;
-    
-    @OneToMany(mappedBy="user")
-    private List<Booking> bookings;
     
     @OneToMany(mappedBy="user")
     private List<SignInHistory> history;
@@ -108,14 +101,6 @@ public class User implements Serializable {
         this.email = email;
     }
 
-    public List<Booking> getBookings() {
-        return bookings;
-    }
-
-    public void setBookings(List<Booking> bookings) {
-        this.bookings = bookings;
-    }
-
     public List<SignInHistory> getHistory() {
         return history;
     }
@@ -126,7 +111,7 @@ public class User implements Serializable {
 
     @Override
 	public int hashCode() {
-		return Objects.hash(bookings, email, fullName, history, id, login, password, phoneNumber, privilege, status);
+		return Objects.hash(email, fullName, history, id, login, password, phoneNumber, privilege, status);
 	}
 
 	@Override
@@ -138,7 +123,7 @@ public class User implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		User other = (User) obj;
-		return Objects.equals(bookings, other.bookings) && Objects.equals(email, other.email)
+		return Objects.equals(email, other.email)
 				&& Objects.equals(fullName, other.fullName) && Objects.equals(history, other.history)
 				&& Objects.equals(id, other.id) && Objects.equals(login, other.login)
 				&& Objects.equals(password, other.password) && Objects.equals(phoneNumber, other.phoneNumber)
@@ -147,7 +132,7 @@ public class User implements Serializable {
 
 	@Override
     public String toString() {
-        return "User{" + "id=" + id + ", status=" + status + ", login=" + login + ", phoneNumber=" + phoneNumber + ", fullName=" + fullName + ", password=" + password + ", privilege=" + privilege + ", email=" + email + ", bookings=" + bookings + ", history=" + history + '}';
+        return "User{" + "id=" + id + ", status=" + status + ", login=" + login + ", phoneNumber=" + phoneNumber + ", fullName=" + fullName + ", password=" + password + ", privilege=" + privilege + ", email=" + email + ", history=" + history + '}';
     }
     
    
