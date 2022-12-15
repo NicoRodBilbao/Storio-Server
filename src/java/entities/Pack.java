@@ -21,7 +21,7 @@ public class Pack implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     private String description;
-    @OneToMany(mappedBy = "packs")
+    @OneToMany(mappedBy = "pack")
     private List<Item> items;
     private PackState state;
     private PackType type;
