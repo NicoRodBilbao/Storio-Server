@@ -13,7 +13,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
-@Table(name="Model",schema="storio")
+@Table(name="model",schema="storio")
 @XmlRootElement
 public class Model implements Serializable {
     

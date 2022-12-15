@@ -18,8 +18,8 @@ import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
 @Table(name="Item",schema="storio")
-@XmlRootElement
 //@NamedQuery(name="",query="")
+@XmlRootElement
 public class Item implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

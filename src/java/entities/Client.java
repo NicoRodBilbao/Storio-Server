@@ -5,13 +5,12 @@ import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@Entity
-@XmlRootElement
+//@Entity
 public class Client extends User {
 
     private UserPrivilege userPrivilege;
 
-    @OneToMany(mappedBy="client")
+   // @OneToMany(mappedBy="client")
     private List<Booking> bookings;
 
     public Client() {

@@ -13,8 +13,9 @@ import javax.persistence.Temporal;
 import javax.xml.bind.annotation.XmlRootElement;
 
 
+
 @Entity
-@Table(name="Report",schema="storio")
+@Table(name="report",schema="storio")
 @XmlRootElement
 public class Report implements Serializable {
     @Id

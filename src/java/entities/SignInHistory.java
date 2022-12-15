@@ -8,7 +8,7 @@ import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @Entity
-@Table(name="SignInHistory",schema="storio")
+@Table(name="signinhistory",schema="storio")
 @XmlRootElement
 public class SignInHistory implements Serializable {
 

@@ -23,8 +23,8 @@ public class Booking implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-    @ManyToOne
-    @JoinColumn(name = "id")
+    //@ManyToOne
+    //@JoinColumn(name = "id")
     private Client user;
     @ManyToMany(mappedBy = "bookings")
     private List<Pack> packs;

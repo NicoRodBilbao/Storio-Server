@@ -16,7 +16,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
-@Table(name = "Pack", schema = "storio")
+@Table(name = "pack", schema = "storio")
 @XmlRootElement
 public class Pack implements Serializable {
     @Id
@@ -28,8 +28,9 @@ public class Pack implements Serializable {
     private PackState state;
     private PackType type;
     @ManyToMany
-    @JoinTable(name = "booking_pack", schema = "storio", joinColumns = @JoinColumn(name="pack_id", referencedColumnName = "id"), 
-            inverseJoinColumns = @JoinColumn(name = "booking_id", referencedColumnName = "id"))
+    @JoinTable(name = "booking_pack", schema = "storio")
+   // @JoinTable(name = "booking_pack", schema = "storio", joinColumns = @JoinColumn(name="pack_id", referencedColumnName = "id"), 
+   //         inverseJoinColumns = @JoinColumn(name = "booking_id", referencedColumnName = "id"))
     private List<Booking> bookings;
 
     public Pack() {

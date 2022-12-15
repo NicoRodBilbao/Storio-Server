@@ -11,11 +11,11 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-@MappedSuperclass
+//@MappedSuperclass
 public class User implements Serializable {
     
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    //@Id
+    //@GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     
     private UserStatus status;
@@ -32,7 +32,7 @@ public class User implements Serializable {
     
     private String email;
     
-    @OneToMany(mappedBy="user")
+    //@OneToMany(mappedBy="user")
     private List<SignInHistory> history;
     
     public User() {
