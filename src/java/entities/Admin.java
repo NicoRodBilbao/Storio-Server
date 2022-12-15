@@ -2,6 +2,7 @@ package entities;
 
 import java.util.List;
 
+@Entity
 public class Admin extends User{
 
     private Boolean isSuperAdmin;
