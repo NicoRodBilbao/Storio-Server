@@ -48,4 +48,9 @@ public class HistoryId {
 		return Objects.equals(lastSignIn, other.lastSignIn) && Objects.equals(user, other.user);
 	}
 
+	@Override
+	public String toString() {
+		return "HistoryId [user=" + user + ", lastSignIn=" + lastSignIn + "]";
+	}
+
 }
