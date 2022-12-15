@@ -12,10 +12,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 
 @Entity
 @Table(name="Item",schema="storio")
+@XmlRootElement
 //@NamedQuery(name="",query="")
 public class Item implements Serializable {
     @Id
@@ -76,6 +79,7 @@ public class Item implements Serializable {
         this.issues = issues;
     }
 
+    @XmlTransient
     public List<Report> getReport() {
         return report;
     }

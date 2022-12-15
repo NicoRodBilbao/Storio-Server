@@ -10,10 +10,12 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
+import javax.xml.bind.annotation.XmlRootElement;
 
 
 @Entity
 @Table(name="Report",schema="storio")
+@XmlRootElement
 public class Report implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

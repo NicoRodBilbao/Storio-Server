@@ -12,10 +12,12 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
 @Table(name = "Pack", schema = "storio")
+@XmlRootElement
 public class Pack implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -50,6 +52,7 @@ public class Pack implements Serializable {
         this.description = description;
     }
 
+    @XmlTransient
     public List<Item> getItems() {
         return items;
     }
@@ -74,6 +77,7 @@ public class Pack implements Serializable {
         this.type = type;
     }
 
+    @XmlTransient
     public List<Booking> getBookings() {
         return bookings;
     }

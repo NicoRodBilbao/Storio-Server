@@ -7,10 +7,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-@Entity
-@Table(name="User",schema="storio")
 @MappedSuperclass
 public class User implements Serializable {
     
@@ -103,14 +103,6 @@ public class User implements Serializable {
         this.email = email;
     }
 
-    public List<Booking> getBookings() {
-        return bookings;
-    }
-
-    public void setBookings(List<Booking> bookings) {
-        this.bookings = bookings;
-    }
-
     public List<SignInHistory> getHistory() {
         return history;
     }
@@ -161,9 +153,6 @@ public class User implements Serializable {
         if (this.privilege != other.privilege) {
             return false;
         }
-        if (!Objects.equals(this.bookings, other.bookings)) {
-            return false;
-        }
         if (!Objects.equals(this.history, other.history)) {
             return false;
         }
@@ -172,7 +161,7 @@ public class User implements Serializable {
 
     @Override
     public String toString() {
-        return "User{" + "id=" + id + ", status=" + status + ", login=" + login + ", phoneNumber=" + phoneNumber + ", fullName=" + fullName + ", password=" + password + ", privilege=" + privilege + ", email=" + email + ", bookings=" + bookings + ", history=" + history + '}';
+        return "User{" + "id=" + id + ", status=" + status + ", login=" + login + ", phoneNumber=" + phoneNumber + ", fullName=" + fullName + ", password=" + password + ", privilege=" + privilege + ", email=" + email +  ", history=" + history + '}';
     }
     
    
