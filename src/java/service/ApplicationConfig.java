@@ -34,7 +34,6 @@ public class ApplicationConfig extends Application {
         resources.add(service.ModelFacadeREST.class);
         resources.add(service.PackFacadeREST.class);
         resources.add(service.ReportFacadeREST.class);
-        resources.add(service.SignInHistoryFacadeREST.class);
     }
     
 }
