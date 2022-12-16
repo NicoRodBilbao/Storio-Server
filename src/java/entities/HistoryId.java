@@ -5,13 +5,13 @@ import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 
-@Embeddable
+//@Embeddable
 public class HistoryId {
 
     private User user;
 
-    @Temporal(javax.persistence.TemporalType.DATE)
-    @ManyToOne
+    //@Temporal(javax.persistence.TemporalType.DATE)
+    //@ManyToOne
     private Date lastSignIn;
 
 }
