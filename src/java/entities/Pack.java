@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -23,19 +25,15 @@ public class Pack implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     private String description;
-    @OneToMany(mappedBy = "packs")
-    private List<Item> items;
+/*    @OneToMany(mappedBy = "packs")
+    private List<Item> items;*/
+    @Enumerated(EnumType.ORDINAL)
     private PackState state;
+    @Enumerated(EnumType.ORDINAL)
     private PackType type;
     @ManyToMany
     @JoinTable(name = "booking_pack", schema = "storio")
-   // @JoinTable(name = "booking_pack", schema = "storio", joinColumns = @JoinColumn(name="pack_id", referencedColumnName = "id"), 
-   //         inverseJoinColumns = @JoinColumn(name = "booking_id", referencedColumnName = "id"))
     private List<Booking> bookings;
-
-    public Pack() {
-        super();
-    }
 
     public Integer getId() {
         return id;
@@ -52,7 +50,7 @@ public class Pack implements Serializable {
     public void setDescription(String description) {
         this.description = description;
     }
-
+/*
     @XmlTransient
     public List<Item> getItems() {
         return items;
@@ -61,7 +59,7 @@ public class Pack implements Serializable {
     public void setItems(List<Item> items) {
         this.items = items;
     }
-
+*/
     public PackState getState() {
         return state;
     }
@@ -92,7 +90,7 @@ public class Pack implements Serializable {
         int hash = 7;
         hash = 59 * hash + Objects.hashCode(this.id);
         hash = 59 * hash + Objects.hashCode(this.description);
-        hash = 59 * hash + Objects.hashCode(this.items);
+//        hash = 59 * hash + Objects.hashCode(this.items);
         hash = 59 * hash + Objects.hashCode(this.state);
         hash = 59 * hash + Objects.hashCode(this.type);
         hash = 59 * hash + Objects.hashCode(this.bookings);
@@ -116,7 +114,7 @@ public class Pack implements Serializable {
 
     @Override
     public String toString() {
-        return "Pack{" + "id=" + id + ", description=" + description + ", items=" + items + ", state=" + state + ", type=" + type + ", bookings=" + bookings + '}';
+        return "Pack{" + "id=" + id + ", description=" + description + ", state=" + state + ", type=" + type + ", bookings=" + bookings + '}';
     }
 
 }
