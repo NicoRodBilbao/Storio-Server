@@ -3,18 +3,16 @@ package entities;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
-import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.OneToMany;
 
-@Entity
-@Table(name="User",schema="storio")
 @MappedSuperclass
 public class User implements Serializable {
     
-    @Id
+	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     
@@ -103,14 +101,6 @@ public class User implements Serializable {
         this.email = email;
     }
 
-    public List<Booking> getBookings() {
-        return bookings;
-    }
-
-    public void setBookings(List<Booking> bookings) {
-        this.bookings = bookings;
-    }
-
     public List<SignInHistory> getHistory() {
         return history;
     }
@@ -120,59 +110,29 @@ public class User implements Serializable {
     }
 
     @Override
-    public int hashCode() {
-        int hash = 7;
-        return hash;
-    }
+	public int hashCode() {
+		return Objects.hash(email, fullName, history, id, login, password, phoneNumber, privilege, status);
+	}
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final User other = (User) obj;
-        if (!Objects.equals(this.login, other.login)) {
-            return false;
-        }
-        if (!Objects.equals(this.fullName, other.fullName)) {
-            return false;
-        }
-        if (!Objects.equals(this.password, other.password)) {
-            return false;
-        }
-        if (!Objects.equals(this.email, other.email)) {
-            return false;
-        }
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        if (this.status != other.status) {
-            return false;
-        }
-        if (!Objects.equals(this.phoneNumber, other.phoneNumber)) {
-            return false;
-        }
-        if (this.privilege != other.privilege) {
-            return false;
-        }
-        if (!Objects.equals(this.bookings, other.bookings)) {
-            return false;
-        }
-        if (!Objects.equals(this.history, other.history)) {
-            return false;
-        }
-        return true;
-    }
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		User other = (User) obj;
+		return Objects.equals(email, other.email)
+				&& Objects.equals(fullName, other.fullName) && Objects.equals(history, other.history)
+				&& Objects.equals(id, other.id) && Objects.equals(login, other.login)
+				&& Objects.equals(password, other.password) && Objects.equals(phoneNumber, other.phoneNumber)
+				&& privilege == other.privilege && status == other.status;
+	}
 
-    @Override
+	@Override
     public String toString() {
-        return "User{" + "id=" + id + ", status=" + status + ", login=" + login + ", phoneNumber=" + phoneNumber + ", fullName=" + fullName + ", password=" + password + ", privilege=" + privilege + ", email=" + email + ", bookings=" + bookings + ", history=" + history + '}';
+        return "User{" + "id=" + id + ", status=" + status + ", login=" + login + ", phoneNumber=" + phoneNumber + ", fullName=" + fullName + ", password=" + password + ", privilege=" + privilege + ", email=" + email + ", history=" + history + '}';
     }
     
    
