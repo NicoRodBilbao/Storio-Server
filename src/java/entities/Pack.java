@@ -19,7 +19,6 @@ import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
 @Table(name = "pack", schema = "storio")
-//@XmlRootElement
 public class Pack implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -56,6 +55,7 @@ public class Pack implements Serializable {
     }
 
     
+    @XmlTransient
     public List<Item> getItems() {
         return items;
     }
@@ -81,6 +81,7 @@ public class Pack implements Serializable {
     }
 
 
+    @XmlTransient
     public List<Booking> getBookings() {
         return bookings;
     }

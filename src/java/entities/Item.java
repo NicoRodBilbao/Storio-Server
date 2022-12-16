@@ -25,7 +25,7 @@ public class Item implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-    //@ManyToOne
+    @ManyToOne
     private Model model;
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date dateAdded;
