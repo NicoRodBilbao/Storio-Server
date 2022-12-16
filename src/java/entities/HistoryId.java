@@ -5,8 +5,10 @@ import java.util.Objects;
 import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
+import javax.xml.bind.annotation.XmlRootElement;
 
 @Embeddable
+@XmlRootElement
 public class HistoryId {
 
     private User user;

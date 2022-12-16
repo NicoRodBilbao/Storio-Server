@@ -2,8 +2,10 @@ package entities;
 
 import java.util.List;
 import javax.persistence.Entity;
+import javax.xml.bind.annotation.XmlRootElement;
 
 @Entity
+@XmlRootElement
 public class Admin extends User{
 
     private Boolean isSuperAdmin;

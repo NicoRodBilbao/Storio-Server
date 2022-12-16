@@ -3,19 +3,24 @@ package entities;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
+import javax.xml.bind.annotation.XmlRootElement;
 
 @MappedSuperclass
+@XmlRootElement
 public class User implements Serializable {
     
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     
+    @Enumerated(EnumType.ORDINAL)
     private UserStatus status;
     
     private String login;
@@ -26,6 +31,7 @@ public class User implements Serializable {
     
     private String password;
     
+    @Enumerated(EnumType.ORDINAL)
     private UserPrivilege privilege;
     
     private String email;
