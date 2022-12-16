@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -23,15 +25,12 @@ public class Pack implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     private String description;
-    @OneToMany(mappedBy = "packs")
+    @OneToMany(mappedBy = "pack")
     private List<Item> items;
+    @Enumerated(EnumType.STRING)
     private PackState state;
+    @Enumerated(EnumType.STRING)
     private PackType type;
-    @ManyToMany
-    @JoinTable(name = "booking_pack", schema = "storio")
-   // @JoinTable(name = "booking_pack", schema = "storio", joinColumns = @JoinColumn(name="pack_id", referencedColumnName = "id"), 
-   //         inverseJoinColumns = @JoinColumn(name = "booking_id", referencedColumnName = "id"))
-    private List<Booking> bookings;
 
     public Pack() {
         super();
@@ -78,14 +77,7 @@ public class Pack implements Serializable {
         this.type = type;
     }
 
-    @XmlTransient
-    public List<Booking> getBookings() {
-        return bookings;
-    }
-
-    public void setBookings(List<Booking> bookings) {
-        this.bookings = bookings;
-    }
+    
 
     @Override
     public int hashCode() {
@@ -95,7 +87,6 @@ public class Pack implements Serializable {
         hash = 59 * hash + Objects.hashCode(this.items);
         hash = 59 * hash + Objects.hashCode(this.state);
         hash = 59 * hash + Objects.hashCode(this.type);
-        hash = 59 * hash + Objects.hashCode(this.bookings);
         return hash;
     }
 
@@ -116,7 +107,7 @@ public class Pack implements Serializable {
 
     @Override
     public String toString() {
-        return "Pack{" + "id=" + id + ", description=" + description + ", items=" + items + ", state=" + state + ", type=" + type + ", bookings=" + bookings + '}';
+        return "Pack{" + "id=" + id + ", description=" + description + ", items=" + items + ", state=" + state + ", type=" + type + ", bookings="+ '}';
     }
 
 }
