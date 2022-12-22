@@ -3,16 +3,22 @@ package entities;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
+import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
-@MappedSuperclass
+@Entity
+@Table(name = "user")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @XmlRootElement
 public class User implements Serializable {
     
@@ -107,6 +113,7 @@ public class User implements Serializable {
         this.email = email;
     }
 
+	@XmlTransient
     public List<SignInHistory> getHistory() {
         return history;
     }

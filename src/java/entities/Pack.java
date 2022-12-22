@@ -19,6 +19,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
 @Table(name = "pack", schema = "storio")
+@XmlRootElement
 public class Pack implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

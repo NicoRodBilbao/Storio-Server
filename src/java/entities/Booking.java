@@ -58,6 +58,7 @@ public class Booking implements Serializable {
     }
     */
 
+	@XmlTransient
     public List<Pack> getPacks() {
         return packs;
     }
