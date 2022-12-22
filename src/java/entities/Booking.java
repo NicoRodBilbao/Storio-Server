@@ -13,6 +13,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -20,13 +22,27 @@ import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
 @Table(name="booking",schema="storio")
-//@XmlRootElement
+@NamedQueries({
+    @NamedQuery(name="findAllBookings",
+                query="SELECT b FROM Booking b"),
+    @NamedQuery(name="countBookings",
+                query="SELECT COUNT(b) FROM Booking b"),
+    /*@NamedQuery(name="findPacksForBooking",
+                query="SELECT p FROM Pack p, Booking b JOIN p.bookings WHERE p.bookings.id =: b.id AND b.id =: id"),*/
+    @NamedQuery(name="findAprovedBookings",
+                query="SELECT b FROM Booking b WHERE b.state='APROVED'"),
+    @NamedQuery(name="findHandedBookings",
+                query="SELECT b FROM Booking b WHERE b.state='HANDED'")
+    /*@NamedQuery(name="findUserOwnedBookings",
+                query="SELECT b FROM Booking b"
+                        + "INNER JOIN User u ON b.client_id=:u.id")*/
+    })
 @XmlRootElement
 public class Booking implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    private Long id;
     //@ManyToOne
     //@JoinColumn(name = "id")
     //private Client user;
@@ -40,12 +56,11 @@ public class Booking implements Serializable {
     @Enumerated(EnumType.STRING)
     private BookingState state;
     
-    
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
     /*
@@ -58,6 +73,7 @@ public class Booking implements Serializable {
     }
     */
 
+    @XmlTransient
     public List<Pack> getPacks() {
         return packs;
     }

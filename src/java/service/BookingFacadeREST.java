@@ -6,10 +6,11 @@
 package service;
 
 import entities.Booking;
+import entities.Pack;
 import java.util.List;
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.ejb.EJB;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -24,68 +25,117 @@ import javax.ws.rs.core.MediaType;
  *
  * @author 2dam
  */
-@Stateless
 @Path("entities.booking")
-public class BookingFacadeREST extends AbstractFacade<Booking> {
+public class BookingFacadeREST {
 
-    @PersistenceContext(unitName = "StorioPU")
-    private EntityManager em;
-
-    public BookingFacadeREST() {
-        super(Booking.class);
-    }
+    /**
+     * EJB object implementing business logic.
+     */
+    @EJB
+    private StorioManagerLocal ejb;
+    /**
+     * Logger for this class.
+     */
+    private Logger LOGGER = Logger.getLogger(BookingFacadeREST.class.getName());
 
     @POST
-    @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void create(Booking entity) {
-        super.create(entity);
+    public void createBooking(Booking booking) {
+        try {
+            LOGGER.log(Level.INFO, "Creating booking {0}", booking.getId());
+            ejb.createBooking(booking);
+        } catch (Exception ex) {
+            LOGGER.severe(ex.getMessage());
+        }
     }
 
     @PUT
-    @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void edit(@PathParam("id") Integer id, Booking entity) {
-        super.edit(entity);
+    public void updateBooking(Booking booking) {
+        try {
+            LOGGER.log(Level.INFO, "Updating booking {0}", booking.getId());
+            ejb.updateBooking(booking);
+        } catch (Exception ex) {
+            LOGGER.severe(ex.getMessage());
+        }
     }
 
     @DELETE
     @Path("{id}")
-    public void remove(@PathParam("id") Integer id) {
-        super.remove(super.find(id));
+    public void removeBooking(@PathParam("id") Long id) {
+        try {
+            LOGGER.log(Level.INFO, "Deleting booking {0}", id);
+            ejb.removeBooking(ejb.findBookingById(id));
+        } catch (Exception ex) {
+            LOGGER.severe(ex.getMessage());
+        }
     }
 
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Booking find(@PathParam("id") Integer id) {
-        return super.find(id);
+    public Booking find(@PathParam("id") Long id) {
+        Booking booking = null;
+        try {
+            LOGGER.log(Level.INFO, "Reading data for booking {0}", id);
+            booking = ejb.findBookingById(id);
+        } catch (Exception ex) {
+            LOGGER.severe(ex.getMessage());
+        }
+        return booking;
     }
 
     @GET
-    @Override
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<Booking> findAll() {
-        return super.findAll();
+        List<Booking> bookings = null;
+        try {
+            LOGGER.log(Level.INFO, "Reading data for all accounts");
+            bookings = ejb.findAllBookings();
+        } catch (Exception ex) {
+            LOGGER.severe(ex.getMessage());
+        }
+        return bookings;
     }
-
+    /*
     @GET
-    @Path("{from}/{to}")
+    @Path("booking/{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Booking> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
-        return super.findRange(new int[]{from, to});
+    public List<Pack> findPacksForBooking(@PathParam("id") Long id) {
+        List<Pack> packs = null;
+         try {
+            LOGGER.log(Level.INFO,"Reading accounts data for customer {0}",id);
+            packs = ejb.listPacksForBooking(id);
+        } catch (Exception ex) {
+            LOGGER.severe(ex.getMessage());       
+        }
+        return packs;
+    }*/
+    
+    @GET
+    @Path("user/{id}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Booking> findUserOwnBookings(@PathParam("id") Long id) {
+        List<Booking> bookings = null;
+         try {
+            LOGGER.log(Level.INFO,"Reading accounts data for customer {0}",id);
+            bookings = ejb.findUserOwnBookings(id);
+        } catch (Exception ex) {
+            LOGGER.severe(ex.getMessage());       
+        }
+        return bookings;
     }
 
     @GET
     @Path("count")
     @Produces(MediaType.TEXT_PLAIN)
-    public String countREST() {
-        return String.valueOf(super.count());
+    public Integer countREST() {
+        Integer count = null;
+        try {
+            count = ejb.countBookings();
+        } catch (Exception e) {
+        }
+        return count;
     }
-
-    @Override
-    protected EntityManager getEntityManager() {
-        return em;
-    }
-    
+     
 }
