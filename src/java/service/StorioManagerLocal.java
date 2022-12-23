@@ -62,7 +62,7 @@ public interface StorioManagerLocal {
      * This method gets a list with all packs asociated to a booking.
      * @return A List of Pack entity objects..
      */
-    //public List<Pack> listPacksForBooking(Long id);
+    public List<Pack> listPacksForBooking(Long id);
     /**
      * This method updates a booking data in the data store.
      * @param booking The Booking entity object containing modified account data.

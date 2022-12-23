@@ -27,8 +27,8 @@ import javax.xml.bind.annotation.XmlTransient;
                 query="SELECT b FROM Booking b"),
     @NamedQuery(name="countBookings",
                 query="SELECT COUNT(b) FROM Booking b"),
-    /*@NamedQuery(name="findPacksForBooking",
-                query="SELECT p FROM Pack p, Booking b JOIN p.bookings WHERE p.bookings.id =: b.id AND b.id =: id"),*/
+    @NamedQuery(name="findPacksForBooking",
+                query="SELECT p FROM Pack p WHERE p.bookings =:booking"),
     @NamedQuery(name="findAprovedBookings",
                 query="SELECT b FROM Booking b WHERE b.state='APROVED'"),
     @NamedQuery(name="findHandedBookings",

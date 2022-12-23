@@ -126,7 +126,7 @@ public class EJBStorioManager implements StorioManagerLocal{
      * This method gets a list with all packs asociated to a booking.
      * @return A List of Pack entity objects..
      */
-   /* @Override
+    @Override
     public List<Pack> listPacksForBooking(Long id) {
         List<Pack> packs = null;
         try{
@@ -135,7 +135,7 @@ public class EJBStorioManager implements StorioManagerLocal{
         }
         return packs;
     }
-*/
+
     /**
      * This method updates a booking data in the data store.
      * @param booking The Booking entity object containing modified account data.

@@ -97,7 +97,7 @@ public class BookingFacadeREST {
         }
         return bookings;
     }
-    /*
+    
     @GET
     @Path("booking/{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
@@ -110,7 +110,7 @@ public class BookingFacadeREST {
             LOGGER.severe(ex.getMessage());       
         }
         return packs;
-    }*/
+    }
     
     @GET
     @Path("user/{id}")
