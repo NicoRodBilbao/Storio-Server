@@ -14,19 +14,15 @@ import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
 @Table(name = "user")
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@XmlRootElement
 public class User implements Serializable {
     
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     
-    @Enumerated(EnumType.ORDINAL)
     private UserStatus status;
     
     private String login;
@@ -37,13 +33,9 @@ public class User implements Serializable {
     
     private String password;
     
-    @Enumerated(EnumType.ORDINAL)
     private UserPrivilege privilege;
     
     private String email;
-    
-    @OneToMany(mappedBy="user")
-    private List<SignInHistory> history;
     
     public User() {
         super();
@@ -113,18 +105,9 @@ public class User implements Serializable {
         this.email = email;
     }
 
-	@XmlTransient
-    public List<SignInHistory> getHistory() {
-        return history;
-    }
-
-    public void setHistory(List<SignInHistory> history) {
-        this.history = history;
-    }
-
     @Override
 	public int hashCode() {
-		return Objects.hash(email, fullName, history, id, login, password, phoneNumber, privilege, status);
+		return Objects.hash(email, fullName, id, login, password, phoneNumber, privilege, status);
 	}
 
 	@Override
@@ -137,7 +120,7 @@ public class User implements Serializable {
 			return false;
 		User other = (User) obj;
 		return Objects.equals(email, other.email)
-				&& Objects.equals(fullName, other.fullName) && Objects.equals(history, other.history)
+				&& Objects.equals(fullName, other.fullName)
 				&& Objects.equals(id, other.id) && Objects.equals(login, other.login)
 				&& Objects.equals(password, other.password) && Objects.equals(phoneNumber, other.phoneNumber)
 				&& privilege == other.privilege && status == other.status;
@@ -145,7 +128,7 @@ public class User implements Serializable {
 
 	@Override
     public String toString() {
-        return "User{" + "id=" + id + ", status=" + status + ", login=" + login + ", phoneNumber=" + phoneNumber + ", fullName=" + fullName + ", password=" + password + ", privilege=" + privilege + ", email=" + email + ", history=" + history + '}';
+        return "User{" + "id=" + id + ", status=" + status + ", login=" + login + ", phoneNumber=" + phoneNumber + ", fullName=" + fullName + ", password=" + password + ", privilege=" + privilege + ", email=" + email + ", history=" + '}';
     }
     
    
