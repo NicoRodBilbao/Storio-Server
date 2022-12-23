@@ -5,14 +5,17 @@
  */
 package service;
 
+import java.util.logging.Logger;
 import entities.Pack;
 import java.util.List;
-import javax.ejb.Stateless;
+import java.util.logging.Level;
+import javax.ejb.EJB;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -24,68 +27,139 @@ import javax.ws.rs.core.MediaType;
  *
  * @author 2dam
  */
-@Stateless
 @Path("entities.pack")
-public class PackFacadeREST extends AbstractFacade<Pack> {
+public class PackFacadeREST{
 
     @PersistenceContext(unitName = "StorioPU")
     private EntityManager em;
 
-    public PackFacadeREST() {
-        super(Pack.class);
-    }
+    private static final Logger LOGGER = Logger.getLogger("javafxserverside");
 
+    @EJB
+    private StorioManagerLocal ejb;
+
+    /**
+     * create a pack
+     * @param pack
+     */
     @POST
-    @Override
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void create(Pack entity) {
-        super.create(entity);
+    @Consumes({MediaType.APPLICATION_XML/*, MediaType.APPLICATION_JSON*/})
+    public void create(Pack pack) {
+        try {
+            LOGGER.log(Level.INFO, "PackREST service: create.", pack);
+            ejb.createPack(pack);
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, "PackREST service: Exception creating pack", ex.getMessage());
+            throw new InternalServerErrorException(ex);
+        }
     }
 
+    /**
+     * update a pack by it's id
+     * @param pack
+     */
     @PUT
     @Path("{id}")
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void edit(@PathParam("id") Integer id, Pack entity) {
-        super.edit(entity);
+    @Consumes({MediaType.APPLICATION_XML/*, MediaType.APPLICATION_JSON*/})
+    public void update(Pack pack) {
+        try {
+            LOGGER.log(Level.INFO, "PackREST service: update .", pack);
+            ejb.updatePack(pack);
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, "PackREST service: Exception updating pack", ex.getMessage());
+            throw new InternalServerErrorException(ex);
+        }
     }
 
+    /**
+     * delete a pack by it's id
+     * @param id
+     */
     @DELETE
     @Path("{id}")
     public void remove(@PathParam("id") Integer id) {
-        super.remove(super.find(id));
+        try {
+            LOGGER.log(Level.INFO, "PackREST service: delete Pack.", id);
+            ejb.deletePack(ejb.findPackById(id));
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, "PackREST service: Exception updating pack", ex.getMessage());
+            throw new InternalServerErrorException(ex);
+        }
     }
 
+    /**
+     * fins a pack by id and return the pack
+     * 
+     * @param id
+     * @return pack
+     */
     @GET
     @Path("{id}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Pack find(@PathParam("id") Integer id) {
-        return super.find(id);
+    @Produces({MediaType.APPLICATION_XML /*, MediaType.APPLICATION_JSON*/ })
+    public Pack findPackById(@PathParam("id") Integer id) {
+        Pack pack = null;
+        try {
+            LOGGER.log(Level.INFO, "PackREST service: find pack", id);
+            pack = ejb.findPackById(id);
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, "PackREST service: Exception reading pack by id, {0}", ex.getMessage());
+            throw new InternalServerErrorException(ex);
+        }
+        return pack;
     }
 
+    /**
+     * search for all the pack and return a list of them
+     * @return packs
+     */
     @GET
-    @Override
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML/*, MediaType.APPLICATION_JSON*/})
     public List<Pack> findAll() {
-        return super.findAll();
+        List<Pack> packs = null;
+        try {
+            LOGGER.log(Level.INFO, "PackREST service: find all packs.");
+            packs = ejb.findALlPacks();
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, "PackREST service: Exception reading all packs, {0}", ex.getMessage());
+            throw new InternalServerErrorException(ex);
+        }
+        return packs;
     }
 
+    //no fundiona
     @GET
-    @Path("{from}/{to}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Pack> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
-        return super.findRange(new int[]{from, to});
+    @Path("state/{state}")
+    @Produces({MediaType.APPLICATION_XML/*, MediaType.APPLICATION_JSON*/})
+    public List<Pack> findAllPacksAvailable(String state) {
+        List<Pack> packs = null;
+        try {
+            LOGGER.log(Level.INFO, "PackREST service: find all packs available.");
+            packs = ejb.findPacksByState(state);
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, "PackREST service: Exception reading all packs available", ex.getMessage());
+            throw new InternalServerErrorException(ex);
+        }
+        return packs;
     }
-
+    
+    //no funciona
     @GET
-    @Path("count")
-    @Produces(MediaType.TEXT_PLAIN)
-    public String countREST() {
-        return String.valueOf(super.count());
+    @Path("type/{type}")
+    @Produces({MediaType.APPLICATION_XML/*, MediaType.APPLICATION_JSON*/})
+    public List<Pack> findPacksByType(String type) {
+        List<Pack> packs=null;
+        try {
+            LOGGER.log(Level.INFO,"PackREST service: find all packs by type.");
+            packs=ejb.findPacksByType(type);
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, "PackREST service: Exception reading all packs by type", ex.getMessage());
+            throw new InternalServerErrorException(ex);
+        }
+        return packs;
     }
-
-    @Override
+ 
     protected EntityManager getEntityManager() {
         return em;
     }
-    
+
 }

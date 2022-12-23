@@ -9,16 +9,27 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
+@NamedQueries({
+    
+    @NamedQuery(name="listAllPacks", query="SELECT p FROM Pack p"), 
+    
+    @NamedQuery(name="listPacksByState", query="SELECT p FROM Pack p WHERE p.state =:state"), 
+    
+    @NamedQuery(name="listAllPacksByType", query="SELECT p FROM Pack p WHERE p.type =:type")
+    
+})
 @Table(name = "pack", schema = "storio")
+@XmlRootElement
 public class Pack implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -54,7 +65,6 @@ public class Pack implements Serializable {
         this.description = description;
     }
 
-    
     @XmlTransient
     public List<Item> getItems() {
         return items;
@@ -79,7 +89,6 @@ public class Pack implements Serializable {
     public void setType(PackType type) {
         this.type = type;
     }
-
 
     @XmlTransient
     public List<Booking> getBookings() {

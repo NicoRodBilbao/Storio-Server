@@ -20,7 +20,6 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @Table(name="Item",schema="storio")
 //@NamedQuery(name="",query="")
-@XmlRootElement
 public class Item implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
