@@ -14,7 +14,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
-@Table(name="signinhistory")
+@Table(name="signInHistory")
 @XmlRootElement
 public class SignInHistory implements Serializable {
 
@@ -22,7 +22,7 @@ public class SignInHistory implements Serializable {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 
-	@OneToMany(cascade=ALL, mappedBy="signinhistory")	
+	@OneToMany(cascade=ALL, mappedBy="signInHistory")	
 	private Set<HistoryUser> signIns;
 
 	public Integer getId() {

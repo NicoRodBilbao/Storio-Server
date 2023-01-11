@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.Objects;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.Table;
@@ -13,34 +14,36 @@ import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @Entity
-@Table(name="history_user", schema="storio")
+@Table(name="historyUser", schema="storio")
 @XmlRootElement
 public class HistoryUser implements Serializable {
 
-	@EmbeddedId 
-	private HistoryId historyId;	
+	@EmbeddedId
+	private HistoryId idHistory;
+	
+	@MapsId("signInId")
+	@ManyToOne
+	private SignInHistory signInHistory;
 
 	@MapsId("storio_userId")
 	@ManyToOne
 	private User storio_user;
 
-	@MapsId("signInId")
-	@ManyToOne
-	private SignInHistory signInHistory;
+	
 
 	@Temporal(TemporalType.TIMESTAMP)
-	private Date signIn;
+	private Date signInDate;
         
 	public HistoryUser() {
 		super();
 	}
 
-	public HistoryId getHistoryId() {
-		return historyId;
+	public HistoryId getIdHistory() {
+		return idHistory;
 	}
 
-	public void setHistoryId(HistoryId historyId) {
-		this.historyId = historyId;
+	public void setIdHistory(HistoryId idHistory) {
+		this.idHistory = idHistory;
 	}
 
 	public User getStorio_user() {
@@ -59,21 +62,21 @@ public class HistoryUser implements Serializable {
 		this.signInHistory = signInHistory;
 	}
 
-	public Date getSignIn() {
-		return signIn;
+	public Date getSignInDate() {
+		return signInDate;
 	}
 
-	public void setSignIn(Date signIn) {
-		this.signIn = signIn;
+	public void setSignInDate(Date signInDate) {
+		this.signInDate = signInDate;
 	}
 
 	@Override
 	public int hashCode() {
 		int hash = 3;
-		hash = 41 * hash + Objects.hashCode(this.historyId);
+		hash = 41 * hash + Objects.hashCode(this.idHistory);
 		hash = 41 * hash + Objects.hashCode(this.storio_user);
 		hash = 41 * hash + Objects.hashCode(this.signInHistory);
-		hash = 41 * hash + Objects.hashCode(this.signIn);
+		hash = 41 * hash + Objects.hashCode(this.signInDate);
 		return hash;
 	}
 
@@ -89,7 +92,7 @@ public class HistoryUser implements Serializable {
 			return false;
 		}
 		final HistoryUser other = (HistoryUser) obj;
-		if (!Objects.equals(this.historyId, other.historyId)) {
+		if (!Objects.equals(this.idHistory, other.idHistory)) {
 			return false;
 		}
 		if (!Objects.equals(this.storio_user, other.storio_user)) {
@@ -98,7 +101,7 @@ public class HistoryUser implements Serializable {
 		if (!Objects.equals(this.signInHistory, other.signInHistory)) {
 			return false;
 		}
-		if (!Objects.equals(this.signIn, other.signIn)) {
+		if (!Objects.equals(this.signInDate, other.signInDate)) {
 			return false;
 		}
 		return true;
@@ -106,7 +109,7 @@ public class HistoryUser implements Serializable {
 
 	@Override
 	public String toString() {
-		return "HistoryUser{" + "historyId=" + historyId + ", storio_user=" + storio_user + ", signInHistory=" + signInHistory + ", signIn=" + signIn + '}';
+		return "HistoryUser{" + "historyId=" + idHistory + ", storio_user=" + storio_user + ", signInHistory=" + signInHistory + ", signIn=" + signInDate + '}';
 	}
 
 }

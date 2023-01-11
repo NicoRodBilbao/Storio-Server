@@ -19,7 +19,6 @@ import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
 @Table(name = "storio_user")
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @XmlRootElement
 public class User implements Serializable {
 
@@ -45,10 +44,6 @@ public class User implements Serializable {
 
 	@OneToMany(cascade=ALL,mappedBy="storio_user")
 	private Set<HistoryUser> signIns;
-
-	public User() {
-		super();
-	}
 
 	public Integer getId() {
 		return id;
@@ -126,15 +121,15 @@ public class User implements Serializable {
 	@Override
 	public int hashCode() {
 		int hash = 7;
-		hash = 79 * hash + Objects.hashCode(this.id);
-		hash = 79 * hash + Objects.hashCode(this.status);
-		hash = 79 * hash + Objects.hashCode(this.login);
-		hash = 79 * hash + Objects.hashCode(this.phoneNumber);
-		hash = 79 * hash + Objects.hashCode(this.fullName);
-		hash = 79 * hash + Objects.hashCode(this.password);
-		hash = 79 * hash + Objects.hashCode(this.privilege);
-		hash = 79 * hash + Objects.hashCode(this.email);
-		hash = 79 * hash + Objects.hashCode(this.signIns);
+		hash = 89 * hash + Objects.hashCode(this.id);
+		hash = 89 * hash + Objects.hashCode(this.status);
+		hash = 89 * hash + Objects.hashCode(this.login);
+		hash = 89 * hash + Objects.hashCode(this.phoneNumber);
+		hash = 89 * hash + Objects.hashCode(this.fullName);
+		hash = 89 * hash + Objects.hashCode(this.password);
+		hash = 89 * hash + Objects.hashCode(this.privilege);
+		hash = 89 * hash + Objects.hashCode(this.email);
+		hash = 89 * hash + Objects.hashCode(this.signIns);
 		return hash;
 	}
 
