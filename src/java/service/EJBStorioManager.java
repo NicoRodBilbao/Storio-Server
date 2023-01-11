@@ -46,8 +46,11 @@ public class EJBStorioManager implements StorioManagerLocal{
     public List<Booking> findAllBookings() {
         List<Booking> bookings = null;
         try{
+            System.out.println("Antes");
             bookings = em.createNamedQuery("findAllBookings").getResultList();
+            System.out.println("Despues");
         }catch(Exception e){
+            System.out.println(e.getMessage());
         }
         return bookings;
     }
@@ -67,14 +70,15 @@ public class EJBStorioManager implements StorioManagerLocal{
     }
     
     /**
-     * This method gets a list with all aproved bookings in the data store. 
+     * This method gets a list with all approved bookings in the data store. 
      * @return A List of Booking entity objects..
      */
     @Override
-    public List<Booking> findAprovedBookings() {
+    public List<Booking> findApprovedBookings() {
         List<Booking> bookings = null;
+        String state = "APPROVED";
         try{
-            bookings = em.createNamedQuery("findAprovedBookings").getResultList();
+            bookings = em.createNamedQuery("findApprovedBookings").setParameter("bookingState", state).getResultList();
         }catch(Exception e){
         }
         return bookings;
@@ -87,8 +91,9 @@ public class EJBStorioManager implements StorioManagerLocal{
     @Override
     public List<Booking> findHandedBookings() {
         List<Booking> bookings = null;
+        String state = "HANDED";
         try{
-            bookings = em.createNamedQuery("findHandedBookings").getResultList();
+            bookings = em.createNamedQuery("findHandedBookings").setParameter("bookingState", state).getResultList();
         }catch(Exception e){
         }
         return bookings;
@@ -124,13 +129,14 @@ public class EJBStorioManager implements StorioManagerLocal{
 
     /**
      * This method gets a list with all packs asociated to a booking.
+     * @param id
      * @return A List of Pack entity objects..
      */
     @Override
     public List<Pack> listPacksForBooking(Long id) {
         List<Pack> packs = null;
         try{
-            packs = em.createNamedQuery("findPacksForBooking").getResultList();
+            packs = em.createNamedQuery("findPacksForBooking").setParameter("bookingId", id).getResultList();
         }catch(Exception e){
         }
         return packs;

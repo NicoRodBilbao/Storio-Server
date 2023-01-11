@@ -9,7 +9,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -17,22 +16,22 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 
-@Entity
-@Table(name="Item",schema="storio")
+//@Entity
+//@Table(name="Item",schema="storio")
 //@NamedQuery(name="",query="")
-@XmlRootElement
+//@XmlRootElement
 public class Item implements Serializable {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+   // @Id
+    //@GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-    @ManyToOne
+    //@ManyToOne
     private Model model;
-    @Temporal(javax.persistence.TemporalType.DATE)
+    //@Temporal(javax.persistence.TemporalType.DATE)
     private Date dateAdded;
     private String issues;
-    @OneToMany(mappedBy = "item")
+    //@OneToMany(mappedBy = "item")
     private List<Report> report;
-    @ManyToOne
+    //@ManyToOne
     private Pack pack;
 
     public Item() {

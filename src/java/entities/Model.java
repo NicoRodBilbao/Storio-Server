@@ -12,18 +12,18 @@ import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-@Entity
-@Table(name="model",schema="storio")
-@XmlRootElement
+//@Entity
+//@Table(name="model",schema="storio")
+//@XmlRootElement
 public class Model implements Serializable {
     
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    //@Id
+    //@GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     private String model;
     private String description;
     private String notes;
-    @OneToMany(mappedBy = "model")
+    //@OneToMany(mappedBy = "model")
     private List<Item> items;
 
     public Model() {

@@ -8,13 +8,12 @@ package service;
 import entities.Booking;
 import entities.Pack;
 import java.util.List;
-import javax.ejb.Local;
 
 /**
  *
  * @author 2dam
  */
-@Local
+
 public interface StorioManagerLocal {
     /**
      * This method creates a new booking in the data store.
@@ -35,10 +34,10 @@ public interface StorioManagerLocal {
     public Booking findBookingById(Long id);
     
     /**
-     * This method gets a list with all aproved bookings in the data store. 
+     * This method gets a list with all approved bookings in the data store. 
      * @return A List of Booking entity objects..
      */
-    public List<Booking> findAprovedBookings();
+    public List<Booking> findApprovedBookings();
     
     /**
      * This method gets a list with all handed bookings in the data store. 

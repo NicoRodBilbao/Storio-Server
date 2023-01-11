@@ -14,17 +14,17 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 
 
-@Entity
-@Table(name="report",schema="storio")
-@XmlRootElement
+//@Entity
+//@Table(name="report",schema="storio")
+//@XmlRootElement
 public class Report implements Serializable {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    //@Id
+    //@GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     private String description;
-    @Temporal(javax.persistence.TemporalType.DATE)
+    //@Temporal(javax.persistence.TemporalType.DATE)
     private Date date;
-    @ManyToOne
+    //@ManyToOne
     private Item item;
 
     public Report() {
