@@ -46,9 +46,7 @@ public class EJBStorioManager implements StorioManagerLocal{
     public List<Booking> findAllBookings() {
         List<Booking> bookings = null;
         try{
-            System.out.println("Antes");
             bookings = em.createNamedQuery("findAllBookings").getResultList();
-            System.out.println("Despues");
         }catch(Exception e){
             System.out.println(e.getMessage());
         }
@@ -60,7 +58,7 @@ public class EJBStorioManager implements StorioManagerLocal{
      * @return A Booking entity object
      */
     @Override
-    public Booking findBookingById(Long id) {
+    public Booking findBookingById(Integer id) {
         Booking booking = null;
         try{
             booking = em.find(Booking.class, id);
@@ -111,20 +109,6 @@ public class EJBStorioManager implements StorioManagerLocal{
         }catch(Exception e){
         }
         return bookings;
-    }
-
-    /**
-     * This method gets a number of how many bookings are in the data store. 
-     * @return A Integer
-     */
-    @Override
-    public Integer countBookings() {
-        Integer numBookings = null;
-        try{
-            numBookings = (Integer) em.createNamedQuery("countBookings").getSingleResult();
-        }catch(Exception e){
-        }
-        return numBookings;
     }
 
     /**

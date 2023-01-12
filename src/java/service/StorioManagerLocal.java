@@ -31,7 +31,7 @@ public interface StorioManagerLocal {
      * This method gets a booking with a selected id in the data store. 
      * @return A Booking entity object
      */
-    public Booking findBookingById(Long id);
+    public Booking findBookingById(Integer id);
     
     /**
      * This method gets a list with all approved bookings in the data store. 
@@ -50,12 +50,6 @@ public interface StorioManagerLocal {
      * @return A List of Booking entity objects..
      */
     public List<Booking> findUserOwnBookings(Long id);
-    
-    /**
-     * This method gets a number of how many bookings are in the data store. 
-     * @return A Integer
-     */
-    public Integer countBookings();
     
     /**
      * This method gets a list with all packs asociated to a booking.

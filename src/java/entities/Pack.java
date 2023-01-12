@@ -6,6 +6,7 @@ import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,24 +20,21 @@ import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
 @Table(name = "pack", schema = "storio")
-//@XmlRootElement
+@XmlRootElement
 public class Pack implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     private String description;
-    //@OneToMany(mappedBy = "pack")
+    @OneToMany(mappedBy = "pack")
     private List<Item> items;
     @Enumerated(EnumType.STRING)
     private PackState state;
     @Enumerated(EnumType.STRING)
     private PackType type;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "booking_pack", schema = "storio")
-   // @JoinTable(name = "booking_pack", schema = "storio", joinColumns = @JoinColumn(name="pack_id", referencedColumnName = "id"), 
-   //         inverseJoinColumns = @JoinColumn(name = "booking_id", referencedColumnName = "id"))
     private List<Booking> bookings;
-
     public Pack() {
         super();
     }
