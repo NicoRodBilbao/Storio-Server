@@ -7,6 +7,7 @@ import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -40,7 +41,7 @@ public class Pack implements Serializable {
     private Integer id;
     private String name;
     private String description;
-    @OneToMany(mappedBy = "pack")
+    @OneToMany(mappedBy = "pack", fetch = FetchType.EAGER)
     private List<Item> items;
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date datePackAdd;
@@ -48,7 +49,7 @@ public class Pack implements Serializable {
     private PackState state;
     @Enumerated(EnumType.STRING)
     private PackType type;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "booking_pack", schema = "storio")
     private List<Booking> bookings;
 
