@@ -6,6 +6,8 @@
 package service;
 
 import entities.Pack;
+import entities.PackState;
+import entities.PackType;
 import java.util.List;
 import javax.ejb.Local;
 
@@ -22,22 +24,30 @@ public interface StorioManagerLocal {
      * @return packs
      */
     public List<Pack> findALlPacks();
-
+    
     /**
-     * Search all packs by the state and return the list of them
+     * Search packs by the state and return the list of them
      *
      * @param state
      * @return packs
      */
-    public List<Pack> findPacksByState(String state);
+    public List<Pack> findPacksByState(PackState state);
+    
+    /**
+     * Search packs by the state and return the list of them
+     *
+     * @param id
+     * @return packs
+     */
+    public List<Pack> listBookingByPack(Integer id);
 
     /**
-     * Search all packs by the type of pack and return the list of them
+     * Search packs by the type of pack and return the list of them
      *
      * @param type
      * @return packs
      */
-    public List<Pack> findPacksByType(String type);
+    public List<Pack> findPacksByType(PackType type);
 
     /**
      * Create a new pack

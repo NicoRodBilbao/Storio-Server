@@ -6,6 +6,8 @@
 package service;
 
 import entities.Pack;
+import entities.PackState;
+import entities.PackType;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -49,7 +51,7 @@ public class PackEJB implements StorioManagerLocal {
      * @return packs
      */
     @Override
-    public List<Pack> findPacksByState(String state) {
+    public List<Pack> findPacksByState(PackState state) {
         List<Pack> packs = null;
         try {
             LOGGER.info("Reading Packs");
@@ -67,17 +69,36 @@ public class PackEJB implements StorioManagerLocal {
      * @return packs
      */
     @Override
-    public List<Pack> findPacksByType(String type) {
+    public List<Pack> findPacksByType(PackType type) {
         List<Pack> packs = null;
         try {
             LOGGER.info("Reading Packs");
-            packs = em.createNamedQuery("listAllPacksByType").setParameter("type", type).getResultList();
+            packs = em.createNamedQuery("listPacksByType").setParameter("type", type).getResultList();
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "PackManager: Exception reading all packs available:", e.getMessage());
         }
         return packs;
     }
 
+    /**
+     * Find and list packs by a Type of pack
+     *
+     * @param id
+     * @return packs
+     */
+    @Override
+    public List<Pack> listBookingByPack(Integer id) {
+        List<Pack> packs = null;
+        try {
+            LOGGER.info("Reading Packs");
+            packs = em.createNamedQuery("listPacksByType").setParameter("id", id).getResultList();
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "PackManager: Exception reading all packs available:", e.getMessage());
+        }
+        return packs;
+    }
+
+    
     /**
      * Create a pack
      *
