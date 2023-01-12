@@ -6,6 +6,7 @@
 package service;
 
 import entities.Booking;
+import entities.BookingState;
 import entities.Pack;
 import java.util.ArrayList;
 import java.util.List;
@@ -127,5 +128,17 @@ public class BookingFacadeREST {
         return bookings;
     }
 
-     
+     @GET
+    @Path("findBookingsByState/{state}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Booking> findBookingsByState(@PathParam("state") String state) {
+        List<Booking> bookings = null;
+         try {
+            LOGGER.log(Level.INFO,"Reading pack data for booking {0}",state);
+            bookings = ejb.findBookingsByState(BookingState.valueOf(state));
+        } catch (Exception ex) {
+            LOGGER.severe(ex.getMessage());       
+        }
+        return bookings;
+    }
 }

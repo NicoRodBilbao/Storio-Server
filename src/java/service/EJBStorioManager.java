@@ -6,6 +6,7 @@
 package service;
 
 import entities.Booking;
+import entities.BookingState;
 import entities.Pack;
 import java.util.List;
 import javax.ejb.Stateless;
@@ -66,32 +67,15 @@ public class EJBStorioManager implements StorioManagerLocal{
         }
         return booking;
     }
-    
-    /**
-     * This method gets a list with all approved bookings in the data store. 
-     * @return A List of Booking entity objects..
-     */
-    @Override
-    public List<Booking> findApprovedBookings() {
-        List<Booking> bookings = null;
-        String state = "APPROVED";
-        try{
-            bookings = em.createNamedQuery("findApprovedBookings").setParameter("bookingState", state).getResultList();
-        }catch(Exception e){
-        }
-        return bookings;
-    }
-    
     /**
      * This method gets a list with all handed bookings in the data store. 
      * @return A List of Booking entity objects..
      */
     @Override
-    public List<Booking> findHandedBookings() {
+    public List<Booking> findBookingsByState(BookingState state) {
         List<Booking> bookings = null;
-        String state = "HANDED";
         try{
-            bookings = em.createNamedQuery("findHandedBookings").setParameter("bookingState", state).getResultList();
+            bookings = em.createNamedQuery("findBookingsByState").setParameter("bookingState", state).getResultList();
         }catch(Exception e){
         }
         return bookings;

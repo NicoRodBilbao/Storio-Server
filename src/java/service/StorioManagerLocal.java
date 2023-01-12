@@ -6,6 +6,7 @@
 package service;
 
 import entities.Booking;
+import entities.BookingState;
 import entities.Pack;
 import java.util.List;
 
@@ -34,16 +35,10 @@ public interface StorioManagerLocal {
     public Booking findBookingById(Integer id);
     
     /**
-     * This method gets a list with all approved bookings in the data store. 
-     * @return A List of Booking entity objects..
-     */
-    public List<Booking> findApprovedBookings();
-    
-    /**
      * This method gets a list with all handed bookings in the data store. 
      * @return A List of Booking entity objects..
      */
-    public List<Booking> findHandedBookings();
+    public List<Booking> findBookingsByState(BookingState state);
     
     /**
      * This method gets a list with all bookings of one user in the data store. 
