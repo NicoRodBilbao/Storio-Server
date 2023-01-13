@@ -2,10 +2,11 @@ package entities;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @Entity
-@DiscriminatorValue("admin")
+@Table(name = "admin", schema = "storio")
 @XmlRootElement
 public class Admin extends User {
 

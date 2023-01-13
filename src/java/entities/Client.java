@@ -3,26 +3,32 @@ package entities;
 import java.util.List;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
-@DiscriminatorValue("client")
+@Table(name = "client", schema = "storio")
 @XmlRootElement
 public class Client extends User {
 
-	//private List<Booking> bookings;
+	@OneToMany(mappedBy="client")
+	@XmlTransient
+	private List<Booking> bookings;
 
 	public Client() {
 		super();
 	}
 
-//	public List<Booking> getBookings() {
-//		return bookings;
-//	}
-//
-//	public void setBookings(List<Booking> bookings) {
-//		this.bookings = bookings;
-//	}
+	@XmlTransient
+	public List<Booking> getBookings() {
+		return bookings;
+	}
+
+	public void setBookings(List<Booking> bookings) {
+		this.bookings = bookings;
+	}
 
 	@Override
 	public String toString() {
