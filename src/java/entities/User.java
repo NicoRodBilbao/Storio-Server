@@ -19,6 +19,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
 @Table(name = "storio_user")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @XmlRootElement
 public class User implements Serializable {
 
@@ -41,9 +42,6 @@ public class User implements Serializable {
 	private UserPrivilege privilege;
 
 	private String email;
-
-	@OneToMany(cascade=ALL,mappedBy="storio_user")
-	private Set<HistoryUser> signIns;
 
 	public Integer getId() {
 		return id;
@@ -109,27 +107,17 @@ public class User implements Serializable {
 		this.email = email;
 	}
 
-	@XmlTransient
-	public Set<HistoryUser> getSignIns() {
-		return signIns;
-	}
-
-	public void setSignIns(Set<HistoryUser> signIns) {
-		this.signIns = signIns;
-	}
-
 	@Override
 	public int hashCode() {
-		int hash = 7;
-		hash = 89 * hash + Objects.hashCode(this.id);
-		hash = 89 * hash + Objects.hashCode(this.status);
-		hash = 89 * hash + Objects.hashCode(this.login);
-		hash = 89 * hash + Objects.hashCode(this.phoneNumber);
-		hash = 89 * hash + Objects.hashCode(this.fullName);
-		hash = 89 * hash + Objects.hashCode(this.password);
-		hash = 89 * hash + Objects.hashCode(this.privilege);
-		hash = 89 * hash + Objects.hashCode(this.email);
-		hash = 89 * hash + Objects.hashCode(this.signIns);
+		int hash = 3;
+		hash = 53 * hash + Objects.hashCode(this.id);
+		hash = 53 * hash + Objects.hashCode(this.status);
+		hash = 53 * hash + Objects.hashCode(this.login);
+		hash = 53 * hash + Objects.hashCode(this.phoneNumber);
+		hash = 53 * hash + Objects.hashCode(this.fullName);
+		hash = 53 * hash + Objects.hashCode(this.password);
+		hash = 53 * hash + Objects.hashCode(this.privilege);
+		hash = 53 * hash + Objects.hashCode(this.email);
 		return hash;
 	}
 
@@ -169,15 +157,12 @@ public class User implements Serializable {
 		if (this.privilege != other.privilege) {
 			return false;
 		}
-		if (!Objects.equals(this.signIns, other.signIns)) {
-			return false;
-		}
 		return true;
 	}
 
 	@Override
 	public String toString() {
-		return "User{" + "id=" + id + ", status=" + status + ", login=" + login + ", phoneNumber=" + phoneNumber + ", fullName=" + fullName + ", password=" + password + ", privilege=" + privilege + ", email=" + email + ", signIns=" + signIns + '}';
+		return "User{" + "id=" + id + ", status=" + status + ", login=" + login + ", phoneNumber=" + phoneNumber + ", fullName=" + fullName + ", password=" + password + ", privilege=" + privilege + ", email=" + email + '}';
 	}
 
 }
