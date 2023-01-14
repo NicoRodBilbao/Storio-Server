@@ -1,6 +1,5 @@
 package entities;
 
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -37,16 +36,6 @@ public class Admin extends User {
 	@Override
 	public int hashCode() {
 		return super.hashCode(); //To change body of generated methods, choose Tools | Templates.
-	}
-
-	@Override
-	public void setEmail(String email) {
-		super.setEmail(email); //To change body of generated methods, choose Tools | Templates.
-	}
-
-	@Override
-	public String getEmail() {
-		return super.getEmail(); //To change body of generated methods, choose Tools | Templates.
 	}
 
 	@Override

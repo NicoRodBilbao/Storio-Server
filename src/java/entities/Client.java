@@ -1,8 +1,9 @@
 package entities;
 
 import java.util.List;
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -10,6 +11,10 @@ import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
 @Table(name = "client", schema = "storio")
+@NamedQueries({
+    @NamedQuery(name="findClientBookings",
+                query="SELECT b FROM Booking b JOIN b.client c WHERE c.id = :id "),
+	})
 @XmlRootElement
 public class Client extends User {
 
@@ -43,16 +48,6 @@ public class Client extends User {
 	@Override
 	public int hashCode() {
 		return super.hashCode(); //To change body of generated methods, choose Tools | Templates.
-	}
-
-	@Override
-	public void setEmail(String email) {
-		super.setEmail(email); //To change body of generated methods, choose Tools | Templates.
-	}
-
-	@Override
-	public String getEmail() {
-		return super.getEmail(); //To change body of generated methods, choose Tools | Templates.
 	}
 
 	@Override

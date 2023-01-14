@@ -2,9 +2,6 @@ package entities;
 
 import java.io.Serializable;
 import java.util.Objects;
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.DiscriminatorType;
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -13,12 +10,28 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @Entity
 @Table(name = "storio_user", schema = "storio")
 @Inheritance(strategy = InheritanceType.JOINED)
+@NamedQueries({
+    @NamedQuery(name="findAllUsers",
+                query="SELECT u FROM User u"),
+    @NamedQuery(name="findUserByType",
+                query="SELECT u FROM User u WHERE u.privilege = :userPrivilege"),
+    @NamedQuery(name="findUserById",
+                query="SELECT u FROM User u WHERE u.id = :userId"),
+    @NamedQuery(name="findUserByEmail",
+                query="SELECT u FROM User u WHERE u.login = :userEmail"),
+    @NamedQuery(name="findUserByStatus",
+                query="SELECT u FROM User u WHERE u.status = :userStatus"),
+    @NamedQuery(name="findUserByPhone",
+                query="SELECT u FROM User u WHERE u.phoneNumber = :userPhone"),
+    })
 @XmlRootElement
 public class User implements Serializable {
 
@@ -39,8 +52,6 @@ public class User implements Serializable {
 
 	@Enumerated(EnumType.STRING)
 	private UserPrivilege privilege;
-
-	private String email;
 
 	public Integer getId() {
 		return id;
@@ -98,14 +109,6 @@ public class User implements Serializable {
 		this.privilege = privilege;
 	}
 
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
 	@Override
 	public int hashCode() {
 		int hash = 3;
@@ -116,7 +119,6 @@ public class User implements Serializable {
 		hash = 53 * hash + Objects.hashCode(this.fullName);
 		hash = 53 * hash + Objects.hashCode(this.password);
 		hash = 53 * hash + Objects.hashCode(this.privilege);
-		hash = 53 * hash + Objects.hashCode(this.email);
 		return hash;
 	}
 
@@ -141,9 +143,6 @@ public class User implements Serializable {
 		if (!Objects.equals(this.password, other.password)) {
 			return false;
 		}
-		if (!Objects.equals(this.email, other.email)) {
-			return false;
-		}
 		if (!Objects.equals(this.id, other.id)) {
 			return false;
 		}
@@ -161,7 +160,7 @@ public class User implements Serializable {
 
 	@Override
 	public String toString() {
-		return "User{" + "id=" + id + ", status=" + status + ", login=" + login + ", phoneNumber=" + phoneNumber + ", fullName=" + fullName + ", password=" + password + ", privilege=" + privilege + ", email=" + email + '}';
+		return "User{" + "id=" + id + ", status=" + status + ", login=" + login + ", phoneNumber=" + phoneNumber + ", fullName=" + fullName + ", password=" + password + ", privilege=" + privilege + '}';
 	}
 
 }

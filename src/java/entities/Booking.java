@@ -11,7 +11,6 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -29,10 +28,9 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name="findPacksForBooking",
                 query="SELECT p FROM Pack p JOIN p.bookings pb WHERE pb.id = :id "),
     @NamedQuery(name="findBookingsByState",
-                query="SELECT b FROM Booking b WHERE b.state= :bookingState")
-    /*@NamedQuery(name="findUserOwnedBookings",
-                query="SELECT b FROM Booking b"
-                        + "INNER JOIN User u ON b.client_id=:u.id")*/
+                query="SELECT b FROM Booking b WHERE b.state = :bookingState"),
+    @NamedQuery(name="findClientOwnedBookings",
+                query="SELECT c FROM Client c INNER JOIN Booking b WHERE b.client = :client")
     })
 @XmlRootElement
 public class Booking implements Serializable {
