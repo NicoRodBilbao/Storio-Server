@@ -5,9 +5,14 @@
  */
 package service;
 
+import entities.Admin;
 import entities.Booking;
 import entities.BookingState;
+import entities.Client;
 import entities.Pack;
+import entities.User;
+import entities.UserPrivilege;
+import entities.UserStatus;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -86,10 +91,10 @@ public class EJBStorioManager implements StorioManagerLocal{
      * @return A List of Booking entity objects..
      */
     @Override
-    public List<Booking> findUserOwnBookings(Long id) {
+    public List<Booking> findUserOwnedBookings(Long id) {
         List<Booking> bookings = null;
         try{
-            bookings = em.createNamedQuery("findUserOwnBookings").getResultList();
+            bookings = em.createNamedQuery("findUserOwnedBookings").getResultList();
         }catch(Exception e){
         }
         return bookings;
@@ -135,11 +140,202 @@ public class EJBStorioManager implements StorioManagerLocal{
         }catch(Exception e){
         }
     }
-    
-    
 
-    
+	/*
 
-    
+	USER METHODS
+
+	*/
+
+	@Override
+	public void createUser(User user) {
+        try{
+            em.persist(user);
+        } catch(Exception e){}
+	}
+
+	@Override
+	public void editUser(User user) {
+	}
+
+	@Override
+	public void removeUser(User user) {
+        try{
+            em.remove(em.merge(user));
+        } catch(Exception e){}
+	}
+
+	@Override
+	public User findUserById(Object id) {
+		User user = null;
+		try {
+			user = (User) em.createNamedQuery("findUserById")
+				.setParameter("userId", id)
+				.getSingleResult();
+		} catch (Exception e) {
+
+		}
+		return user;
+	}
+
+	@Override
+	public User findUserByEmail(String email) {
+		User user = null;
+		try {
+			user = (User) em.createNamedQuery("findUserByEmail")
+				.setParameter("userEmail", email)
+				.getSingleResult();
+		} catch (Exception e) {
+
+		}
+		return user;
+	}
+
+	@Override
+	public User findUserByPhone(Integer phoneNumber) {
+		User user = null;
+		try {
+			user = (User) em.createNamedQuery("findUserByPhoneNumber")
+				.setParameter("userPhoneNumber", phoneNumber)
+				.getSingleResult();
+		} catch (Exception e) {}
+		return user;
+	}
+
+	@Override
+	public List<User> findAllUsers() {
+		List<User> users = null;
+		try {
+			users = em.createNamedQuery("findUserByPhoneNumber")
+				.getResultList();
+		} catch (Exception e) {
+		}
+		return users;
+	}
+
+	@Override
+	public List<User> findUsersByPrivilege(UserPrivilege privilege) {
+		List<User> users = null;
+		try {
+			users = em.createNamedQuery("findUserByPhoneNumber")
+				.setParameter("userPrivilege", privilege)
+				.getResultList();
+		} catch (Exception e) {}
+		return users;
+	}
+
+	@Override
+	public List<User> findUsersByStatus(UserStatus status) {
+		List<User> users = null;
+		try {
+			users = em.createNamedQuery("findUserByStatus")
+				.setParameter("userStatus", status)
+				.getResultList();
+		} catch (Exception e) {}
+		return users;
+	}
+
+	@Override
+	public List<User> findUsersByFullName(String fullName) {
+		List<User> users = null;
+		try {
+			users = em.createNamedQuery("findUserByFullName")
+				.setParameter("userFullName", fullName)
+				.getResultList();
+		} catch (Exception e) {}
+		return users;
+	}
+
+	/*
+
+	CLIENT METHODS
+
+	*/
+
+	@Override
+	public void createClient(Client client) {
+		try {
+			em.persist(client);
+		} catch (Exception e) {}
+	}
+
+	@Override
+	public void editClient(Client client) {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	public void removeClient(Client client) {
+		try {
+            em.remove(em.merge(client));
+		} catch(Exception e) {}
+	}
+
+	@Override
+	public Client findClientById(Object id) {
+		Client client = null;
+		try {
+			client = (Client) em.createNamedQuery("findClientById")
+				.setParameter("clientId", id)
+				.getSingleResult();
+		} catch (Exception e) {}
+		return client;
+	}
+
+	@Override
+	public List<Client> findAllClients() {
+		List<Client> clients = null;
+		try {
+			clients = em.createNamedQuery("findAllClients")
+				.getResultList();
+		} catch (Exception e) {}
+		return clients;
+	}
+
+	/*
+
+	ADMIN METHODS
+
+	*/
+
+	@Override
+	public void createAdmin(Admin admin) {
+		try {
+			em.persist(admin);
+		} catch (Exception e) {}
+	}
+
+	@Override
+	public void editAdmin(Admin admin) {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	public void removeAdmin(Admin admin) {
+		try {
+			em.remove(em.merge(admin));
+		} catch (Exception e) {}
+	}
+
+	@Override
+	public Admin findAdminById(Object id) {
+		Admin admin = null;
+		try {
+			admin = (Admin) em.createNamedQuery("findAdminById")
+				.setParameter("adminId", id)
+				.getSingleResult();
+		} catch (Exception e) {}
+		return admin;
+	}
+
+	@Override
+	public List<Admin> findAllAdmins() {
+		List<Admin> admins = null;
+		try {
+			admins = em.createNamedQuery("findAllAdmins")
+				.getResultList();
+		} catch (Exception e) {}
+		return admins;
+	}
     
 }

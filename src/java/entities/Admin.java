@@ -1,11 +1,19 @@
 package entities;
 
 import javax.persistence.Entity;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @Entity
 @Table(name = "admin", schema = "storio")
+@NamedQueries({
+    @NamedQuery(name="findAdminById",
+                query="SELECT a FROM Admin a WHERE a.id = :adminId"),
+    @NamedQuery(name="findAllAdmins",
+                query="SELECT a FROM Admin a"),
+})
 @XmlRootElement
 public class Admin extends User {
 
