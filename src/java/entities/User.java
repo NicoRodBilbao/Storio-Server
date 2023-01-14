@@ -1,139 +1,166 @@
 package entities;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.Objects;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.OneToMany;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlRootElement;
 
-@MappedSuperclass
+@Entity
+@Table(name = "storio_user", schema = "storio")
+@Inheritance(strategy = InheritanceType.JOINED)
+@NamedQueries({
+    @NamedQuery(name="findAllUsers",
+                query="SELECT u FROM User u"),
+    @NamedQuery(name="findUserByType",
+                query="SELECT u FROM User u WHERE u.privilege = :userPrivilege"),
+    @NamedQuery(name="findUserById",
+                query="SELECT u FROM User u WHERE u.id = :userId"),
+    @NamedQuery(name="findUserByEmail",
+                query="SELECT u FROM User u WHERE u.login = :userEmail"),
+    @NamedQuery(name="findUserByStatus",
+                query="SELECT u FROM User u WHERE u.status = :userStatus"),
+    @NamedQuery(name="findUserByPhone",
+                query="SELECT u FROM User u WHERE u.phoneNumber = :userPhone"),
+    })
+@XmlRootElement
 public class User implements Serializable {
-    
+
 	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
-    
-    private UserStatus status;
-    
-    private String login;
-    
-    private Integer phoneNumber;
-    
-    private String fullName;
-    
-    private String password;
-    
-    private UserPrivilege privilege;
-    
-    private String email;
-    
-    @OneToMany(mappedBy="user")
-    private List<SignInHistory> history;
-    
-    public User() {
-        super();
-    }
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Integer id;
 
-    public Integer getId() {
-        return id;
-    }
+	@Enumerated(EnumType.STRING)
+	private UserStatus status;
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+	private String login;
 
-    public UserStatus getStatus() {
-        return status;
-    }
+	private Integer phoneNumber;
 
-    public void setStatus(UserStatus status) {
-        this.status = status;
-    }
+	private String fullName;
 
-    public String getLogin() {
-        return login;
-    }
+	private String password;
 
-    public void setLogin(String login) {
-        this.login = login;
-    }
+	@Enumerated(EnumType.STRING)
+	private UserPrivilege privilege;
 
-    public Integer getPhoneNumber() {
-        return phoneNumber;
-    }
+	public Integer getId() {
+		return id;
+	}
 
-    public void setPhoneNumber(Integer phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
-    public String getFullName() {
-        return fullName;
-    }
+	public UserStatus getStatus() {
+		return status;
+	}
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
+	public void setStatus(UserStatus status) {
+		this.status = status;
+	}
 
-    public String getPassword() {
-        return password;
-    }
+	public String getLogin() {
+		return login;
+	}
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+	public void setLogin(String login) {
+		this.login = login;
+	}
 
-    public UserPrivilege getPrivilege() {
-        return privilege;
-    }
+	public Integer getPhoneNumber() {
+		return phoneNumber;
+	}
 
-    public void setPrivilege(UserPrivilege privilege) {
-        this.privilege = privilege;
-    }
+	public void setPhoneNumber(Integer phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
 
-    public String getEmail() {
-        return email;
-    }
+	public String getFullName() {
+		return fullName;
+	}
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
+	}
 
-    public List<SignInHistory> getHistory() {
-        return history;
-    }
+	public String getPassword() {
+		return password;
+	}
 
-    public void setHistory(List<SignInHistory> history) {
-        this.history = history;
-    }
+	public void setPassword(String password) {
+		this.password = password;
+	}
 
-    @Override
+	public UserPrivilege getPrivilege() {
+		return privilege;
+	}
+
+	public void setPrivilege(UserPrivilege privilege) {
+		this.privilege = privilege;
+	}
+
+	@Override
 	public int hashCode() {
-		return Objects.hash(email, fullName, history, id, login, password, phoneNumber, privilege, status);
+		int hash = 3;
+		hash = 53 * hash + Objects.hashCode(this.id);
+		hash = 53 * hash + Objects.hashCode(this.status);
+		hash = 53 * hash + Objects.hashCode(this.login);
+		hash = 53 * hash + Objects.hashCode(this.phoneNumber);
+		hash = 53 * hash + Objects.hashCode(this.fullName);
+		hash = 53 * hash + Objects.hashCode(this.password);
+		hash = 53 * hash + Objects.hashCode(this.privilege);
+		return hash;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
-		User other = (User) obj;
-		return Objects.equals(email, other.email)
-				&& Objects.equals(fullName, other.fullName) && Objects.equals(history, other.history)
-				&& Objects.equals(id, other.id) && Objects.equals(login, other.login)
-				&& Objects.equals(password, other.password) && Objects.equals(phoneNumber, other.phoneNumber)
-				&& privilege == other.privilege && status == other.status;
+		}
+		final User other = (User) obj;
+		if (!Objects.equals(this.login, other.login)) {
+			return false;
+		}
+		if (!Objects.equals(this.fullName, other.fullName)) {
+			return false;
+		}
+		if (!Objects.equals(this.password, other.password)) {
+			return false;
+		}
+		if (!Objects.equals(this.id, other.id)) {
+			return false;
+		}
+		if (this.status != other.status) {
+			return false;
+		}
+		if (!Objects.equals(this.phoneNumber, other.phoneNumber)) {
+			return false;
+		}
+		if (this.privilege != other.privilege) {
+			return false;
+		}
+		return true;
 	}
 
 	@Override
-    public String toString() {
-        return "User{" + "id=" + id + ", status=" + status + ", login=" + login + ", phoneNumber=" + phoneNumber + ", fullName=" + fullName + ", password=" + password + ", privilege=" + privilege + ", email=" + email + ", history=" + history + '}';
-    }
-    
-   
+	public String toString() {
+		return "User{" + "id=" + id + ", status=" + status + ", login=" + login + ", phoneNumber=" + phoneNumber + ", fullName=" + fullName + ", password=" + password + ", privilege=" + privilege + '}';
+	}
+
 }

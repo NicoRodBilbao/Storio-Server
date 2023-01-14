@@ -1,123 +1,123 @@
 package entities;
 
 import java.util.List;
-
 import javax.persistence.Entity;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
+@Table(name = "client", schema = "storio")
+@NamedQueries({
+    @NamedQuery(name="findClientBookings",
+                query="SELECT b FROM Booking b JOIN b.client c WHERE c.id = :id "),
+	})
+@XmlRootElement
 public class Client extends User {
 
-    @OneToMany(mappedBy="client")
-    private List<Booking> bookings;
+	@OneToMany(mappedBy="client")
+	@XmlTransient
+	private List<Booking> bookings;
 
-    public Client() {
-        super();
-    }
-
-	@Override
-	public Integer getId() {
-		return super.getId();
+	public Client() {
+		super();
 	}
 
-	@Override
-	public void setId(Integer id) {
-		super.setId(id);
+	@XmlTransient
+	public List<Booking> getBookings() {
+		return bookings;
 	}
 
-	@Override
-	public UserStatus getStatus() {
-		return super.getStatus();
-	}
-
-	@Override
-	public void setStatus(UserStatus status) {
-		super.setStatus(status);
-	}
-
-	@Override
-	public String getLogin() {
-		return super.getLogin();
-	}
-
-	@Override
-	public void setLogin(String login) {
-		super.setLogin(login);
-	}
-
-	@Override
-	public Integer getPhoneNumber() {
-		return super.getPhoneNumber();
-	}
-
-	@Override
-	public void setPhoneNumber(Integer phoneNumber) {
-		super.setPhoneNumber(phoneNumber);
-	}
-
-	@Override
-	public String getFullName() {
-		return super.getFullName();
-	}
-
-	@Override
-	public void setFullName(String fullName) {
-		super.setFullName(fullName);
-	}
-
-	@Override
-	public String getPassword() {
-		return super.getPassword();
-	}
-
-	@Override
-	public void setPassword(String password) {
-		super.setPassword(password);
-	}
-
-	@Override
-	public UserPrivilege getPrivilege() {
-		return super.getPrivilege();
-	}
-
-	@Override
-	public void setPrivilege(UserPrivilege privilege) {
-		super.setPrivilege(privilege);
-	}
-
-	@Override
-	public String getEmail() {
-		return super.getEmail();
-	}
-
-	@Override
-	public void setEmail(String email) {
-		super.setEmail(email);
-	}
-
-	@Override
-	public List<SignInHistory> getHistory() {
-		return super.getHistory();
-	}
-
-	@Override
-	public void setHistory(List<SignInHistory> history) {
-		super.setHistory(history);
-	}
-
-	@Override
-	public int hashCode() {
-		return super.hashCode();
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		return super.equals(obj);
+	public void setBookings(List<Booking> bookings) {
+		this.bookings = bookings;
 	}
 
 	@Override
 	public String toString() {
-		return super.toString();
+		return super.toString(); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return super.equals(obj); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	public int hashCode() {
+		return super.hashCode(); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	public void setPrivilege(UserPrivilege privilege) {
+		super.setPrivilege(privilege); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	public UserPrivilege getPrivilege() {
+		return super.getPrivilege(); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	public void setPassword(String password) {
+		super.setPassword(password); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	public String getPassword() {
+		return super.getPassword(); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	public void setFullName(String fullName) {
+		super.setFullName(fullName); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	public String getFullName() {
+		return super.getFullName(); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	public void setPhoneNumber(Integer phoneNumber) {
+		super.setPhoneNumber(phoneNumber); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	public Integer getPhoneNumber() {
+		return super.getPhoneNumber(); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	public void setLogin(String login) {
+		super.setLogin(login); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	public String getLogin() {
+		return super.getLogin(); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	public void setStatus(UserStatus status) {
+		super.setStatus(status); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	public UserStatus getStatus() {
+		return super.getStatus(); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	public void setId(Integer id) {
+		super.setId(id); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	public Integer getId() {
+		return super.getId(); //To change body of generated methods, choose Tools | Templates.
 	}
 
 }
