@@ -92,14 +92,14 @@ public class UserFacadeREST extends AbstractFacade<User> {
 	@GET
 	@Path("privilege/{privilege}")
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public List<User> findUsersByPrivilege(UserPrivilege privilege) {
+	public List<User> findUsersByPrivilege(@PathParam("privilege") UserPrivilege privilege) {
 		return ejb.findUsersByPrivilege(privilege);
 	}
 
 	@GET
 	@Path("status/{status}")
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public List<User> findUsersByStatus(UserStatus status) {
+	public List<User> findUsersByStatus(@PathParam("status") UserStatus status) {
 		return ejb.findUsersByStatus(status);
 	}
 
