@@ -6,7 +6,10 @@
 package service;
 
 import entities.User;
+import entities.UserPrivilege;
+import entities.UserStatus;
 import java.util.List;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -35,38 +38,69 @@ public class UserFacadeREST extends AbstractFacade<User> {
 		super(User.class);
 	}
 
+	@EJB
+	private StorioManagerLocal ejb;
+
 	@POST
 	@Override
 	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public void create(User entity) {
-		super.create(entity);
+		ejb.createUser(entity);
 	}
 
 	@PUT
 	@Path("{id}")
 	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public void edit(@PathParam("id") Integer id, User entity) {
-		super.edit(entity);
+		ejb.editUser(entity);
 	}
 
 	@DELETE
 	@Path("{id}")
 	public void remove(@PathParam("id") Integer id) {
-		super.remove(super.find(id));
+		ejb.removeUser(super.find(id));
 	}
 
 	@GET
 	@Path("{id}")
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public User find(@PathParam("id") Integer id) {
-		return super.find(id);
+		return ejb.findUserById(id);
+	}
+
+	@GET
+	@Path("email/{email}")
+	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	public User findByEmail(@PathParam("email") String email) {
+		return ejb.findUserById(email);
+	}
+
+	@GET
+	@Path("phone/{phone}")
+	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	public User findByPhone(@PathParam("phone") Integer phone) {
+		return ejb.findUserById(phone);
 	}
 
 	@GET
 	@Override
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public List<User> findAll() {
-		return super.findAll();
+		return ejb.findAllUsers();
+	}
+
+	@GET
+	@Path("privilege/{privilege}")
+	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	public List<User> findUsersByPrivilege(UserPrivilege privilege) {
+		return ejb.findUsersByPrivilege(privilege);
+	}
+
+	@GET
+	@Path("status/{status}")
+	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	public List<User> findUsersByStatus(UserStatus status) {
+		return ejb.findUsersByStatus(status);
 	}
 
 	@GET

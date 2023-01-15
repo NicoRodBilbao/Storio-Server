@@ -7,6 +7,7 @@ package service;
 
 import entities.Client;
 import java.util.List;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -31,54 +32,57 @@ public class ClientFacadeREST extends AbstractFacade<Client> {
 	@PersistenceContext(unitName = "StorioPU")
 	private EntityManager em;
 
+	@EJB
+	private StorioManagerLocal ejb;
+
 	public ClientFacadeREST() {
 		super(Client.class);
 	}
 
 	@POST
-        @Override
-        @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	@Override
+	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public void create(Client entity) {
-		super.create(entity);
+		ejb.createClient(entity);
 	}
 
 	@PUT
-        @Path("{id}")
-        @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	@Path("{id}")
+	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public void edit(@PathParam("id") Integer id, Client entity) {
-		super.edit(entity);
+		ejb.editClient(entity);
 	}
 
 	@DELETE
-        @Path("{id}")
+	@Path("{id}")
 	public void remove(@PathParam("id") Integer id) {
-		super.remove(super.find(id));
+		ejb.removeClient(super.find(id));
 	}
 
 	@GET
-        @Path("{id}")
-        @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	@Path("{id}")
+	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public Client find(@PathParam("id") Integer id) {
-		return super.find(id);
+		return ejb.findClientById(id);
 	}
 
 	@GET
-        @Override
-        @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	@Override
+	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public List<Client> findAll() {
-		return super.findAll();
+		return ejb.findAllClients();
 	}
 
 	@GET
-        @Path("{from}/{to}")
-        @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	@Path("{from}/{to}")
+	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public List<Client> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
 		return super.findRange(new int[]{from, to});
 	}
 
 	@GET
-        @Path("count")
-        @Produces(MediaType.TEXT_PLAIN)
+	@Path("count")
+	@Produces(MediaType.TEXT_PLAIN)
 	public String countREST() {
 		return String.valueOf(super.count());
 	}
@@ -87,5 +91,5 @@ public class ClientFacadeREST extends AbstractFacade<Client> {
 	protected EntityManager getEntityManager() {
 		return em;
 	}
-	
+
 }
