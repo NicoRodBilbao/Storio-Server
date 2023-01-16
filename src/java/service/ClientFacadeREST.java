@@ -5,7 +5,7 @@
  */
 package service;
 
-import entities.Pack;
+import entities.Client;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -22,30 +22,30 @@ import javax.ws.rs.core.MediaType;
 
 /**
  *
- * @author 2dam
+ * @author Joana
  */
 @Stateless
-@Path("entities.pack")
-public class PackFacadeREST {
+@Path("entities.client")
+public class ClientFacadeREST extends AbstractFacade<Client> {
 
 	@PersistenceContext(unitName = "StorioPU")
 	private EntityManager em;
 
-	public PackFacadeREST() {
-		super(Pack.class);
+	public ClientFacadeREST() {
+		super(Client.class);
 	}
 
 	@POST
         @Override
         @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public void create(Pack entity) {
+	public void create(Client entity) {
 		super.create(entity);
 	}
 
 	@PUT
         @Path("{id}")
         @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public void edit(@PathParam("id") Integer id, Pack entity) {
+	public void edit(@PathParam("id") Integer id, Client entity) {
 		super.edit(entity);
 	}
 
@@ -58,21 +58,21 @@ public class PackFacadeREST {
 	@GET
         @Path("{id}")
         @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public Pack find(@PathParam("id") Integer id) {
+	public Client find(@PathParam("id") Integer id) {
 		return super.find(id);
 	}
 
 	@GET
         @Override
         @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public List<Pack> findAll() {
+	public List<Client> findAll() {
 		return super.findAll();
 	}
 
 	@GET
         @Path("{from}/{to}")
         @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public List<Pack> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
+	public List<Client> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
 		return super.findRange(new int[]{from, to});
 	}
 
@@ -87,4 +87,5 @@ public class PackFacadeREST {
 	protected EntityManager getEntityManager() {
 		return em;
 	}
+	
 }

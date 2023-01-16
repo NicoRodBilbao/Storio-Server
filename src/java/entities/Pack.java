@@ -6,6 +6,7 @@ import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -31,10 +32,9 @@ public class Pack implements Serializable {
     private PackState state;
     @Enumerated(EnumType.STRING)
     private PackType type;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "booking_pack", schema = "storio")
     private List<Booking> bookings;
-
     public Pack() {
         super();
     }
@@ -56,6 +56,7 @@ public class Pack implements Serializable {
     }
 
     
+
     @XmlTransient
     public List<Item> getItems() {
         return items;
@@ -82,7 +83,10 @@ public class Pack implements Serializable {
     }
 
 
+<<<<<<< HEAD
     @XmlTransient
+=======
+>>>>>>> main
     public List<Booking> getBookings() {
         return bookings;
     }
