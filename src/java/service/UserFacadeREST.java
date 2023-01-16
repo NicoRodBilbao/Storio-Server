@@ -72,14 +72,14 @@ public class UserFacadeREST extends AbstractFacade<User> {
 	@Path("email/{email}")
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public User findByEmail(@PathParam("email") String email) {
-		return ejb.findUserById(email);
+		return ejb.findUserByEmail(email);
 	}
 
 	@GET
 	@Path("phone/{phone}")
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public User findByPhone(@PathParam("phone") Integer phone) {
-		return ejb.findUserById(phone);
+		return ejb.findUserByPhone(phone);
 	}
 
 	@GET
@@ -101,6 +101,13 @@ public class UserFacadeREST extends AbstractFacade<User> {
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public List<User> findUsersByStatus(@PathParam("status") UserStatus status) {
 		return ejb.findUsersByStatus(status);
+	}
+
+	@GET
+	@Path("fullName/{fullName}")
+	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	public List<User> findUsersByFullName(@PathParam("fullName") String fullName) {
+		return ejb.findUsersByFullName(fullName);
 	}
 
 	@GET

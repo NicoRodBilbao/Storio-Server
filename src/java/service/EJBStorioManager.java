@@ -160,6 +160,12 @@ public class EJBStorioManager implements StorioManagerLocal{
 	public void createUser(User user) {
         try{
             em.persist(user);
+			if(user.getPrivilege().equals(UserPrivilege.USER)
+					|| user.getPrivilege().equals(UserPrivilege.MANAGER)) {
+				this.createClient((Client) user);
+			} else if (user.getPrivilege().equals(UserPrivilege.ADMIN)) {
+				this.createAdmin((Admin) user);
+			}
         } catch(Exception e){
 			LOGGER.log(Level.SEVERE, "UserManager: Exception creating user: ", e.getMessage());
 		}
@@ -228,7 +234,7 @@ public class EJBStorioManager implements StorioManagerLocal{
 	public List<User> findAllUsers() {
 		List<User> users = null;
 		try {
-			users = em.createNamedQuery("findUserByPhoneNumber")
+			users = em.createNamedQuery("findAllUsers")
 				.getResultList();
 		} catch (Exception e) {
 			LOGGER.log(Level.SEVERE, "UserManager: Exception finding users: ", e.getMessage());
@@ -240,7 +246,7 @@ public class EJBStorioManager implements StorioManagerLocal{
 	public List<User> findUsersByPrivilege(UserPrivilege privilege) {
 		List<User> users = null;
 		try {
-			users = em.createNamedQuery("findUserByPhoneNumber")
+			users = em.createNamedQuery("findUsersByPrivilege")
 				.setParameter("userPrivilege", privilege)
 				.getResultList();
 		} catch (Exception e) {
@@ -253,7 +259,7 @@ public class EJBStorioManager implements StorioManagerLocal{
 	public List<User> findUsersByStatus(UserStatus status) {
 		List<User> users = null;
 		try {
-			users = em.createNamedQuery("findUserByStatus")
+			users = em.createNamedQuery("findUsersByStatus")
 				.setParameter("userStatus", status)
 				.getResultList();
 		} catch (Exception e) {
@@ -266,7 +272,7 @@ public class EJBStorioManager implements StorioManagerLocal{
 	public List<User> findUsersByFullName(String fullName) {
 		List<User> users = null;
 		try {
-			users = em.createNamedQuery("findUserByFullName")
+			users = em.createNamedQuery("findUsersByFullName")
 				.setParameter("userFullName", fullName)
 				.getResultList();
 		} catch (Exception e) {
