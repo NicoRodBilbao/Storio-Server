@@ -24,6 +24,7 @@ import javax.ws.rs.core.MediaType;
  *
  * @author 2dam
  */
+/*
 @Stateless
 @Path("entities.pack")
 public class PackFacadeREST extends AbstractFacade<Pack> {
@@ -89,3 +90,4 @@ public class PackFacadeREST extends AbstractFacade<Pack> {
     }
     
 }
+*/

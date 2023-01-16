@@ -24,6 +24,7 @@ import javax.ws.rs.core.MediaType;
  *
  * @author 2dam
  */
+/*
 @Stateless
 @Path("entities.model")
 public class ModelFacadeREST extends AbstractFacade<Model> {
@@ -89,3 +90,4 @@ public class ModelFacadeREST extends AbstractFacade<Model> {
     }
     
 }
+*/

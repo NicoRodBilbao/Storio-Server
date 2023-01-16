@@ -23,7 +23,7 @@ import javax.ws.rs.core.MediaType;
 /**
  *
  * @author 2dam
- */
+ *//*
 @Stateless
 @Path("entities.report")
 public class ReportFacadeREST extends AbstractFacade<Report> {
@@ -88,4 +88,4 @@ public class ReportFacadeREST extends AbstractFacade<Report> {
         return em;
     }
     
-}
+}*/
