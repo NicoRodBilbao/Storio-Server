@@ -5,7 +5,7 @@
  */
 package service;
 
-import entities.Pack;
+import entities.Booking;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -25,9 +25,8 @@ import javax.ws.rs.core.MediaType;
  * @author 2dam
  */
 @Stateless
-@Path("entities.pack")
-public class PackFacadeREST {
+@Path("entities.booking")
+public class BookingFacadeREST {
 
-    
     
 }
