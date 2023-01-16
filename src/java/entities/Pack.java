@@ -82,11 +82,6 @@ public class Pack implements Serializable {
         this.type = type;
     }
 
-
-<<<<<<< HEAD
-    @XmlTransient
-=======
->>>>>>> main
     public List<Booking> getBookings() {
         return bookings;
     }
