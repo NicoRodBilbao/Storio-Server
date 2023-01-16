@@ -11,7 +11,6 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -23,16 +22,14 @@ import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
 @Table(name="booking",schema="storio")
+
 @NamedQueries({
     @NamedQuery(name="findAllBookings",
                 query="SELECT b FROM Booking b"),
     @NamedQuery(name="findPacksForBooking",
                 query="SELECT bp FROM Booking b JOIN b.packs bp WHERE b.id = :id"),
     @NamedQuery(name="findBookingsByState",
-                query="SELECT b FROM Booking b WHERE b.state= :bookingState")
-    /*@NamedQuery(name="findUserOwnedBookings",
-                query="SELECT b FROM Booking b"
-                        + "INNER JOIN User u ON b.client_id=:u.id")*/
+                query="SELECT b FROM Booking b WHERE b.state = :bookingState"),
     })
 @XmlRootElement
 public class Booking implements Serializable {
@@ -40,19 +37,24 @@ public class Booking implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-    //@ManyToOne
+
+    @ManyToOne
     //@JoinColumn(name = "id")
-    //private Client user;
+    private Client client;
+
     @ManyToMany(mappedBy = "bookings", fetch = FetchType.EAGER)
     private List<Pack> packs;
+    
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date startDate;
+
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date endDate;
+
     private String description;
+
     @Enumerated(EnumType.STRING)
     private BookingState state;
-    
     
     public Integer getId() {
         return id;
@@ -61,14 +63,15 @@ public class Booking implements Serializable {
     public void setId(Integer id) {
         this.id = id;
     }
-/*
+    /*
     public Client getUser() {
-        return user;
+        return client;
     }
 
-    public void setUser(Client user) {
-        this.user = user;
-    }*/
+    public void setUser(Client client) {
+        this.client = client;
+    }
+    */
 
     @XmlTransient
     public List<Pack> getPacks() {
