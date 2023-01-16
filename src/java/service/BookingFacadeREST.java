@@ -26,7 +26,7 @@ import javax.ws.rs.core.MediaType;
  */
 @Stateless
 @Path("entities.booking")
-public class BookingFacadeREST extends AbstractFacade<Booking> {
+public class BookingFacadeREST {
 
 	@PersistenceContext(unitName = "StorioPU")
 	private EntityManager em;
@@ -87,5 +87,4 @@ public class BookingFacadeREST extends AbstractFacade<Booking> {
 	protected EntityManager getEntityManager() {
 		return em;
 	}
-	
 }
