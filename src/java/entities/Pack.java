@@ -29,7 +29,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     
     @NamedQuery(name="listPacksByType", query="SELECT p FROM Pack p WHERE p.type=:type"), 
     
-    @NamedQuery(name="listBookingByPack", query="SELECT p FROM Pack p INNER JOIN p.bookings b WHERE b.id=:id")
+    //@NamedQuery(name="listBookingByPack", query="SELECT p FROM Pack p INNER JOIN p.bookings pb WHERE pb.id=:id")
     
 })
 
@@ -39,7 +39,6 @@ public class Pack implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-    private String name;
     private String description;
     @OneToMany(mappedBy = "pack", fetch = FetchType.EAGER)
     private List<Item> items;
@@ -73,14 +72,6 @@ public class Pack implements Serializable {
         this.description = description;
     }
     
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public List<Item> getItems() {
         return items;
     }
@@ -125,7 +116,6 @@ public class Pack implements Serializable {
     public int hashCode() {
         int hash = 5;
         hash = 53 * hash + Objects.hashCode(this.id);
-        hash = 53 * hash + Objects.hashCode(this.name);
         hash = 53 * hash + Objects.hashCode(this.description);
         hash = 53 * hash + Objects.hashCode(this.items);
         hash = 53 * hash + Objects.hashCode(this.datePackAdd);
@@ -147,9 +137,6 @@ public class Pack implements Serializable {
             return false;
         }
         final Pack other = (Pack) obj;
-        if (!Objects.equals(this.name, other.name)) {
-            return false;
-        }
         if (!Objects.equals(this.description, other.description)) {
             return false;
         }
@@ -176,7 +163,7 @@ public class Pack implements Serializable {
 
     @Override
     public String toString() {
-        return "Pack{" + "id=" + id + ", name=" + name + ", description=" + description + ", items=" + items + ", datePackAdd=" + datePackAdd + ", state=" + state + ", type=" + type + ", bookings=" + bookings + '}';
+        return "Pack{" + "id=" + id + ", description=" + description + ", items=" + items + ", datePackAdd=" + datePackAdd + ", state=" + state + ", type=" + type + ", bookings=" + bookings + '}';
     }
     
     

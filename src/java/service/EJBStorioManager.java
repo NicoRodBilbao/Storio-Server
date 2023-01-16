@@ -5,9 +5,12 @@
  */
 package service;
 
+import entities.Booking;
+import entities.BookingState;
 import entities.Pack;
 import entities.PackState;
 import entities.PackType;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,7 +23,7 @@ import javax.persistence.PersistenceContext;
  * @author 2dam
  */
 @Stateless
-public class PackEJB implements StorioManagerLocal {
+public class EJBStorioManager implements StorioManagerLocal {
 
     private static final Logger LOGGER = Logger.getLogger("javafxserverside");
 
@@ -167,4 +170,120 @@ public class PackEJB implements StorioManagerLocal {
         }
         return pack;
     }
+    
+    /**
+     * This method creates a new booking in the data store.
+     * @param booking
+     */
+    @Override
+    public void createBooking(Booking booking){
+        try{
+            em.persist(booking);
+        }catch(Exception e){
+            
+        }
+    }
+    
+    /**
+     * This method gets a list with all bookings in the data store. 
+     * @return A List of Booking entity objects..
+     */
+    @Override
+    public List<Booking> findAllBookings() {
+        List<Booking> bookings = null;
+        try{
+            bookings = em.createNamedQuery("findAllBookings").getResultList();
+        }catch(Exception e){
+            System.out.println(e.getMessage());
+        }
+        return bookings;
+    }
+    
+    /**
+     * This method gets a booking with a selected id in the data store. 
+     * @return A Booking entity object
+     */
+    @Override
+    public Booking findBookingById(Integer id) {
+        Booking booking = null;
+        try{
+            booking = em.find(Booking.class, id);
+        }catch(Exception e){
+        }
+        return booking;
+    }
+
+    /**
+     * This method gets a list with all bookings of an user in the data store. 
+     * @return A List of Booking entity objects..
+     */
+    @Override
+    public List<Booking> findUserOwnBookings(Integer id) {
+        List<Booking> bookings = null;
+        try{
+            bookings = em.createNamedQuery("findUserOwnBookings").getResultList();
+        }catch(Exception e){
+        }
+        return bookings;
+    }
+
+    /**
+     * This method gets a list with all packs asociated to a booking.
+     * @param id
+     * @return A List of Pack entity objects..
+     */
+    @Override
+    public List<Pack> listPacksForBooking(Integer id) {
+        List<Pack> packs = null;
+        try{
+            Booking booking = em.find(Booking.class, id);
+            List<Pack> listAllPacks = em.createNamedQuery("listAllPacks").setParameter("bookingId", id).getResultList();
+            packs = new ArrayList<Pack>();
+            for (Pack p: listAllPacks){
+                if(p.getBookings().contains(booking)){
+                    packs.add(p);
+                }
+            }
+        }catch(Exception e){
+        }
+        return packs;
+    }
+
+    /**
+     * This method updates a booking data in the data store.
+     * @param booking The Booking entity object containing modified account data.
+     */
+    @Override
+    public void updateBooking(Booking booking) {
+         try{
+            if(!em.contains(booking))
+                em.merge(booking);
+            em.flush();
+        }catch(Exception e){
+        }
+    }
+
+    /**
+     * This method removes an account from the data store.
+     * @param booking The Booking entity object to be removed.
+     */
+    @Override
+    public void removeBooking(Booking booking) {
+        try{
+            em.remove(em.merge(booking));
+        }catch(Exception e){
+        }
+    }
+
+    @Override
+    public List<Booking> findBookingsByState(BookingState state) {
+        List<Booking> bookings = null;
+        try{
+            bookings = em.createNamedQuery("findBookingsByState").setParameter("bookingState", state).getResultList();
+        }catch(Exception e){
+        }
+        return bookings;
+    }
+
+    
 }
