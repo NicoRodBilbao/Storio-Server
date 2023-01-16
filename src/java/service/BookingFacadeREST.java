@@ -8,7 +8,6 @@ package service;
 import entities.Booking;
 import entities.BookingState;
 import entities.Pack;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -101,7 +100,7 @@ public class BookingFacadeREST {
     }
     
     @GET
-    @Path("booking/{id}")
+    @Path("findPacksForBooking/{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<Pack> findPacksForBooking(@PathParam("id") Long id) {
         List<Pack> packs = null;
