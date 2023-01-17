@@ -19,6 +19,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
 @NamedQueries({
@@ -27,9 +28,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     
     @NamedQuery(name="listPacksByState", query="SELECT p FROM Pack p WHERE p.state=:state"), 
     
-    @NamedQuery(name="listPacksByType", query="SELECT p FROM Pack p WHERE p.type=:type"), 
-    
-    //@NamedQuery(name="listBookingByPack", query="SELECT p FROM Pack p INNER JOIN p.bookings pb WHERE pb.id=:id")
+    @NamedQuery(name="listPacksByType", query="SELECT p FROM Pack p WHERE p.type=:type")
     
 })
 
@@ -104,6 +103,7 @@ public class Pack implements Serializable {
         this.type = type;
     }
 
+    @XmlTransient
     public List<Booking> getBookings() {
         return bookings;
     }
@@ -165,9 +165,4 @@ public class Pack implements Serializable {
     public String toString() {
         return "Pack{" + "id=" + id + ", description=" + description + ", items=" + items + ", datePackAdd=" + datePackAdd + ", state=" + state + ", type=" + type + ", bookings=" + bookings + '}';
     }
-    
-    
-
-   
-
 }

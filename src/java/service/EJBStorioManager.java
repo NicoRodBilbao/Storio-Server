@@ -10,7 +10,6 @@ import entities.BookingState;
 import entities.Pack;
 import entities.PackState;
 import entities.PackType;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -84,22 +83,20 @@ public class EJBStorioManager implements StorioManagerLocal {
     }
 
     /**
-     * Find and list packs by a Type of pack
-     *
+     * This method gets a list with all packs asociated to a booking.
      * @param id
-     * @return packs
+     * @return A List of Pack.
      */
     @Override
-    public List<Pack> listBookingByPack(Integer id) {
+    public List<Pack> listPacksByBooking(Integer id) {
         List<Pack> packs = null;
-        try {
-            LOGGER.info("Reading Packs");
-            packs = em.createNamedQuery("listPacksByType").setParameter("id", id).getResultList();
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "PackManager: Exception reading all packs available:", e.getMessage());
+        try{
+            packs = em.createNamedQuery("listPackByBooking").setParameter("id", id).getResultList();
+        }catch(Exception e){
         }
         return packs;
     }
+
 
     
     /**
@@ -171,11 +168,10 @@ public class EJBStorioManager implements StorioManagerLocal {
         return pack;
     }
     
-    /**
-     * This method creates a new booking in the data store.
-     * @param booking
-     */
-    @Override
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+     @Override
     public void createBooking(Booking booking){
         try{
             em.persist(booking);
@@ -212,12 +208,25 @@ public class EJBStorioManager implements StorioManagerLocal {
         }
         return booking;
     }
-
+    /**
+     * This method gets a list with all handed bookings in the data store. 
+     * @return A List of Booking entity objects..
+     */
+    @Override
+    public List<Booking> findBookingsByState(BookingState state) {
+        List<Booking> bookings = null;
+        try{
+            bookings = em.createNamedQuery("findBookingsByState").setParameter("bookingState", state).getResultList();
+        }catch(Exception e){
+        }
+        return bookings;
+    }
+ 
     /**
      * This method gets a list with all bookings of an user in the data store. 
      * @return A List of Booking entity objects..
      */
-    @Override
+    //@Override
     public List<Booking> findUserOwnBookings(Integer id) {
         List<Booking> bookings = null;
         try{
@@ -225,28 +234,6 @@ public class EJBStorioManager implements StorioManagerLocal {
         }catch(Exception e){
         }
         return bookings;
-    }
-
-    /**
-     * This method gets a list with all packs asociated to a booking.
-     * @param id
-     * @return A List of Pack entity objects..
-     */
-    @Override
-    public List<Pack> listPacksForBooking(Integer id) {
-        List<Pack> packs = null;
-        try{
-            Booking booking = em.find(Booking.class, id);
-            List<Pack> listAllPacks = em.createNamedQuery("listAllPacks").setParameter("bookingId", id).getResultList();
-            packs = new ArrayList<Pack>();
-            for (Pack p: listAllPacks){
-                if(p.getBookings().contains(booking)){
-                    packs.add(p);
-                }
-            }
-        }catch(Exception e){
-        }
-        return packs;
     }
 
     /**
@@ -273,17 +260,5 @@ public class EJBStorioManager implements StorioManagerLocal {
             em.remove(em.merge(booking));
         }catch(Exception e){
         }
-    }
-
-    @Override
-    public List<Booking> findBookingsByState(BookingState state) {
-        List<Booking> bookings = null;
-        try{
-            bookings = em.createNamedQuery("findBookingsByState").setParameter("bookingState", state).getResultList();
-        }catch(Exception e){
-        }
-        return bookings;
-    }
-
-    
+    }   
 }

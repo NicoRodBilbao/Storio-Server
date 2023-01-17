@@ -41,7 +41,7 @@ public interface StorioManagerLocal {
      * @param id
      * @return packs
      */
-    public List<Pack> listBookingByPack(Integer id);
+    public List<Pack> listPacksByBooking(Integer id);
 
     /**
      * Search packs by the type of pack and return the list of them
@@ -78,6 +78,10 @@ public interface StorioManagerLocal {
      */
     public void deletePack(Pack pack);
 
+    
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
     /**
      * This method creates a new booking in the data store.
      * @param booking
@@ -111,12 +115,6 @@ public interface StorioManagerLocal {
      */
     public List<Booking> findUserOwnBookings(Integer id);
     
-    /**
-     * This method gets a list with all packs asociated to a booking.
-     * @param id
-     * @return A List of Pack entity objects..
-     */
-    public List<Pack> listPacksForBooking(Integer id);
     /**
      * This method updates a booking data in the data store.
      * @param booking The Booking entity object containing modified account data.

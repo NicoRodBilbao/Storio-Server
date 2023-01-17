@@ -171,26 +171,28 @@ public class PackFacadeREST{
         return packs;
     }
     
-     /**
+    /**
      * search for packs by type and return a list of them
      * 
      * @param id
      * @return packs
      */
     @GET
-    @Path("Booking/{booking}")
+    @Path("booking/{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<Pack> listBookingByPack(@PathParam("id") Integer id) {
         List<Pack> packs=null;
         try {
             LOGGER.log(Level.INFO,"PackREST service: find packs by type.");
-            packs=ejb.listBookingByPack(id);
+            packs=ejb.listPacksByBooking(id);
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, "PackREST service: Exception reading all packs by type", ex.getMessage());
             throw new InternalServerErrorException(ex);
         }
         return packs;
     }
+    
+     
  
     protected EntityManager getEntityManager() {
         return em;
