@@ -30,6 +30,8 @@ import javax.xml.bind.annotation.XmlTransient;
                 query="SELECT bp FROM Booking b JOIN b.packs bp WHERE b.id = :id"),
     @NamedQuery(name="findBookingsByState",
                 query="SELECT b FROM Booking b WHERE b.state = :bookingState"),
+    @NamedQuery(name="findClientOwnedBookings",
+                query="SELECT b FROM Booking b WHERE b.client = :client"),
     })
 @XmlRootElement
 public class Booking implements Serializable {

@@ -7,6 +7,7 @@ package service;
 
 import entities.Admin;
 import java.util.List;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -26,66 +27,55 @@ import javax.ws.rs.core.MediaType;
  */
 @Stateless
 @Path("entities.admin")
-public class AdminFacadeREST extends AbstractFacade<Admin> {
+public class AdminFacadeREST {
 
 	@PersistenceContext(unitName = "StorioPU")
 	private EntityManager em;
 
-	public AdminFacadeREST() {
-		super(Admin.class);
-	}
+	@EJB
+	private StorioManagerLocal ejb;
 
 	@POST
-        @Override
-        @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public void create(Admin entity) {
-		super.create(entity);
+		ejb.createAdmin(entity);
 	}
 
 	@PUT
-        @Path("{id}")
-        @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	@Path("{id}")
+	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public void edit(@PathParam("id") Integer id, Admin entity) {
-		super.edit(entity);
+		ejb.editAdmin(entity);
 	}
 
 	@DELETE
-        @Path("{id}")
+	@Path("{id}")
 	public void remove(@PathParam("id") Integer id) {
-		super.remove(super.find(id));
+		ejb.removeAdmin(ejb.findAdminById(id));
 	}
 
 	@GET
-        @Path("{id}")
-        @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	@Path("{id}")
+	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public Admin find(@PathParam("id") Integer id) {
-		return super.find(id);
+		return ejb.findAdminById(id);
 	}
 
 	@GET
-        @Override
-        @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public List<Admin> findAll() {
-		return super.findAll();
+		return ejb.findAllAdmins();
 	}
 
 	@GET
-        @Path("{from}/{to}")
-        @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public List<Admin> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
-		return super.findRange(new int[]{from, to});
-	}
-
-	@GET
-        @Path("count")
-        @Produces(MediaType.TEXT_PLAIN)
+	@Path("count")
+	@Produces(MediaType.TEXT_PLAIN)
 	public String countREST() {
-		return String.valueOf(super.count());
+		return String.valueOf(ejb.countAdmins());
 	}
 
-	@Override
 	protected EntityManager getEntityManager() {
 		return em;
 	}
-	
+
 }

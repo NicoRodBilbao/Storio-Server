@@ -6,7 +6,10 @@
 package service;
 
 import entities.User;
+import entities.UserPrivilege;
+import entities.UserStatus;
 import java.util.List;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -26,66 +29,90 @@ import javax.ws.rs.core.MediaType;
  */
 @Stateless
 @Path("entities.user")
-public class UserFacadeREST extends AbstractFacade<User> {
+public class UserFacadeREST {
 
 	@PersistenceContext(unitName = "StorioPU")
 	private EntityManager em;
 
-	public UserFacadeREST() {
-		super(User.class);
-	}
+	@EJB
+	private StorioManagerLocal ejb;
 
 	@POST
-        @Override
-        @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public void create(User entity) {
-		super.create(entity);
+		ejb.createUser(entity);
 	}
 
 	@PUT
-        @Path("{id}")
-        @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	@Path("{id}")
+	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public void edit(@PathParam("id") Integer id, User entity) {
-		super.edit(entity);
+		ejb.editUser(entity);
 	}
 
 	@DELETE
-        @Path("{id}")
+	@Path("{id}")
 	public void remove(@PathParam("id") Integer id) {
-		super.remove(super.find(id));
+		ejb.removeUser(ejb.findUserById(id));
 	}
 
 	@GET
-        @Path("{id}")
-        @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	@Path("{id}")
+	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public User find(@PathParam("id") Integer id) {
-		return super.find(id);
+		return ejb.findUserById(id);
 	}
 
 	@GET
-        @Override
-        @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	@Path("email/{email}")
+	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	public User findByEmail(@PathParam("email") String email) {
+		return ejb.findUserByEmail(email);
+	}
+
+	@GET
+	@Path("phone/{phone}")
+	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	public User findByPhone(@PathParam("phone") Integer phone) {
+		return ejb.findUserByPhone(phone);
+	}
+
+	@GET
+	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public List<User> findAll() {
-		return super.findAll();
+		return ejb.findAllUsers();
 	}
 
 	@GET
-        @Path("{from}/{to}")
-        @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public List<User> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
-		return super.findRange(new int[]{from, to});
+	@Path("privilege/{privilege}")
+	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	public List<User> findUsersByPrivilege(@PathParam("privilege") UserPrivilege privilege) {
+		return ejb.findUsersByPrivilege(privilege);
 	}
 
 	@GET
-        @Path("count")
-        @Produces(MediaType.TEXT_PLAIN)
+	@Path("status/{status}")
+	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	public List<User> findUsersByStatus(@PathParam("status") UserStatus status) {
+		return ejb.findUsersByStatus(status);
+	}
+
+	@GET
+	@Path("fullName/{fullName}")
+	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	public List<User> findUsersByFullName(@PathParam("fullName") String fullName) {
+		return ejb.findUsersByFullName(fullName);
+	}
+
+	@GET
+	@Path("count")
+	@Produces(MediaType.TEXT_PLAIN)
 	public String countREST() {
-		return String.valueOf(super.count());
+		return String.valueOf(ejb.countUsers());
 	}
 
-	@Override
 	protected EntityManager getEntityManager() {
 		return em;
 	}
-	
+
 }

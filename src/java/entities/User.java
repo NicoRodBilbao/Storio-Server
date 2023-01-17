@@ -21,16 +21,18 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name="findAllUsers",
                 query="SELECT u FROM User u"),
-    @NamedQuery(name="findUserByType",
+    @NamedQuery(name="findUsersByPrivilege",
                 query="SELECT u FROM User u WHERE u.privilege = :userPrivilege"),
+    @NamedQuery(name="findUsersByStatus",
+                query="SELECT u FROM User u WHERE u.status = :userStatus"),
+    @NamedQuery(name="findUsersByFullName",
+                query="SELECT u FROM User u WHERE u.fullName LIKE :userFullName"),
     @NamedQuery(name="findUserById",
                 query="SELECT u FROM User u WHERE u.id = :userId"),
     @NamedQuery(name="findUserByEmail",
                 query="SELECT u FROM User u WHERE u.login = :userEmail"),
-    @NamedQuery(name="findUserByStatus",
-                query="SELECT u FROM User u WHERE u.status = :userStatus"),
-    @NamedQuery(name="findUserByPhone",
-                query="SELECT u FROM User u WHERE u.phoneNumber = :userPhone"),
+    @NamedQuery(name="findUserByPhoneNumber",
+                query="SELECT u FROM User u WHERE u.phoneNumber = :userPhoneNumber"),
     })
 @XmlRootElement
 public class User implements Serializable {

@@ -7,6 +7,7 @@ package service;
 
 import entities.Client;
 import java.util.List;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -26,66 +27,55 @@ import javax.ws.rs.core.MediaType;
  */
 @Stateless
 @Path("entities.client")
-public class ClientFacadeREST extends AbstractFacade<Client> {
+public class ClientFacadeREST {
 
 	@PersistenceContext(unitName = "StorioPU")
 	private EntityManager em;
 
-	public ClientFacadeREST() {
-		super(Client.class);
-	}
+	@EJB
+	private StorioManagerLocal ejb;
 
 	@POST
-        @Override
-        @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public void create(Client entity) {
-		super.create(entity);
+		ejb.createClient(entity);
 	}
 
 	@PUT
-        @Path("{id}")
-        @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	@Path("{id}")
+	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public void edit(@PathParam("id") Integer id, Client entity) {
-		super.edit(entity);
+		ejb.editClient(entity);
 	}
 
 	@DELETE
-        @Path("{id}")
+	@Path("{id}")
 	public void remove(@PathParam("id") Integer id) {
-		super.remove(super.find(id));
+		ejb.removeClient(ejb.findClientById(id));
 	}
 
 	@GET
-        @Path("{id}")
-        @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	@Path("{id}")
+	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public Client find(@PathParam("id") Integer id) {
-		return super.find(id);
+		return ejb.findClientById(id);
 	}
 
 	@GET
-        @Override
-        @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public List<Client> findAll() {
-		return super.findAll();
+		return ejb.findAllClients();
 	}
 
 	@GET
-        @Path("{from}/{to}")
-        @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public List<Client> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
-		return super.findRange(new int[]{from, to});
-	}
-
-	@GET
-        @Path("count")
-        @Produces(MediaType.TEXT_PLAIN)
+	@Path("count")
+	@Produces(MediaType.TEXT_PLAIN)
 	public String countREST() {
-		return String.valueOf(super.count());
+		return String.valueOf(ejb.countClients());
 	}
 
-	@Override
 	protected EntityManager getEntityManager() {
 		return em;
 	}
-	
+
 }
