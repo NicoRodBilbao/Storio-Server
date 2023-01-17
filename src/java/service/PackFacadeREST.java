@@ -24,6 +24,7 @@ import javax.ws.rs.core.MediaType;
  *
  * @author 2dam
  */
+/*
 @Stateless
 @Path("entities.pack")
 public class PackFacadeREST {
@@ -88,3 +89,4 @@ public class PackFacadeREST {
 		return em;
 	}
 }
+*/
