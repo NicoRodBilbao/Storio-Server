@@ -17,7 +17,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class Admin extends User {
 
-	private Boolean isSuperAdmin;
+	private Boolean isSuperAdmin = false;
 
 	public Admin() {
 		super();

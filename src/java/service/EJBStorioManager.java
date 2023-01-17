@@ -156,18 +156,18 @@ public class EJBStorioManager implements StorioManagerLocal{
 
 	*/
 
+	private void userExists(User user) throws Exception {
+		if(this.findUserByEmail(user.getLogin()) != null)
+			throw new Exception();
+	}
+
 	@Override
 	public void createUser(User user) {
         try{
+			userExists(user);
             em.persist(user);
-			if(user.getPrivilege().equals(UserPrivilege.USER)
-					|| user.getPrivilege().equals(UserPrivilege.MANAGER)) {
-				this.createClient((Client) user);
-			} else if (user.getPrivilege().equals(UserPrivilege.ADMIN)) {
-				this.createAdmin((Admin) user);
-			}
         } catch(Exception e){
-			LOGGER.log(Level.SEVERE, "UserManager: Exception creating user: ", e.getMessage());
+			LOGGER.log(Level.SEVERE, "UserManager: Exception creating user: {0}", e.getMessage());
 		}
 	}
 
@@ -178,7 +178,7 @@ public class EJBStorioManager implements StorioManagerLocal{
                 em.merge(user);
             em.flush();
 		} catch(Exception e) {
-			LOGGER.log(Level.SEVERE, "UserManager: Exception updating user: ", e.getMessage());
+			LOGGER.log(Level.SEVERE, "UserManager: Exception updating user: {0}", e.getMessage());
 		}
 	}
 
@@ -187,7 +187,7 @@ public class EJBStorioManager implements StorioManagerLocal{
         try{
             em.remove(em.merge(user));
         } catch(Exception e){
-			LOGGER.log(Level.SEVERE, "UserManager: Exception removing user: ", e.getMessage());
+			LOGGER.log(Level.SEVERE, "UserManager: Exception removing user: {0}", e.getMessage());
 		}
 	}
 
@@ -199,7 +199,7 @@ public class EJBStorioManager implements StorioManagerLocal{
 				.setParameter("userId", id)
 				.getSingleResult();
 		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, "UserManager: Exception finding user: ", e.getMessage());
+			LOGGER.log(Level.SEVERE, "UserManager: Exception finding user: {0}", e.getMessage());
 		}
 		return user;
 	}
@@ -212,7 +212,7 @@ public class EJBStorioManager implements StorioManagerLocal{
 				.setParameter("userEmail", email)
 				.getSingleResult();
 		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, "UserManager: Exception finding user: ", e.getMessage());
+			LOGGER.log(Level.SEVERE, "UserManager: Exception finding user: {0}", e.getMessage());
 		}
 		return user;
 	}
@@ -225,7 +225,7 @@ public class EJBStorioManager implements StorioManagerLocal{
 				.setParameter("userPhoneNumber", phoneNumber)
 				.getSingleResult();
 		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, "UserManager: Exception finding user: ", e.getMessage());
+			LOGGER.log(Level.SEVERE, "UserManager: Exception finding user: {0}", e.getMessage());
 		}
 		return user;
 	}
@@ -237,7 +237,7 @@ public class EJBStorioManager implements StorioManagerLocal{
 			users = em.createNamedQuery("findAllUsers")
 				.getResultList();
 		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, "UserManager: Exception finding users: ", e.getMessage());
+			LOGGER.log(Level.SEVERE, "UserManager: Exception finding users: {0}", e.getMessage());
 		}
 		return users;
 	}
@@ -250,7 +250,7 @@ public class EJBStorioManager implements StorioManagerLocal{
 				.setParameter("userPrivilege", privilege)
 				.getResultList();
 		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, "UserManager: Exception finding users: ", e.getMessage());
+			LOGGER.log(Level.SEVERE, "UserManager: Exception finding users: {0}", e.getMessage());
 		}
 		return users;
 	}
@@ -263,7 +263,7 @@ public class EJBStorioManager implements StorioManagerLocal{
 				.setParameter("userStatus", status)
 				.getResultList();
 		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, "UserManager: Exception finding users: ", e.getMessage());
+			LOGGER.log(Level.SEVERE, "UserManager: Exception finding users: {0}", e.getMessage());
 		}
 		return users;
 	}
@@ -276,7 +276,7 @@ public class EJBStorioManager implements StorioManagerLocal{
 				.setParameter("userFullName", fullName)
 				.getResultList();
 		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, "UserManager: Exception finding users: ", e.getMessage());
+			LOGGER.log(Level.SEVERE, "UserManager: Exception finding users: {0}", e.getMessage());
 		}
 		return users;
 	}
@@ -292,7 +292,7 @@ public class EJBStorioManager implements StorioManagerLocal{
 		try {
 			em.persist(client);
 		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, "UserManager: Exception creating client : ", e.getMessage());
+			LOGGER.log(Level.SEVERE, "UserManager: Exception creating client:{0}", e.getMessage());
 		}
 	}
 
@@ -303,7 +303,7 @@ public class EJBStorioManager implements StorioManagerLocal{
                 em.merge(client);
             em.flush();
 		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, "UserManager: Exception updating client : ", e.getMessage());
+			LOGGER.log(Level.SEVERE, "UserManager: Exception updating client: {0}", e.getMessage());
 		}
 	}
 
@@ -312,7 +312,7 @@ public class EJBStorioManager implements StorioManagerLocal{
 		try {
             em.remove(em.merge(client));
 		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, "UserManager: Exception removing client : ", e.getMessage());
+			LOGGER.log(Level.SEVERE, "UserManager: Exception removing client: {0}", e.getMessage());
 		}
 	}
 
@@ -324,7 +324,7 @@ public class EJBStorioManager implements StorioManagerLocal{
 				.setParameter("clientId", id)
 				.getSingleResult();
 		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, "UserManager: Exception finding client : ", e.getMessage());
+			LOGGER.log(Level.SEVERE, "UserManager: Exception finding client: {0}", e.getMessage());
 		}
 		return client;
 	}
@@ -336,7 +336,7 @@ public class EJBStorioManager implements StorioManagerLocal{
 			clients = em.createNamedQuery("findAllClients")
 				.getResultList();
 		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, "UserManager: Exception finding clients : ", e.getMessage());
+			LOGGER.log(Level.SEVERE, "UserManager: Exception finding clients: {0}", e.getMessage());
 		}
 		return clients;
 	}
@@ -352,7 +352,7 @@ public class EJBStorioManager implements StorioManagerLocal{
 		try {
 			em.persist(admin);
 		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, "UserManager: Exception creating admin : ", e.getMessage());
+			LOGGER.log(Level.SEVERE, "UserManager: Exception creating admin: {0}", e.getMessage());
 		}
 	}
 
@@ -363,7 +363,7 @@ public class EJBStorioManager implements StorioManagerLocal{
                 em.merge(admin);
             em.flush();
 		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, "UserManager: Exception updating admin : ", e.getMessage());
+			LOGGER.log(Level.SEVERE, "UserManager: Exception updating admin: {0}", e.getMessage());
 		}
 	}
 
@@ -372,7 +372,7 @@ public class EJBStorioManager implements StorioManagerLocal{
 		try {
 			em.remove(em.merge(admin));
 		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, "UserManager: Exception removing admin : ", e.getMessage());
+			LOGGER.log(Level.SEVERE, "UserManager: Exception removing admin: {0}", e.getMessage());
 		}
 	}
 
@@ -384,7 +384,7 @@ public class EJBStorioManager implements StorioManagerLocal{
 				.setParameter("adminId", id)
 				.getSingleResult();
 		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, "UserManager: Exception finding admin : ", e.getMessage());
+			LOGGER.log(Level.SEVERE, "UserManager: Exception finding admin: {0}", e.getMessage());
 		}
 		return admin;
 	}
@@ -396,7 +396,7 @@ public class EJBStorioManager implements StorioManagerLocal{
 			admins = em.createNamedQuery("findAllAdmins")
 				.getResultList();
 		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, "UserManager: Exception finding admins : ", e.getMessage());
+			LOGGER.log(Level.SEVERE, "UserManager: Exception finding admins: {0}", e.getMessage());
 		}
 		return admins;
 	}
