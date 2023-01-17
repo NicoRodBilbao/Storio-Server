@@ -27,7 +27,7 @@ import javax.ws.rs.core.MediaType;
  */
 @Stateless
 @Path("entities.client")
-public class ClientFacadeREST extends AbstractFacade<Client> {
+public class ClientFacadeREST {
 
 	@PersistenceContext(unitName = "StorioPU")
 	private EntityManager em;
@@ -35,12 +35,7 @@ public class ClientFacadeREST extends AbstractFacade<Client> {
 	@EJB
 	private StorioManagerLocal ejb;
 
-	public ClientFacadeREST() {
-		super(Client.class);
-	}
-
 	@POST
-	@Override
 	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public void create(Client entity) {
 		ejb.createClient(entity);
@@ -56,7 +51,7 @@ public class ClientFacadeREST extends AbstractFacade<Client> {
 	@DELETE
 	@Path("{id}")
 	public void remove(@PathParam("id") Integer id) {
-		ejb.removeClient(super.find(id));
+		ejb.removeClient(ejb.findClientById(id));
 	}
 
 	@GET
@@ -67,27 +62,18 @@ public class ClientFacadeREST extends AbstractFacade<Client> {
 	}
 
 	@GET
-	@Override
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public List<Client> findAll() {
 		return ejb.findAllClients();
 	}
 
 	@GET
-	@Path("{from}/{to}")
-	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public List<Client> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
-		return super.findRange(new int[]{from, to});
-	}
-
-	@GET
 	@Path("count")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String countREST() {
-		return String.valueOf(super.count());
+		return String.valueOf(ejb.countClients());
 	}
 
-	@Override
 	protected EntityManager getEntityManager() {
 		return em;
 	}

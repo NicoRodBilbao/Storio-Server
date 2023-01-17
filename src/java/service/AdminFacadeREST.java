@@ -27,7 +27,7 @@ import javax.ws.rs.core.MediaType;
  */
 @Stateless
 @Path("entities.admin")
-public class AdminFacadeREST extends AbstractFacade<Admin> {
+public class AdminFacadeREST {
 
 	@PersistenceContext(unitName = "StorioPU")
 	private EntityManager em;
@@ -35,12 +35,7 @@ public class AdminFacadeREST extends AbstractFacade<Admin> {
 	@EJB
 	private StorioManagerLocal ejb;
 
-	public AdminFacadeREST() {
-		super(Admin.class);
-	}
-
 	@POST
-	@Override
 	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public void create(Admin entity) {
 		ejb.createAdmin(entity);
@@ -56,7 +51,7 @@ public class AdminFacadeREST extends AbstractFacade<Admin> {
 	@DELETE
 	@Path("{id}")
 	public void remove(@PathParam("id") Integer id) {
-		ejb.removeAdmin(super.find(id));
+		ejb.removeAdmin(ejb.findAdminById(id));
 	}
 
 	@GET
@@ -67,27 +62,18 @@ public class AdminFacadeREST extends AbstractFacade<Admin> {
 	}
 
 	@GET
-	@Override
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public List<Admin> findAll() {
 		return ejb.findAllAdmins();
 	}
 
 	@GET
-	@Path("{from}/{to}")
-	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public List<Admin> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
-		return super.findRange(new int[]{from, to});
-	}
-
-	@GET
 	@Path("count")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String countREST() {
-		return String.valueOf(super.count());
+		return String.valueOf(ejb.countAdmins());
 	}
 
-	@Override
 	protected EntityManager getEntityManager() {
 		return em;
 	}

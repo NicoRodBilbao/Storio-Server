@@ -1,96 +1,112 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package service;
 
-import entities.Booking;
-import entities.BookingState;
-import entities.Pack;
-import entities.User;
-import entities.Client;
-import entities.Admin;
-import entities.UserPrivilege;
-import entities.UserStatus;
+import entities.*;
+import exceptions.*;
 import java.util.List;
 import javax.ejb.Local;
 
 /**
- *
- * @author 2dam
+ * Local interface for StorioManager EJB.
+ * @author Nicolás Rodríguez
  */
 @Local
-public interface StorioManagerLocal {
+public interface StorioManagerLocal { 
 
-	/*
+    public void createReport (Report report) throws CreateException;
+    
+    public void createItem (Item item) throws CreateException;
+    
+    public void createModel (Model model) throws CreateException;
+    
+    public void updateReport(Report report) throws UpdateException;
+    
+    public void updateItem(Item item) throws UpdateException;
+    
+    public void updateModel(Model model) throws UpdateException;
+    
+    public void removeReport(Report report) throws RemoveException;
+    
+    public void removeItem(Item item) throws RemoveException;
+    
+    public void removeModel(Model model) throws RemoveException;
+    
+    public Report findReport(Integer id) throws FindException;
+    
+    public List<Report> findAllItemsReports(Integer id) throws FindException;
+    
+    public Item findItem(Integer id) throws FindException;
+    
+    public Model findModel(Integer id) throws FindException;
+    
+    public List<Report> findAllReports() throws FindException;
+    
+    public List<Item> findAllItems() throws FindException;
+    public List<Item> findAllItemsWIthoutPack() throws FindException;
+        
+    public List<Item> findAllModelsItems(Integer id) throws FindException;
+    
+    public List<Item> findAllPacksItems(Integer id) throws FindException;
+    
+    public List<Model> findAllModels() throws FindException;
+    
+    public Integer countReports() throws FindException;
+    
+    public Integer countItems() throws FindException;
+    
+    public Integer countModels() throws FindException;
 
-	BOOKING METHODS
-
-	*/
+    /**
+     * This method creates a new booking in the data store.
+     * @param booking
+     */
+    public void createBooking (Booking booking);
+    
+    /**
+     * This method gets a list with all bookings in the data store. 
+     * @return A List of Booking entity objects..
+     */
+    public List<Booking> findAllBookings();
+    
+    /**
+     * This method gets a booking with a selected id in the data store. 
+     * @return A Booking entity object
+     */
+    public Booking findBookingById(Integer id);
+    
+    /**
+     * This method gets a list with all handed bookings in the data store. 
+     * @return A List of Booking entity objects..
+     */
+    public List<Booking> findBookingsByState(BookingState state);
+    
+    /**
+     * This method gets a list with all bookings of one user in the data store. 
+     * @return A List of Booking entity objects..
+     */
+    public List<Booking> findUserOwnBookings(Long id);
+    
+    /**
+     * This method gets a list with all packs asociated to a booking.
+     * @return A List of Pack entity objects..
+     */
+    public List<Pack> listPacksForBooking(Long id);
+    /**
+     * This method updates a booking data in the data store.
+     * @param booking The Booking entity object containing modified account data.
+     */
+    public void updateBooking(Booking booking);
+    
+    /**
+     * This method removes an account from the data store.
+     * @param booking The Booking entity object to be removed.
+     */
+    public void removeBooking(Booking booking);
 
 	/**
-	 * This method creates a new booking in the data store.
-	 *
-	 * @param booking
+	 * This method returns the total count of users
+	 * @return The number of USERs, it doesn't discriminate by user
 	 */
-	public void createBooking(Booking booking);
-
-	/**
-	 * This method gets a list with all bookings in the data store.
-	 *
-	 * @return A List of Booking entity objects..
-	 */
-	public List<Booking> findAllBookings();
-
-	/**
-	 * This method gets a booking with a selected id in the data store.
-	 *
-	 * @return A Booking entity object
-	 */
-	public Booking findBookingById(Integer id);
-
-	/**
-	 * This method gets a list with all handed bookings in the data store.
-	 *
-	 * @return A List of Booking entity objects..
-	 */
-	public List<Booking> findBookingsByState(BookingState state);
-
-	/**
-	 * This method gets a list with all bookings of one user in the data
-	 * store.
-	 *
-	 * @return A List of Booking entity objects..
-	 */
-	public List<Booking> findUserOwnedBookings(Long id);
-
-	/**
-	 * This method gets a list with all packs asociated to a booking.
-	 *
-	 * @return A List of Pack entity objects..
-	 */
-	public List<Pack> listPacksForBooking(Long id);
-
-	/**
-	 * This method updates a booking data in the data store.
-	 *
-	 * @param booking The Booking entity object containing modified account
-	 * data.
-	 */
-	public void updateBooking(Booking booking);
-
-	/**
-	 * This method removes an account from the data store.
-	 *
-	 * @param booking The Booking entity object to be removed.
-	 */
-	public void removeBooking(Booking booking);
-
-	/* 
-	USER METHODS
-
-	*/
+	public Integer countUsers();
 
 	/**
 	 * This method adds a user to the data store
@@ -159,11 +175,11 @@ public interface StorioManagerLocal {
 	 */
 	public List<User> findUsersByFullName(String fullName);
 
-	/* 
-
-	CLIENT METHODS
-
-	*/
+	/**
+	 * This method counts how many clients there are
+	 * @return The number of USERs that are clients
+	 */
+	public Integer countClients();
 
 	/**
 	 * Adds a client to the data store
@@ -196,11 +212,11 @@ public interface StorioManagerLocal {
 	 */
 	public List<Client> findAllClients();
 
-	/* 
-
-	ADMIN METHODS
-
-	*/
+	/**
+	 * This method counts how many admins there are
+	 * @return The number of USERs that are admins
+	 */
+	public Integer countAdmins();
 
 	/**
 	 * Adds an admin to the data store

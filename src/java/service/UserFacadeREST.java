@@ -29,20 +29,15 @@ import javax.ws.rs.core.MediaType;
  */
 @Stateless
 @Path("entities.user")
-public class UserFacadeREST extends AbstractFacade<User> {
+public class UserFacadeREST {
 
 	@PersistenceContext(unitName = "StorioPU")
 	private EntityManager em;
-
-	public UserFacadeREST() {
-		super(User.class);
-	}
 
 	@EJB
 	private StorioManagerLocal ejb;
 
 	@POST
-	@Override
 	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public void create(User entity) {
 		ejb.createUser(entity);
@@ -58,7 +53,7 @@ public class UserFacadeREST extends AbstractFacade<User> {
 	@DELETE
 	@Path("{id}")
 	public void remove(@PathParam("id") Integer id) {
-		ejb.removeUser(super.find(id));
+		ejb.removeUser(ejb.findUserById(id));
 	}
 
 	@GET
@@ -83,7 +78,6 @@ public class UserFacadeREST extends AbstractFacade<User> {
 	}
 
 	@GET
-	@Override
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public List<User> findAll() {
 		return ejb.findAllUsers();
@@ -111,20 +105,12 @@ public class UserFacadeREST extends AbstractFacade<User> {
 	}
 
 	@GET
-	@Path("{from}/{to}")
-	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public List<User> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
-		return super.findRange(new int[]{from, to});
-	}
-
-	@GET
 	@Path("count")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String countREST() {
-		return String.valueOf(super.count());
+		return String.valueOf(ejb.countUsers());
 	}
 
-	@Override
 	protected EntityManager getEntityManager() {
 		return em;
 	}

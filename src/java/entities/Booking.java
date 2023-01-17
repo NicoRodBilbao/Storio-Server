@@ -22,11 +22,12 @@ import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
 @Table(name="booking",schema="storio")
+
 @NamedQueries({
     @NamedQuery(name="findAllBookings",
                 query="SELECT b FROM Booking b"),
     @NamedQuery(name="findPacksForBooking",
-                query="SELECT p FROM Pack p JOIN p.bookings pb WHERE pb.id = :id "),
+                query="SELECT bp FROM Booking b JOIN b.packs bp WHERE b.id = :id"),
     @NamedQuery(name="findBookingsByState",
                 query="SELECT b FROM Booking b WHERE b.state = :bookingState"),
     @NamedQuery(name="findClientOwnedBookings",
@@ -64,7 +65,7 @@ public class Booking implements Serializable {
     public void setId(Integer id) {
         this.id = id;
     }
-
+    /*
     public Client getUser() {
         return client;
     }
@@ -72,6 +73,7 @@ public class Booking implements Serializable {
     public void setUser(Client client) {
         this.client = client;
     }
+    */
 
     @XmlTransient
     public List<Pack> getPacks() {

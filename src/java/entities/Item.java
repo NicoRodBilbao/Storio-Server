@@ -9,6 +9,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -18,12 +20,23 @@ import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
 @Table(name="Item",schema="storio")
+@NamedQueries({
+    @NamedQuery(name="findAllItems",
+            query="SELECT i FROM Item i ORDER BY i.id DESC"),
+    @NamedQuery(name="findAllItemsWithoutPack",
+            query="SELECT i FROM Item i WHERE i.pack is NULL"),
+    @NamedQuery(name="findAllModelsItems",
+            query="SELECT i FROM Item i WHERE i.model = :model ORDER BY i.id DESC"),
+    @NamedQuery(name="findAllPacksItems",
+            query="SELECT i FROM Item i WHERE i.pack = :pack ORDER BY i.id DESC")
+})
 @XmlRootElement
 public class Item implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     @ManyToOne
+    @XmlTransient
     private Model model;
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date dateAdded;
@@ -31,6 +44,7 @@ public class Item implements Serializable {
     @OneToMany(mappedBy = "item")
     private List<Report> report;
     @ManyToOne
+    @XmlTransient
     private Pack pack;
 
     public Item() {

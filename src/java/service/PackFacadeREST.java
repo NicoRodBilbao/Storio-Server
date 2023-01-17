@@ -24,9 +24,10 @@ import javax.ws.rs.core.MediaType;
  *
  * @author 2dam
  */
+/*
 @Stateless
 @Path("entities.pack")
-public class PackFacadeREST extends AbstractFacade<Pack> {
+public class PackFacadeREST {
 
 	@PersistenceContext(unitName = "StorioPU")
 	private EntityManager em;
@@ -87,5 +88,5 @@ public class PackFacadeREST extends AbstractFacade<Pack> {
 	protected EntityManager getEntityManager() {
 		return em;
 	}
-	
 }
+*/
