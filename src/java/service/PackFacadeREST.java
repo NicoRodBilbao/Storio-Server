@@ -6,6 +6,7 @@
 package service;
 
 import java.util.logging.Logger;
+import exceptions.*;
 import entities.Pack;
 import entities.PackState;
 import entities.PackType;
@@ -50,7 +51,7 @@ public class PackFacadeREST{
         try {
             LOGGER.log(Level.INFO, "PackREST service: create.", pack);
             ejb.createPack(pack);
-        } catch (Exception ex) {
+        } catch (CreateException ex) {
             LOGGER.log(Level.SEVERE, "PackREST service: Exception creating pack", ex.getMessage());
             throw new InternalServerErrorException(ex);
         }
@@ -67,7 +68,7 @@ public class PackFacadeREST{
         try {
             LOGGER.log(Level.INFO, "PackREST service: update.", pack);
             ejb.updatePack(pack);
-        } catch (Exception ex) {
+        } catch (UpdateException ex) {
             LOGGER.log(Level.SEVERE, "PackREST service: Exception updating pack", ex.getMessage());
             throw new InternalServerErrorException(ex);
         }
@@ -83,7 +84,7 @@ public class PackFacadeREST{
         try {
             LOGGER.log(Level.INFO, "PackREST service: delete Pack.", id);
             ejb.deletePack(ejb.findPackById(id));
-        } catch (Exception ex) {
+        } catch (FindException | RemoveException ex) {
             LOGGER.log(Level.SEVERE, "PackREST service: Exception updating pack", ex.getMessage());
             throw new InternalServerErrorException(ex);
         }
@@ -103,7 +104,7 @@ public class PackFacadeREST{
         try {
             LOGGER.log(Level.INFO, "PackREST service: find pack", id);
             pack = ejb.findPackById(id);
-        } catch (Exception ex) {
+        } catch (FindException ex) {
             LOGGER.log(Level.SEVERE, "PackREST service: Exception reading pack by id, {0}", ex.getMessage());
             throw new InternalServerErrorException(ex);
         }
@@ -122,7 +123,7 @@ public class PackFacadeREST{
         try {
             LOGGER.log(Level.INFO, "PackREST service: find all packs.");
             packs = ejb.findALlPacks();
-        } catch (Exception ex) {
+        } catch (FindException ex) {
             LOGGER.log(Level.SEVERE, "PackREST service: Exception reading all packs, {0}", ex.getMessage());
             throw new InternalServerErrorException(ex);
         }
@@ -143,7 +144,7 @@ public class PackFacadeREST{
         try {
             LOGGER.log(Level.INFO, "PackREST service: find packs by state.");
             packs = ejb.findPacksByState(PackState.valueOf(state));
-        } catch (Exception ex) {
+        } catch (FindException ex) {
             LOGGER.log(Level.SEVERE, "PackREST service: Exception reading all packs available", ex.getMessage());
             throw new InternalServerErrorException(ex);
         }
@@ -164,7 +165,7 @@ public class PackFacadeREST{
         try {
             LOGGER.log(Level.INFO,"PackREST service: find packs by type.");
             packs=ejb.findPacksByType(PackType.valueOf(type));
-        } catch (Exception ex) {
+        } catch (FindException ex) {
             LOGGER.log(Level.SEVERE, "PackREST service: Exception reading all packs by type", ex.getMessage());
             throw new InternalServerErrorException(ex);
         }
@@ -180,12 +181,12 @@ public class PackFacadeREST{
     @GET
     @Path("booking/{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Pack> listBookingByPack(@PathParam("id") Integer id) {
+    public List<Pack> listPackByBooking(@PathParam("id") Integer id) {
         List<Pack> packs=null;
         try {
             LOGGER.log(Level.INFO,"PackREST service: find packs by type.");
             packs=ejb.listPacksByBooking(id);
-        } catch (Exception ex) {
+        } catch (FindException ex) {
             LOGGER.log(Level.SEVERE, "PackREST service: Exception reading all packs by type", ex.getMessage());
             throw new InternalServerErrorException(ex);
         }

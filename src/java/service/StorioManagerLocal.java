@@ -5,11 +5,8 @@
  */
 package service;
 
-import entities.Booking;
-import entities.BookingState;
-import entities.Pack;
-import entities.PackState;
-import entities.PackType;
+import entities.*;
+import exceptions.*;
 import java.util.List;
 import javax.ejb.Local;
 
@@ -24,59 +21,67 @@ public interface StorioManagerLocal {
      * Search all pack created and return the list of them
      *
      * @return packs
+     * @throws exceptions.FindException
      */
-    public List<Pack> findALlPacks();
+    public List<Pack> findALlPacks() throws FindException;
     
     /**
      * Search packs by the state and return the list of them
      *
      * @param state
      * @return packs
+     * @throws exceptions.FindException
      */
-    public List<Pack> findPacksByState(PackState state);
+    public List<Pack> findPacksByState(PackState state) throws FindException;
     
     /**
      * Search packs by the state and return the list of them
      *
      * @param id
      * @return packs
+     * @throws exceptions.FindException
      */
-    public List<Pack> listPacksByBooking(Integer id);
+    public List<Pack> listPacksByBooking(Integer id) throws FindException;
 
     /**
      * Search packs by the type of pack and return the list of them
      *
      * @param type
      * @return packs
+     * @throws exceptions.FindException
      */
-    public List<Pack> findPacksByType(PackType type);
+    public List<Pack> findPacksByType(PackType type) throws FindException;
 
     /**
      * Create a new pack
      *
      * @param pack
+     * @throws exceptions.CreateException
      */
-    public void createPack(Pack pack);
+    public void createPack(Pack pack) throws CreateException;
 
     /**
      * update the pack
      *
      * @param pack
+     * @throws exceptions.UpdateException
      */
-    public void updatePack(Pack pack);
+    public void updatePack(Pack pack) throws UpdateException;
 
     /**
      * by the id find one pack
      * @param id
      * @return pack
+     * @throws exceptions.FindException
      */
-    public Pack findPackById(Integer id);
+    public Pack findPackById(Integer id) throws FindException;
 
     /**
      * delete the pack
      * @param pack 
+     * @throws exceptions.RemoveException 
      */
-    public void deletePack(Pack pack);
+    public void deletePack(Pack pack) throws RemoveException;
 
     
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
