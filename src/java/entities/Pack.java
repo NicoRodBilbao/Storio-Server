@@ -40,7 +40,6 @@ public class Pack implements Serializable {
     private Integer id;
     private String description;
     @OneToMany(mappedBy = "pack", fetch = FetchType.EAGER)
-    @XmlTransient
     private List<Item> items;
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date datePackAdd;
@@ -103,7 +102,7 @@ public class Pack implements Serializable {
     public void setType(PackType type) {
         this.type = type;
     }
-
+    
     @XmlTransient
     public List<Booking> getBookings() {
         return bookings;

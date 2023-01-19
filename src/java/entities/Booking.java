@@ -18,19 +18,16 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
 @Table(name="booking",schema="storio")
+
 @NamedQueries({
     @NamedQuery(name="findAllBookings",
                 query="SELECT b FROM Booking b"),
-    @NamedQuery(name="findPacksForBooking",
-                query="SELECT bp FROM Booking b JOIN b.packs bp WHERE b.id = :id"),
     @NamedQuery(name="findBookingsByState",
                 query="SELECT b FROM Booking b WHERE b.state = :bookingState"),
-    @NamedQuery(name="findClientOwnedBookings",
-                query="SELECT b FROM Booking b WHERE b.client = :client"),
+    @NamedQuery(name="listPackByBooking", query="SELECT bp FROM Booking b JOIN b.packs bp WHERE b.id = :id")
     })
 @XmlRootElement
 public class Booking implements Serializable {
@@ -43,7 +40,6 @@ public class Booking implements Serializable {
     private Client client;
 
     @ManyToMany(mappedBy = "bookings", fetch = FetchType.EAGER)
-    @XmlTransient
     private List<Pack> packs;
     
     @Temporal(javax.persistence.TemporalType.DATE)
@@ -64,15 +60,15 @@ public class Booking implements Serializable {
     public void setId(Integer id) {
         this.id = id;
     }
+    
     public Client getUser() {
         return client;
     }
-    
     public void setUser(Client client) {
         this.client = client;
     }
+    
 
-    @XmlTransient
     public List<Pack> getPacks() {
         return packs;
     }
@@ -130,6 +126,8 @@ public class Booking implements Serializable {
         hash = 89 * hash + Objects.hashCode(this.state);
         return hash;
     }
+
+   
 
     @Override
     public boolean equals(Object obj) {
