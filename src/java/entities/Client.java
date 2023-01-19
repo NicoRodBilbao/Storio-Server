@@ -7,6 +7,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
 @Table(name = "client", schema = "storio")
@@ -20,12 +21,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Client extends User {
 
 	@OneToMany(mappedBy="client")
+        @XmlTransient
 	private List<Booking> bookings;
 
 	public Client() {
 		super();
 	}
 
+        @XmlTransient
 	public List<Booking> getBookings() {
 		return bookings;
 	}
