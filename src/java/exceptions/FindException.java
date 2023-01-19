@@ -1,7 +1,7 @@
 package exceptions;
 
 /**
- * This exception class handles all errors referring to the creating operations.
+ * This exception class handles all errors referring to the reading operations.
  * @author Nicolás Rodríguez
  */
 public class FindException extends Exception {
