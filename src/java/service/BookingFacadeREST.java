@@ -106,7 +106,7 @@ public class BookingFacadeREST {
         List<Pack> packs = null;
          try {
             LOGGER.log(Level.INFO,"Reading pack data for booking{0}",id);
-            packs = ejb.listPacksByBooking(id);
+            packs = ejb.listPacksForBooking(id);
         } catch (Exception ex) {
             LOGGER.severe(ex.getMessage());       
         }

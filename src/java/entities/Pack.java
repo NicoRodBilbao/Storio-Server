@@ -50,7 +50,6 @@ public class Pack implements Serializable {
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "booking_pack", schema = "storio")
     private List<Booking> bookings;
-
     public Pack() {
         super();
     }

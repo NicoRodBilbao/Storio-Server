@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.logging.Level;
 import javax.ejb.EJB;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -30,12 +29,9 @@ import javax.ws.rs.core.MediaType;
  *
  * @author 2dam
  */
+
 @Path("entities.pack")
-public class PackFacadeREST{
-
-    @PersistenceContext(unitName = "StorioPU")
-    private EntityManager em;
-
+public class PackFacadeREST {
     private static final Logger LOGGER = Logger.getLogger("javafxserverside");
 
     @EJB
@@ -193,10 +189,4 @@ public class PackFacadeREST{
         return packs;
     }
     
-     
- 
-    protected EntityManager getEntityManager() {
-        return em;
-    }
-
 }

@@ -7,14 +7,14 @@ package exceptions;
 public class FindException extends Exception {
 
     /**
-     * Creates a new instance of <code>CreateException</code> without detail message.
+     * Creates a new instance of <code>FindException</code> without detail message.
      */
     public FindException() {
     }
 
 
     /**
-     * Constructs an instance of <code>CreateException</code> with the specified detail message.
+     * Constructs an instance of <code>FindException</code> with the specified detail message.
      * @param msg the detail message.
      */
     public FindException(String msg) {
