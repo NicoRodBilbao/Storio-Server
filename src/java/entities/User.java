@@ -29,8 +29,10 @@ import javax.xml.bind.annotation.XmlRootElement;
                 query="SELECT u FROM User u WHERE u.fullName LIKE :userFullName"),
     @NamedQuery(name="findUserById",
                 query="SELECT u FROM User u WHERE u.id = :userId"),
+    @NamedQuery(name="findUserByLogin",
+                query="SELECT u FROM User u WHERE u.login = :userLogin"),
     @NamedQuery(name="findUserByEmail",
-                query="SELECT u FROM User u WHERE u.login = :userEmail"),
+                query="SELECT u FROM User u WHERE u.email = :userEmail"),
     @NamedQuery(name="findUserByPhoneNumber",
                 query="SELECT u FROM User u WHERE u.phoneNumber = :userPhoneNumber"),
     })
@@ -45,6 +47,8 @@ public class User implements Serializable {
 	private UserStatus status;
 
 	private String login;
+
+	private String email;
 
 	private Integer phoneNumber;
 
@@ -77,6 +81,14 @@ public class User implements Serializable {
 
 	public void setLogin(String login) {
 		this.login = login;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	public Integer getPhoneNumber() {
@@ -117,6 +129,7 @@ public class User implements Serializable {
 		hash = 53 * hash + Objects.hashCode(this.id);
 		hash = 53 * hash + Objects.hashCode(this.status);
 		hash = 53 * hash + Objects.hashCode(this.login);
+		hash = 53 * hash + Objects.hashCode(this.email);
 		hash = 53 * hash + Objects.hashCode(this.phoneNumber);
 		hash = 53 * hash + Objects.hashCode(this.fullName);
 		hash = 53 * hash + Objects.hashCode(this.password);
@@ -137,6 +150,9 @@ public class User implements Serializable {
 		}
 		final User other = (User) obj;
 		if (!Objects.equals(this.login, other.login)) {
+			return false;
+		}
+		if (!Objects.equals(this.email, other.email)) {
 			return false;
 		}
 		if (!Objects.equals(this.fullName, other.fullName)) {
@@ -162,7 +178,7 @@ public class User implements Serializable {
 
 	@Override
 	public String toString() {
-		return "User{" + "id=" + id + ", status=" + status + ", login=" + login + ", phoneNumber=" + phoneNumber + ", fullName=" + fullName + ", password=" + password + ", privilege=" + privilege + '}';
+		return "User{" + "id=" + id + ", status=" + status + ", login=" + login + ", email=" + email + ", phoneNumber=" + phoneNumber + ", fullName=" + fullName + ", password=" + password + ", privilege=" + privilege + '}';
 	}
 
 }

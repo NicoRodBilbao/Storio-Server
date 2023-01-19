@@ -238,6 +238,15 @@ public interface StorioManagerLocal {
     public User findUserById(Object id) throws FindException;
 
     /**
+     * This method finds a user with a matching username
+     *
+     * @param login The username to search for
+     * @return The matching user, if found
+     * @throws exceptions.FindException
+     */
+    public User findUserByLogin(String login) throws FindException;
+
+    /**
      * This method finds a user with a matching email
      *
      * @param email The email to search for

@@ -166,10 +166,6 @@ public class EJBStorioManager implements StorioManagerLocal {
         return pack;
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
-
     /*
 
 	REPORT METHODS
@@ -622,7 +618,7 @@ public class EJBStorioManager implements StorioManagerLocal {
     public User findUserById(Object id) throws FindException {
         User user = null;
         try {
-            LOGGER.log(Level.INFO, "Retrieving User {0}.", user.getId());
+            LOGGER.log(Level.INFO, "Retrieving User {0}.", id);
             user = (User) em.createNamedQuery("findUserById")
                     .setParameter("userId", id)
                     .getSingleResult();
@@ -633,11 +629,26 @@ public class EJBStorioManager implements StorioManagerLocal {
         return user;
     }
 
+	@Override
+    public User findUserByLogin(String login) throws FindException {
+		User user = null;
+		try {
+			LOGGER.log(Level.INFO, "Retrieving User {0}.", login);
+            user = (User) em.createNamedQuery("findUserByEmail")
+                    .setParameter("userLogin", login)
+                    .getSingleResult();
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "UserManager: Exception finding user: {0}", e.getLocalizedMessage());
+            throw new FindException(e.getMessage());
+        }
+        return user;
+	}
+
     @Override
     public User findUserByEmail(String email) throws FindException {
         User user = null;
         try {
-            LOGGER.log(Level.INFO, "Retrieving User {0}.", user.getLogin());
+            LOGGER.log(Level.INFO, "Retrieving User {0}.", email);
             user = (User) em.createNamedQuery("findUserByEmail")
                     .setParameter("userEmail", email)
                     .getSingleResult();
@@ -772,7 +783,7 @@ public class EJBStorioManager implements StorioManagerLocal {
     public Client findClientById(Object id) throws FindException {
         Client client = null;
         try {
-            LOGGER.log(Level.INFO, "Retrieving client {0}", id.toString());
+            LOGGER.log(Level.INFO, "Retrieving client {0}", id);
             client = (Client) em.createNamedQuery("findClientById")
                     .setParameter("clientId", id)
                     .getSingleResult();
@@ -847,7 +858,7 @@ public class EJBStorioManager implements StorioManagerLocal {
     public Admin findAdminById(Object id) throws FindException {
         Admin admin = null;
         try {
-            LOGGER.log(Level.INFO, "Retrieving admin {0}", id.toString());
+            LOGGER.log(Level.INFO, "Retrieving admin {0}", id);
             admin = (Admin) em.createNamedQuery("findAdminById")
                     .setParameter("adminId", id)
                     .getSingleResult();
