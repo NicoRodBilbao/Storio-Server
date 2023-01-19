@@ -18,6 +18,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
 @Table(name="booking",schema="storio")
@@ -42,6 +43,7 @@ public class Booking implements Serializable {
     private Client client;
 
     @ManyToMany(mappedBy = "bookings", fetch = FetchType.EAGER)
+    @XmlTransient
     private List<Pack> packs;
     
     @Temporal(javax.persistence.TemporalType.DATE)
@@ -70,6 +72,7 @@ public class Booking implements Serializable {
         this.client = client;
     }
 
+    @XmlTransient
     public List<Pack> getPacks() {
         return packs;
     }
@@ -127,8 +130,6 @@ public class Booking implements Serializable {
         hash = 89 * hash + Objects.hashCode(this.state);
         return hash;
     }
-
-   
 
     @Override
     public boolean equals(Object obj) {
