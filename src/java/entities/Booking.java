@@ -18,6 +18,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
 @Table(name="booking",schema="storio")
@@ -27,7 +28,10 @@ import javax.xml.bind.annotation.XmlRootElement;
                 query="SELECT b FROM Booking b"),
     @NamedQuery(name="findBookingsByState",
                 query="SELECT b FROM Booking b WHERE b.state = :bookingState"),
-    @NamedQuery(name="listPackByBooking", query="SELECT bp FROM Booking b JOIN b.packs bp WHERE b.id = :id")
+    @NamedQuery(name="listPackByBooking", 
+                query="SELECT bp FROM Booking b JOIN b.packs bp WHERE b.id = :id"),
+    @NamedQuery(name="findClientOwnedBookings",
+                query="SELECT b FROM Booking b WHERE b.client = :client")
     })
 @XmlRootElement
 public class Booking implements Serializable {
@@ -37,6 +41,7 @@ public class Booking implements Serializable {
     private Integer id;
 
     @ManyToOne
+    @XmlTransient
     private Client client;
 
     @ManyToMany(mappedBy = "bookings", fetch = FetchType.EAGER)
@@ -68,7 +73,6 @@ public class Booking implements Serializable {
         this.client = client;
     }
     
-
     public List<Pack> getPacks() {
         return packs;
     }
