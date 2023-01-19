@@ -18,11 +18,9 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
 @Table(name="booking",schema="storio")
-
 @NamedQueries({
     @NamedQuery(name="findAllBookings",
                 query="SELECT b FROM Booking b"),
@@ -41,7 +39,6 @@ public class Booking implements Serializable {
     private Integer id;
 
     @ManyToOne
-    //@JoinColumn(name = "id")
     private Client client;
 
     @ManyToMany(mappedBy = "bookings", fetch = FetchType.EAGER)
@@ -65,17 +62,14 @@ public class Booking implements Serializable {
     public void setId(Integer id) {
         this.id = id;
     }
-    /*
     public Client getUser() {
         return client;
     }
-
+    
     public void setUser(Client client) {
         this.client = client;
     }
-    */
 
-    @XmlTransient
     public List<Pack> getPacks() {
         return packs;
     }
@@ -125,7 +119,7 @@ public class Booking implements Serializable {
     public int hashCode() {
         int hash = 7;
         hash = 89 * hash + Objects.hashCode(this.id);
-        //hash = 89 * hash + Objects.hashCode(this.user);
+        hash = 89 * hash + Objects.hashCode(this.client);
         hash = 89 * hash + Objects.hashCode(this.packs);
         hash = 89 * hash + Objects.hashCode(this.startDate);
         hash = 89 * hash + Objects.hashCode(this.endDate);
@@ -153,10 +147,10 @@ public class Booking implements Serializable {
         }
         if (!Objects.equals(this.id, other.id)) {
             return false;
-        }/*
-        if (!Objects.equals(this.user, other.user)) {
+        }
+        if (!Objects.equals(this.client, other.client)) {
             return false;
-        }*/
+        }
         if (!Objects.equals(this.packs, other.packs)) {
             return false;
         }
@@ -174,7 +168,7 @@ public class Booking implements Serializable {
 
     @Override
     public String toString() {
-        return "Booking{" + "id=" + id + /*", user=" + user +*/ ", packs=" + packs + ", startDate=" + startDate + ", endDate=" + endDate + ", description=" + description + ", state=" + state + '}';
+        return "Booking{" + "id=" + id + ", client=" + client + ", packs=" + packs + ", startDate=" + startDate + ", endDate=" + endDate + ", description=" + description + ", state=" + state + '}';
     }
     
     

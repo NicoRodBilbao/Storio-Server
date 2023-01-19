@@ -6,7 +6,13 @@
 package service;
 
 import entities.Client;
+import exceptions.CreateException;
+import exceptions.FindException;
+import exceptions.RemoveException;
+import exceptions.UpdateException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -38,40 +44,74 @@ public class ClientFacadeREST {
 	@POST
 	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public void create(Client entity) {
-		ejb.createClient(entity);
+            try {
+                ejb.createClient(entity);
+            } catch (CreateException ex) {
+                Logger.getLogger(ClientFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+            }
 	}
 
 	@PUT
 	@Path("{id}")
 	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public void edit(@PathParam("id") Integer id, Client entity) {
-		ejb.editClient(entity);
+            try {
+                ejb.editClient(entity);
+            } catch (UpdateException ex) {
+                Logger.getLogger(ClientFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+            }
 	}
 
 	@DELETE
 	@Path("{id}")
 	public void remove(@PathParam("id") Integer id) {
-		ejb.removeClient(ejb.findClientById(id));
+            try {
+                try {
+                    ejb.removeClient(ejb.findClientById(id));
+                } catch (RemoveException ex) {
+                    Logger.getLogger(ClientFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } catch (FindException ex) {
+                Logger.getLogger(ClientFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+            }
 	}
 
 	@GET
 	@Path("{id}")
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public Client find(@PathParam("id") Integer id) {
-		return ejb.findClientById(id);
+            Client client = null;
+            try {
+                client = ejb.findClientById(id);
+            } catch (FindException ex) {
+                Logger.getLogger(ClientFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            return client;
 	}
 
 	@GET
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public List<Client> findAll() {
-		return ejb.findAllClients();
+            List<Client> clients = null;
+            try {
+                clients = ejb.findAllClients();
+            } catch (FindException ex) {
+                Logger.getLogger(ClientFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            return clients;
 	}
 
 	@GET
 	@Path("count")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String countREST() {
-		return String.valueOf(ejb.countClients());
+            String count  = null;
+            try {
+                count = String.valueOf(ejb.countClients());
+            } catch (FindException ex) {
+                Logger.getLogger(ClientFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            return count;
 	}
 
 	protected EntityManager getEntityManager() {

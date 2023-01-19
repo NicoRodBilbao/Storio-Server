@@ -1,17 +1,6 @@
 package service;
 
-import entities.Admin;
-import entities.Item;
-import entities.Model;
-import entities.Pack;
-import entities.Report;
-import entities.Booking;
-import entities.BookingState;
-import entities.Client;
-import entities.Pack;
-import entities.User;
-import entities.UserPrivilege;
-import entities.UserStatus;
+import entities.*;
 import exceptions.*;
 import java.util.List;
 import java.util.logging.Level;
@@ -22,8 +11,11 @@ import javax.persistence.PersistenceContext;
 
 /**
  * EJB for all entities in the application.
+ *
  * @author Nicolás Rodríguez
  */
+
+
 @Stateless(name = "EJBStorioManager1")
 public class EJBStorioManager implements StorioManagerLocal {
 
@@ -35,14 +27,156 @@ public class EJBStorioManager implements StorioManagerLocal {
 
     private static final Logger LOGGER = Logger.getLogger(EJBStorioManager.class.getName());
 
-	/*
+    /**
+     * Find and list all the packs
+     *
+     * @return packs
+     */
+    @Override
+    public List<Pack> findALlPacks() {
+        List<Pack> packs = null;
+        try {
+            LOGGER.info("Reading Packs");
+            packs = em.createNamedQuery("listAllPacks").getResultList();
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "UserManager: Exception reading all packs:", e.getMessage());
+        }
+        return packs;
+    }
+
+    /**
+     * Find and list the packs that are available
+     *
+     * @param state
+     * @return packs
+     */
+    @Override
+    public List<Pack> findPacksByState(PackState state) {
+        List<Pack> packs = null;
+        try {
+            LOGGER.info("Reading Packs");
+            packs = em.createNamedQuery("listPacksByState").setParameter("state", state).getResultList();
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "PackManager: Exception reading all packs available:", e.getMessage());
+        }
+        return packs;
+    }
+
+    /**
+     * Find and list packs by a Type of pack
+     *
+     * @param type
+     * @return packs
+     */
+    @Override
+    public List<Pack> findPacksByType(PackType type) {
+        List<Pack> packs = null;
+        try {
+            LOGGER.info("Reading Packs");
+            packs = em.createNamedQuery("listPacksByType").setParameter("type", type).getResultList();
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "PackManager: Exception reading all packs available:", e.getMessage());
+        }
+        return packs;
+    }
+
+    /**
+     * This method gets a list with all packs asociated to a booking.
+     *
+     * @param id
+     * @return A List of Pack.
+     */
+    @Override
+    public List<Pack> listPacksByBooking(Integer id) {
+        List<Pack> packs = null;
+        try {
+            packs = em.createNamedQuery("listPackByBooking").setParameter("id", id).getResultList();
+        } catch (Exception e) {
+        }
+        return packs;
+    }
+
+    /**
+     * Create a pack
+     *
+     * @param pack
+     */
+    @Override
+    public void createPack(Pack pack) {
+        try {
+            em.persist(pack);
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "PackManager: Exception creating pack.",
+                    e.getMessage());
+        }
+    }
+
+    /**
+     * Returns the pack updated
+     *
+     * @param pack
+     */
+    @Override
+    public void updatePack(Pack pack) {
+        try {
+            if (!em.contains(pack)) {
+                em.merge(pack);
+            }
+            em.flush();
+            LOGGER.info("PackManager: Pack Updated.");
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "PackManager: Exception update user.",
+                    e.getMessage());
+        }
+    }
+
+    /**
+     * Find a pack and remove it
+     *
+     * @param pack
+     */
+    @Override
+    public void deletePack(Pack pack) {
+        try {
+            em.remove(em.merge(pack));
+            LOGGER.info("PackManager: Pack deleted.");
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "PackManager: Exception deleting user.", e.getMessage());
+        }
+    }
+
+    /**
+     * Find a pack by it's id
+     *
+     * @param id
+     * @return pack
+     */
+    @Override
+    public Pack findPackById(Integer id) {
+        Pack pack = null;
+        try {
+            LOGGER.info("PackManager: Finding pack by login.");
+            pack = em.find(Pack.class, id);
+            if (pack != null) {
+                LOGGER.log(Level.INFO, "PackManager: pack", pack.getId());
+            }
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "PackManager: Exception Finding pack by login:", e.getMessage());
+        }
+        return pack;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+
+    /*
 
 	REPORT METHODS
 
-	*/
-
+     */
     @Override
-    public void createReport(Report report) throws CreateException { 
+    public void createReport(Report report) throws CreateException {
         try {
             LOGGER.log(Level.INFO, "Creating Report{0}.", report.getId());
             em.persist(report);
@@ -122,12 +256,11 @@ public class EJBStorioManager implements StorioManagerLocal {
         return reports;
     }
 
-	/*
+    /*
 
 	ITEM METHODS
 
-	*/
-
+     */
     @Override
     public void createItem(Item item) throws CreateException {
         try {
@@ -189,7 +322,7 @@ public class EJBStorioManager implements StorioManagerLocal {
         }
         return items;
     }
-    
+
     @Override
     public List<Item> findAllItemsWIthoutPack() throws FindException {
         List<Item> items = null;
@@ -202,9 +335,9 @@ public class EJBStorioManager implements StorioManagerLocal {
         }
         return items;
     }
-    
+
     @Override
-        public List<Item> findAllModelsItems(Integer id) throws FindException {
+    public List<Item> findAllModelsItems(Integer id) throws FindException {
         List<Item> items = null;
         try {
             LOGGER.log(Level.INFO, "Listing all the Model {0} Items.", id);
@@ -215,7 +348,7 @@ public class EJBStorioManager implements StorioManagerLocal {
         }
         return items;
     }
-        
+
     @Override
     public List<Item> findAllPacksItems(Integer id) throws FindException {
         List<Item> items = null;
@@ -235,13 +368,11 @@ public class EJBStorioManager implements StorioManagerLocal {
         return findAllItems().size();
     }
 
-	/*
+    /*
 
 	MODEL METHODS
 
-	*/
-
-    
+     */
     @Override
     public void createModel(Model model) throws CreateException {
         try {
@@ -309,428 +440,436 @@ public class EJBStorioManager implements StorioManagerLocal {
         LOGGER.info("Counting all the Models.");
         return findAllModels().size();
     }
-     /**
+    /**
      * This method creates a new booking in the data store.
+     *
      * @param booking
      */
-    
-	/*
+
+    /*
 
 	BOOKING METHODS
 
-	*/
-
+     */
     @Override
-    public void createBooking(Booking booking){
-        try{
+    public void createBooking(Booking booking) {
+        try {
             em.persist(booking);
-        }catch(Exception e){
-            
+        } catch (Exception e) {
+
         }
     }
-    
+
     /**
-     * This method gets a list with all bookings in the data store. 
+     * This method gets a list with all bookings in the data store.
+     *
      * @return A List of Booking entity objects..
      */
     @Override
     public List<Booking> findAllBookings() {
         List<Booking> bookings = null;
-        try{
+        try {
             bookings = em.createNamedQuery("findAllBookings").getResultList();
-        }catch(Exception e){
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
         return bookings;
     }
-    
+
     /**
-     * This method gets a booking with a selected id in the data store. 
+     * This method gets a booking with a selected id in the data store.
+     *
      * @return A Booking entity object
      */
     @Override
     public Booking findBookingById(Integer id) {
         Booking booking = null;
-        try{
+        try {
             booking = em.find(Booking.class, id);
-        }catch(Exception e){
+        } catch (Exception e) {
         }
         return booking;
     }
+
     /**
-     * This method gets a list with all handed bookings in the data store. 
+     * This method gets a list with all handed bookings in the data store.
+     *
      * @return A List of Booking entity objects..
      */
     @Override
     public List<Booking> findBookingsByState(BookingState state) {
         List<Booking> bookings = null;
-        try{
+        try {
             bookings = em.createNamedQuery("findBookingsByState").setParameter("bookingState", state).getResultList();
-        }catch(Exception e){
+        } catch (Exception e) {
         }
         return bookings;
     }
-
     /**
-     * This method gets a list with all bookings of an user in the data store. 
-     * @return A List of Booking entity objects..
-     */
+             * This method gets a list with all bookings of an user in the data
+             * store.
+             *
+             * @return A List of Booking entity objects..
+             */
     @Override
-    public List<Booking> findUserOwnBookings(Long id) {
+    public List<Booking> findUserOwnBookings(Integer id) {
         List<Booking> bookings = null;
-        try{
+        try {
             bookings = em.createNamedQuery("findUserOwnedBookings").getResultList();
-        }catch(Exception e){
+        } catch (Exception e) {
         }
         return bookings;
     }
 
     /**
-     * This method gets a list with all packs asociated to a booking.
-     * @param id
-     * @return A List of Pack entity objects..
+     * <<<<<<< HEAD ======= This method gets a list with all packs asociated to
+     * a booking. @param id @return A List of Pack entity objects..
      */
     @Override
-    public List<Pack> listPacksForBooking(Long id) {
+    public List<Pack> listPacksForBooking(Integer id) {
         List<Pack> packs = null;
-        try{
+        try {
             packs = em.createNamedQuery("findPacksForBooking").setParameter("bookingId", id).getResultList();
-        }catch(Exception e){
+        } catch (Exception e) {
         }
         return packs;
     }
 
     /**
-     * This method updates a booking data in the data store.
-     * @param booking The Booking entity object containing modified account data.
+     * >>>>>>> main This method updates a booking data in the data store.
+     *
+     * @param booking The Booking entity object containing modified account
+     * data.
      */
     @Override
     public void updateBooking(Booking booking) {
-         try{
-            if(!em.contains(booking))
+        try {
+            if (!em.contains(booking)) {
                 em.merge(booking);
+            }
             em.flush();
-        }catch(Exception e){
+        } catch (Exception e) {
         }
     }
 
     /**
      * This method removes an account from the data store.
+     *
      * @param booking The Booking entity object to be removed.
      */
     @Override
     public void removeBooking(Booking booking) {
-        try{
+        try {
             em.remove(em.merge(booking));
-        }catch(Exception e){
+        } catch (Exception e) {
         }
     }
 
-	/*
+    /*
 
 	USER METHODS
 
-	*/
+     */
+    private void userExists(User user) throws FindException {
+        if (this.findUserByEmail(user.getLogin()) != null) {
+            throw new FindException("The user already exists");
+        }
+    }
 
-	private void userExists(User user) throws FindException {
-		if(this.findUserByEmail(user.getLogin()) != null)
-			throw new FindException("The user already exists");
-	}
+    @Override
+    public Integer countUsers() throws FindException {
+        return this.findAllUsers().size();
+    }
 
-	@Override
-	public Integer countUsers() throws FindException {
-		return this.findAllUsers().size();
-	}
-
-	@Override
-	public void createUser(User user) throws CreateException {
-        try{
+    @Override
+    public void createUser(User user) throws CreateException {
+        try {
             LOGGER.log(Level.INFO, "Creating User {0}.", user.getLogin());
-			userExists(user);
+            userExists(user);
             em.persist(user);
-        } catch(Exception e){
-			LOGGER.log(Level.SEVERE, "UserManager: Exception creating user\n{0}", e.getLocalizedMessage());
-			throw new CreateException(e.getMessage());
-		}
-	}
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "UserManager: Exception creating user\n{0}", e.getLocalizedMessage());
+            throw new CreateException(e.getMessage());
+        }
+    }
 
-	@Override
-	public void editUser(User user) throws UpdateException {
-		try {
+    @Override
+    public void editUser(User user) throws UpdateException {
+        try {
             LOGGER.log(Level.INFO, "Editing User {0}.", user.getLogin());
-			if(!em.contains(user))
+            if (!em.contains(user)) {
                 em.merge(user);
+            }
             em.flush();
-		} catch(Exception e) {
-			LOGGER.log(Level.SEVERE, "UserManager: Exception updating user: {0}", e.getLocalizedMessage());
-			throw new UpdateException(e.getMessage());
-		}
-	}
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "UserManager: Exception updating user: {0}", e.getLocalizedMessage());
+            throw new UpdateException(e.getMessage());
+        }
+    }
 
-	@Override
-	public void removeUser(User user) throws RemoveException {
-        try{
+    @Override
+    public void removeUser(User user) throws RemoveException {
+        try {
             LOGGER.log(Level.INFO, "Removing User {0}.", user.getLogin());
             em.remove(em.merge(user));
-        } catch(Exception e){
-			LOGGER.log(Level.SEVERE, "UserManager: Exception removing user: {0}", e.getLocalizedMessage());
-			throw new RemoveException(e.getMessage());
-		}
-	}
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "UserManager: Exception removing user: {0}", e.getLocalizedMessage());
+            throw new RemoveException(e.getMessage());
+        }
+    }
 
-	@Override
-	public User findUserById(Object id) throws FindException {
-		User user = null;
-		try {
+    @Override
+    public User findUserById(Object id) throws FindException {
+        User user = null;
+        try {
             LOGGER.log(Level.INFO, "Retrieving User {0}.", user.getId());
-			user = (User) em.createNamedQuery("findUserById")
-				.setParameter("userId", id)
-				.getSingleResult();
-		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, "UserManager: Exception finding user: {0}", e.getLocalizedMessage());
-			throw new FindException(e.getMessage());
-		}
-		return user;
-	}
+            user = (User) em.createNamedQuery("findUserById")
+                    .setParameter("userId", id)
+                    .getSingleResult();
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "UserManager: Exception finding user: {0}", e.getLocalizedMessage());
+            throw new FindException(e.getMessage());
+        }
+        return user;
+    }
 
-	@Override
-	public User findUserByEmail(String email) throws FindException {
-		User user = null;
-		try {
+    @Override
+    public User findUserByEmail(String email) throws FindException {
+        User user = null;
+        try {
             LOGGER.log(Level.INFO, "Retrieving User {0}.", user.getLogin());
-			user = (User) em.createNamedQuery("findUserByEmail")
-				.setParameter("userEmail", email)
-				.getSingleResult();
-		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, "UserManager: Exception finding user: {0}", e.getLocalizedMessage());
-			throw new FindException(e.getMessage());
-		}
-		return user;
-	}
+            user = (User) em.createNamedQuery("findUserByEmail")
+                    .setParameter("userEmail", email)
+                    .getSingleResult();
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "UserManager: Exception finding user: {0}", e.getLocalizedMessage());
+            throw new FindException(e.getMessage());
+        }
+        return user;
+    }
 
-	@Override
-	public User findUserByPhone(Integer phoneNumber) throws FindException {
-		User user = null;
-		try {
+    @Override
+    public User findUserByPhone(Integer phoneNumber) throws FindException {
+        User user = null;
+        try {
             LOGGER.log(Level.INFO, "Retrieving User {0}.", phoneNumber);
-			user = (User) em.createNamedQuery("findUserByPhoneNumber")
-				.setParameter("userPhoneNumber", phoneNumber)
-				.getSingleResult();
-		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, "UserManager: Exception finding user: {0}", e.getLocalizedMessage());
-			throw new FindException(e.getMessage());
-		}
-		return user;
-	}
+            user = (User) em.createNamedQuery("findUserByPhoneNumber")
+                    .setParameter("userPhoneNumber", phoneNumber)
+                    .getSingleResult();
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "UserManager: Exception finding user: {0}", e.getLocalizedMessage());
+            throw new FindException(e.getMessage());
+        }
+        return user;
+    }
 
-	@Override
-	public List<User> findAllUsers() throws FindException {
-		List<User> users = null;
-		try {
+    @Override
+    public List<User> findAllUsers() throws FindException {
+        List<User> users = null;
+        try {
             LOGGER.log(Level.INFO, "Retrieving all Users");
-			users = em.createNamedQuery("findAllUsers")
-				.getResultList();
-		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, "UserManager: Exception finding users: {0}", e.getLocalizedMessage());
-			throw new FindException(e.getMessage());
-		}
-		return users;
-	}
+            users = em.createNamedQuery("findAllUsers")
+                    .getResultList();
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "UserManager: Exception finding users: {0}", e.getLocalizedMessage());
+            throw new FindException(e.getMessage());
+        }
+        return users;
+    }
 
-	@Override
-	public List<User> findUsersByPrivilege(UserPrivilege privilege) throws FindException {
-		List<User> users = null;
-		try {
+    @Override
+    public List<User> findUsersByPrivilege(UserPrivilege privilege) throws FindException {
+        List<User> users = null;
+        try {
             LOGGER.log(Level.INFO, "Retrieving Users by privilege {0}", privilege);
-			users = em.createNamedQuery("findUsersByPrivilege")
-				.setParameter("userPrivilege", privilege)
-				.getResultList();
-		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, "UserManager: Exception finding users: {0}", e.getLocalizedMessage());
-			throw new FindException(e.getMessage());
-		}
-		return users;
-	}
+            users = em.createNamedQuery("findUsersByPrivilege")
+                    .setParameter("userPrivilege", privilege)
+                    .getResultList();
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "UserManager: Exception finding users: {0}", e.getLocalizedMessage());
+            throw new FindException(e.getMessage());
+        }
+        return users;
+    }
 
-	@Override
-	public List<User> findUsersByStatus(UserStatus status) throws FindException {
-		List<User> users = null;
-		try {
+    @Override
+    public List<User> findUsersByStatus(UserStatus status) throws FindException {
+        List<User> users = null;
+        try {
             LOGGER.log(Level.INFO, "Retrieving Users by status {0}", status);
-			users = em.createNamedQuery("findUsersByStatus")
-				.setParameter("userStatus", status)
-				.getResultList();
-		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, "UserManager: Exception finding users: {0}", e.getLocalizedMessage());
-			throw new FindException(e.getMessage());
-		}
-		return users;
-	}
+            users = em.createNamedQuery("findUsersByStatus")
+                    .setParameter("userStatus", status)
+                    .getResultList();
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "UserManager: Exception finding users: {0}", e.getLocalizedMessage());
+            throw new FindException(e.getMessage());
+        }
+        return users;
+    }
 
-	@Override
-	public List<User> findUsersByFullName(String fullName) throws FindException {
-		List<User> users = null;
-		try {
+    @Override
+    public List<User> findUsersByFullName(String fullName) throws FindException {
+        List<User> users = null;
+        try {
             LOGGER.log(Level.INFO, "Retrieving Users by full name {0}", fullName);
-			users = em.createNamedQuery("findUsersByFullName")
-				.setParameter("userFullName", fullName)
-				.getResultList();
-		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, "UserManager: Exception finding users: {0}", e.getLocalizedMessage());
-			throw new FindException(e.getMessage());
-		}
-		return users;
-	}
+            users = em.createNamedQuery("findUsersByFullName")
+                    .setParameter("userFullName", fullName)
+                    .getResultList();
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "UserManager: Exception finding users: {0}", e.getLocalizedMessage());
+            throw new FindException(e.getMessage());
+        }
+        return users;
+    }
 
-	/*
+    /*
 
 	CLIENT METHODS
 
-	*/
+     */
+    @Override
+    public Integer countClients() throws FindException {
+        return this.findAllClients().size();
+    }
 
-	@Override
-	public Integer countClients() throws FindException {
-		return this.findAllClients().size();
-	}
-
-	@Override
-	public void createClient(Client client) throws CreateException {
-		try {
+    @Override
+    public void createClient(Client client) throws CreateException {
+        try {
             LOGGER.log(Level.INFO, "Creating client {0}", client.getLogin());
-			em.persist(client);
-		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, "UserManager: Exception creating client:{0}", e.getLocalizedMessage());
-			throw new CreateException(e.getMessage());
-		}
-	}
+            em.persist(client);
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "UserManager: Exception creating client:{0}", e.getLocalizedMessage());
+            throw new CreateException(e.getMessage());
+        }
+    }
 
-	@Override
-	public void editClient(Client client) throws UpdateException {
-		try {
+    @Override
+    public void editClient(Client client) throws UpdateException {
+        try {
             LOGGER.log(Level.INFO, "Updating client {0}", client.getLogin());
-			if(!em.contains(client))
+            if (!em.contains(client)) {
                 em.merge(client);
+            }
             em.flush();
-		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, "UserManager: Exception updating client: {0}", e.getLocalizedMessage());
-			throw new UpdateException(e.getMessage());
-		}
-	}
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "UserManager: Exception updating client: {0}", e.getLocalizedMessage());
+            throw new UpdateException(e.getMessage());
+        }
+    }
 
-	@Override
-	public void removeClient(Client client) throws RemoveException {
-		try {
+    @Override
+    public void removeClient(Client client) throws RemoveException {
+        try {
             LOGGER.log(Level.INFO, "Removing client {0}", client.getLogin());
             em.remove(em.merge(client));
-		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, "UserManager: Exception removing client: {0}", e.getLocalizedMessage());
-			throw new RemoveException(e.getMessage());
-		}
-	}
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "UserManager: Exception removing client: {0}", e.getLocalizedMessage());
+            throw new RemoveException(e.getMessage());
+        }
+    }
 
-	@Override
-	public Client findClientById(Object id) throws FindException {
-		Client client = null;
-		try {
+    @Override
+    public Client findClientById(Object id) throws FindException {
+        Client client = null;
+        try {
             LOGGER.log(Level.INFO, "Retrieving client {0}", id.toString());
-			client = (Client) em.createNamedQuery("findClientById")
-				.setParameter("clientId", id)
-				.getSingleResult();
-		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, "UserManager: Exception finding client: {0}", e.getLocalizedMessage());
-			throw new FindException(e.getMessage());
-		}
-		return client;
-	}
+            client = (Client) em.createNamedQuery("findClientById")
+                    .setParameter("clientId", id)
+                    .getSingleResult();
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "UserManager: Exception finding client: {0}", e.getLocalizedMessage());
+            throw new FindException(e.getMessage());
+        }
+        return client;
+    }
 
-	@Override
-	public List<Client> findAllClients() throws FindException {
-		List<Client> clients = null;
-		try {
+    @Override
+    public List<Client> findAllClients() throws FindException {
+        List<Client> clients = null;
+        try {
             LOGGER.log(Level.INFO, "Retrieving all clients");
-			clients = em.createNamedQuery("findAllClients")
-				.getResultList();
-		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, "UserManager: Exception finding clients: {0}", e.getLocalizedMessage());
-			throw new FindException(e.getMessage());
-		}
-		return clients;
-	}
+            clients = em.createNamedQuery("findAllClients")
+                    .getResultList();
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "UserManager: Exception finding clients: {0}", e.getLocalizedMessage());
+            throw new FindException(e.getMessage());
+        }
+        return clients;
+    }
 
-	/*
+    /*
 
 	ADMIN METHODS
 
-	*/
+     */
+    @Override
+    public Integer countAdmins() throws FindException {
+        return this.findAllAdmins().size();
+    }
 
-	@Override
-	public Integer countAdmins() throws FindException {
-		return this.findAllAdmins().size();
-	}
-
-	@Override
-	public void createAdmin(Admin admin) throws CreateException {
-		try {
+    @Override
+    public void createAdmin(Admin admin) throws CreateException {
+        try {
             LOGGER.log(Level.INFO, "Creating admin {0}", admin.getLogin());
-			em.persist(admin);
-		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, "UserManager: Exception creating admin: {0}", e.getLocalizedMessage());
-			throw new CreateException(e.getMessage());
-		}
-	}
+            em.persist(admin);
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "UserManager: Exception creating admin: {0}", e.getLocalizedMessage());
+            throw new CreateException(e.getMessage());
+        }
+    }
 
-	@Override
-	public void editAdmin(Admin admin) throws UpdateException {
-		try {
+    @Override
+    public void editAdmin(Admin admin) throws UpdateException {
+        try {
             LOGGER.log(Level.INFO, "Updating admin {0}", admin.getLogin());
-			if(!em.contains(admin))
+            if (!em.contains(admin)) {
                 em.merge(admin);
+            }
             em.flush();
-		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, "UserManager: Exception updating admin: {0}", e.getLocalizedMessage());
-			throw new UpdateException(e.getMessage());
-		}
-	}
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "UserManager: Exception updating admin: {0}", e.getLocalizedMessage());
+            throw new UpdateException(e.getMessage());
+        }
+    }
 
-	@Override
-	public void removeAdmin(Admin admin) throws RemoveException {
-		try {
+    @Override
+    public void removeAdmin(Admin admin) throws RemoveException {
+        try {
             LOGGER.log(Level.INFO, "Removing admin {0}", admin.getLogin());
-			em.remove(em.merge(admin));
-		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, "UserManager: Exception removing admin: {0}", e.getLocalizedMessage());
-			throw new RemoveException(e.getMessage());
-		}
-	}
+            em.remove(em.merge(admin));
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "UserManager: Exception removing admin: {0}", e.getLocalizedMessage());
+            throw new RemoveException(e.getMessage());
+        }
+    }
 
-	@Override
-	public Admin findAdminById(Object id) throws FindException {
-		Admin admin = null;
-		try {
+    @Override
+    public Admin findAdminById(Object id) throws FindException {
+        Admin admin = null;
+        try {
             LOGGER.log(Level.INFO, "Retrieving admin {0}", id.toString());
-			admin = (Admin) em.createNamedQuery("findAdminById")
-				.setParameter("adminId", id)
-				.getSingleResult();
-		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, "UserManager: Exception finding admin: {0}", e.getLocalizedMessage());
-			throw new FindException(e.getMessage());
-		}
-		return admin;
-	}
+            admin = (Admin) em.createNamedQuery("findAdminById")
+                    .setParameter("adminId", id)
+                    .getSingleResult();
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "UserManager: Exception finding admin: {0}", e.getLocalizedMessage());
+            throw new FindException(e.getMessage());
+        }
+        return admin;
+    }
 
-	@Override
-	public List<Admin> findAllAdmins() throws FindException {
-		List<Admin> admins = null;
-		try {
+    @Override
+    public List<Admin> findAllAdmins() throws FindException {
+        List<Admin> admins = null;
+        try {
             LOGGER.log(Level.INFO, "Retrieving all admins");
-			admins = em.createNamedQuery("findAllAdmins")
-				.getResultList();
-		} catch (Exception e) {
-			LOGGER.log(Level.SEVERE, "UserManager: Exception finding admins: {0}", e.getLocalizedMessage());
-			throw new FindException(e.getMessage());
-		}
-		return admins;
-	}
-    
-}
+            admins = em.createNamedQuery("findAllAdmins")
+                    .getResultList();
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "UserManager: Exception finding admins: {0}", e.getLocalizedMessage());
+            throw new FindException(e.getMessage());
+        }
+        return admins;
+    }
 
+}

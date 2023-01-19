@@ -6,7 +6,13 @@
 package service;
 
 import entities.Admin;
+import exceptions.CreateException;
+import exceptions.FindException;
+import exceptions.RemoveException;
+import exceptions.UpdateException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -38,40 +44,74 @@ public class AdminFacadeREST {
 	@POST
 	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public void create(Admin entity) {
-		ejb.createAdmin(entity);
+            try {
+                ejb.createAdmin(entity);
+            } catch (CreateException ex) {
+                Logger.getLogger(AdminFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+            }
 	}
 
 	@PUT
 	@Path("{id}")
 	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public void edit(@PathParam("id") Integer id, Admin entity) {
-		ejb.editAdmin(entity);
+	public void edit(@PathParam("id") Integer id, Admin entity){
+            try {
+                ejb.editAdmin(entity);
+            } catch (UpdateException ex) {
+                Logger.getLogger(AdminFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+            }
 	}
 
 	@DELETE
 	@Path("{id}")
-	public void remove(@PathParam("id") Integer id) {
-		ejb.removeAdmin(ejb.findAdminById(id));
+	public void remove(@PathParam("id") Integer id){
+            try {
+                try {
+                    ejb.removeAdmin(ejb.findAdminById(id));
+                } catch (RemoveException ex) {
+                    Logger.getLogger(AdminFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } catch (FindException ex) {
+                Logger.getLogger(AdminFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+            }
 	}
 
 	@GET
 	@Path("{id}")
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public Admin find(@PathParam("id") Integer id) {
-		return ejb.findAdminById(id);
+	public Admin find(@PathParam("id") Integer id){
+            Admin admin = null;
+            try {
+                admin = ejb.findAdminById(id);
+            } catch (FindException ex) {
+                Logger.getLogger(AdminFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            return admin;
 	}
 
 	@GET
 	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public List<Admin> findAll() {
-		return ejb.findAllAdmins();
+            List<Admin> admins = null;
+            try {
+                admins = ejb.findAllAdmins();
+            } catch (FindException ex) {
+                Logger.getLogger(AdminFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            return admins;
 	}
 
 	@GET
 	@Path("count")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String countREST() {
-		return String.valueOf(ejb.countAdmins());
+            String count = null;
+            try {
+                count = String.valueOf(ejb.countAdmins());
+            } catch (FindException ex) {
+                Logger.getLogger(AdminFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            return count;
 	}
 
 	protected EntityManager getEntityManager() {

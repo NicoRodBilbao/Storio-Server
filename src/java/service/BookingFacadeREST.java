@@ -102,7 +102,7 @@ public class BookingFacadeREST {
     @GET
     @Path("findPacksForBooking/{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Pack> findPacksForBooking(@PathParam("id") Long id) {
+    public List<Pack> findPacksForBooking(@PathParam("id") Integer id) {
         List<Pack> packs = null;
          try {
             LOGGER.log(Level.INFO,"Reading pack data for booking{0}",id);
@@ -116,7 +116,7 @@ public class BookingFacadeREST {
     @GET
     @Path("findBookingsForUser/{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Booking> findUserOwnBookings(@PathParam("id") Long id) {
+    public List<Booking> findUserOwnBookings(@PathParam("id") Integer id) {
         List<Booking> bookings = null;
          try {
             LOGGER.log(Level.INFO,"Reading booking data for user{0}",id);

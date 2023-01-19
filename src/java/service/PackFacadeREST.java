@@ -5,14 +5,19 @@
  */
 package service;
 
+import java.util.logging.Logger;
+import exceptions.*;
 import entities.Pack;
+import entities.PackState;
+import entities.PackType;
 import java.util.List;
-import javax.ejb.Stateless;
+import java.util.logging.Level;
+import javax.ejb.EJB;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -24,69 +29,164 @@ import javax.ws.rs.core.MediaType;
  *
  * @author 2dam
  */
-/*
-@Stateless
+
 @Path("entities.pack")
 public class PackFacadeREST {
+    private static final Logger LOGGER = Logger.getLogger("javafxserverside");
 
-	@PersistenceContext(unitName = "StorioPU")
-	private EntityManager em;
+    @EJB
+    private StorioManagerLocal ejb;
 
-	public PackFacadeREST() {
-		super(Pack.class);
-	}
+    /**
+     * create a pack
+     * @param pack
+     */
+    @POST
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public void create(Pack pack) {
+        try {
+            LOGGER.log(Level.INFO, "PackREST service: create.", pack);
+            ejb.createPack(pack);
+        } catch (CreateException ex) {
+            LOGGER.log(Level.SEVERE, "PackREST service: Exception creating pack", ex.getMessage());
+            throw new InternalServerErrorException(ex);
+        }
+    }
 
-	@POST
-        @Override
-        @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public void create(Pack entity) {
-		super.create(entity);
-	}
+    /**
+     * update a pack by id
+     * @param pack
+     */
+    @PUT
+    @Path("{id}")
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public void update(Pack pack) {
+        try {
+            LOGGER.log(Level.INFO, "PackREST service: update.", pack);
+            ejb.updatePack(pack);
+        } catch (UpdateException ex) {
+            LOGGER.log(Level.SEVERE, "PackREST service: Exception updating pack", ex.getMessage());
+            throw new InternalServerErrorException(ex);
+        }
+    }
 
-	@PUT
-        @Path("{id}")
-        @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public void edit(@PathParam("id") Integer id, Pack entity) {
-		super.edit(entity);
-	}
+    /**
+     * delete a pack by id
+     * @param id
+     */
+    @DELETE
+    @Path("{id}")
+    public void remove(@PathParam("id") Integer id) {
+        try {
+            LOGGER.log(Level.INFO, "PackREST service: delete Pack.", id);
+            ejb.deletePack(ejb.findPackById(id));
+        } catch (FindException | RemoveException ex) {
+            LOGGER.log(Level.SEVERE, "PackREST service: Exception updating pack", ex.getMessage());
+            throw new InternalServerErrorException(ex);
+        }
+    }
 
-	@DELETE
-        @Path("{id}")
-	public void remove(@PathParam("id") Integer id) {
-		super.remove(super.find(id));
-	}
+    /**
+     * fins a pack by id and return the pack
+     * 
+     * @param id
+     * @return pack
+     */
+    @GET
+    @Path("{id}")
+    @Produces({MediaType.APPLICATION_XML , MediaType.APPLICATION_JSON })
+    public Pack findPackById(@PathParam("id") Integer id) {
+        Pack pack = null;
+        try {
+            LOGGER.log(Level.INFO, "PackREST service: find pack", id);
+            pack = ejb.findPackById(id);
+        } catch (FindException ex) {
+            LOGGER.log(Level.SEVERE, "PackREST service: Exception reading pack by id, {0}", ex.getMessage());
+            throw new InternalServerErrorException(ex);
+        }
+        return pack;
+    }
 
-	@GET
-        @Path("{id}")
-        @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public Pack find(@PathParam("id") Integer id) {
-		return super.find(id);
-	}
+    /**
+     * search for all the pack and return a list of them
+     * 
+     * @return packs
+     */
+    @GET
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Pack> findAll() {
+        List<Pack> packs = null;
+        try {
+            LOGGER.log(Level.INFO, "PackREST service: find all packs.");
+            packs = ejb.findALlPacks();
+        } catch (FindException ex) {
+            LOGGER.log(Level.SEVERE, "PackREST service: Exception reading all packs, {0}", ex.getMessage());
+            throw new InternalServerErrorException(ex);
+        }
+        return packs;
+    }
 
-	@GET
-        @Override
-        @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public List<Pack> findAll() {
-		return super.findAll();
-	}
-
-	@GET
-        @Path("{from}/{to}")
-        @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public List<Pack> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
-		return super.findRange(new int[]{from, to});
-	}
-
-	@GET
-        @Path("count")
-        @Produces(MediaType.TEXT_PLAIN)
-	public String countREST() {
-		return String.valueOf(super.count());
-	}
-
-	@Override
-	protected EntityManager getEntityManager() {
-		return em;
-	}
+    /**
+     * search for packs by state and return a list of them
+     * 
+     * @param state
+     * @return packs
+     */
+    @GET
+    @Path("state/{state}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Pack> findPacksByState(@PathParam("state") String state) {
+        List<Pack> packs = null;
+        try {
+            LOGGER.log(Level.INFO, "PackREST service: find packs by state.");
+            packs = ejb.findPacksByState(PackState.valueOf(state));
+        } catch (FindException ex) {
+            LOGGER.log(Level.SEVERE, "PackREST service: Exception reading all packs available", ex.getMessage());
+            throw new InternalServerErrorException(ex);
+        }
+        return packs;
+    }
+    
+     /**
+     * search for packs by type and return a list of them
+     * 
+     * @param type
+     * @return packs
+     */
+    @GET
+    @Path("type/{type}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Pack> findPacksByType(@PathParam("type") String type) {
+        List<Pack> packs=null;
+        try {
+            LOGGER.log(Level.INFO,"PackREST service: find packs by type.");
+            packs=ejb.findPacksByType(PackType.valueOf(type));
+        } catch (FindException ex) {
+            LOGGER.log(Level.SEVERE, "PackREST service: Exception reading all packs by type", ex.getMessage());
+            throw new InternalServerErrorException(ex);
+        }
+        return packs;
+    }
+    
+    /**
+     * search for packs by type and return a list of them
+     * 
+     * @param id
+     * @return packs
+     */
+    @GET
+    @Path("booking/{id}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Pack> listPackByBooking(@PathParam("id") Integer id) {
+        List<Pack> packs=null;
+        try {
+            LOGGER.log(Level.INFO,"PackREST service: find packs by type.");
+            packs=ejb.listPacksByBooking(id);
+        } catch (FindException ex) {
+            LOGGER.log(Level.SEVERE, "PackREST service: Exception reading all packs by type", ex.getMessage());
+            throw new InternalServerErrorException(ex);
+        }
+        return packs;
+    }
+    
 }
-*/
