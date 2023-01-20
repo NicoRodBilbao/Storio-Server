@@ -44,7 +44,6 @@ public class Item implements Serializable {
     @OneToMany(mappedBy = "item")
     private List<Report> report;
     @ManyToOne
-    @XmlTransient
     private Pack pack;
 
     public Item() {

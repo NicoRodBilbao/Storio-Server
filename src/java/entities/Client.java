@@ -16,12 +16,13 @@ import javax.xml.bind.annotation.XmlTransient;
                 query="SELECT c FROM Client c WHERE c.id = :clientId"),
     @NamedQuery(name="findAllClients",
                 query="SELECT c FROM Client c"),
+    @NamedQuery(name="findClientOwnedBookings",
+                query="SELECT bc FROM Client c JOIN c.bookings bc WHERE c.id = :id")
 })
 @XmlRootElement
 public class Client extends User {
 
 	@OneToMany(mappedBy="client")
-        @XmlTransient
 	private List<Booking> bookings;
 
 	public Client() {
