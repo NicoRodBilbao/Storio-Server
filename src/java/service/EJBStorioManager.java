@@ -2,12 +2,18 @@ package service;
 
 import entities.*;
 import exceptions.*;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.ws.rs.InternalServerErrorException;
 
 /**
  * EJB for all entities in the application.
@@ -572,6 +578,20 @@ public class EJBStorioManager implements StorioManagerLocal {
         }
     }
 
+	private User hashPassword(User user) throws InternalServerErrorException {
+		MessageDigest digest;
+		try {
+			digest = MessageDigest.getInstance("MD5");
+			byte[] hash = digest.digest(user.getPassword().getBytes(StandardCharsets.UTF_8));
+			String hashedPasswd = Base64.getEncoder().encodeToString(hash);
+			user.setPassword(hashedPasswd);
+		} catch (NoSuchAlgorithmException ex) {
+            LOGGER.log(Level.SEVERE, "UserManager: Exception hashing user password \n{0}", ex.getLocalizedMessage());
+			throw new InternalServerErrorException();
+		}
+		return user;
+	}
+
     @Override
     public Integer countUsers() throws FindException {
         return this.findAllUsers().size();
@@ -582,6 +602,7 @@ public class EJBStorioManager implements StorioManagerLocal {
         try {
             LOGGER.log(Level.INFO, "Creating User {0}.", user.getLogin());
             userExists(user);
+			user = hashPassword(user);
             em.persist(user);
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "UserManager: Exception creating user\n{0}", e.getLocalizedMessage());
@@ -594,6 +615,7 @@ public class EJBStorioManager implements StorioManagerLocal {
         try {
             LOGGER.log(Level.INFO, "Editing User {0}.", user.getLogin());
             if (!em.contains(user)) {
+				user = hashPassword(user);
                 em.merge(user);
             }
             em.flush();
@@ -747,6 +769,7 @@ public class EJBStorioManager implements StorioManagerLocal {
     public void createClient(Client client) throws CreateException {
         try {
             LOGGER.log(Level.INFO, "Creating client {0}", client.getLogin());
+			client = (Client) hashPassword(client);
             em.persist(client);
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "UserManager: Exception creating client:{0}", e.getLocalizedMessage());
@@ -759,6 +782,7 @@ public class EJBStorioManager implements StorioManagerLocal {
         try {
             LOGGER.log(Level.INFO, "Updating client {0}", client.getLogin());
             if (!em.contains(client)) {
+				client = (Client) hashPassword(client);
                 em.merge(client);
             }
             em.flush();
@@ -822,6 +846,7 @@ public class EJBStorioManager implements StorioManagerLocal {
     public void createAdmin(Admin admin) throws CreateException {
         try {
             LOGGER.log(Level.INFO, "Creating admin {0}", admin.getLogin());
+			admin = (Admin) hashPassword(admin);
             em.persist(admin);
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "UserManager: Exception creating admin: {0}", e.getLocalizedMessage());
@@ -834,6 +859,7 @@ public class EJBStorioManager implements StorioManagerLocal {
         try {
             LOGGER.log(Level.INFO, "Updating admin {0}", admin.getLogin());
             if (!em.contains(admin)) {
+				admin = (Admin) hashPassword(admin);
                 em.merge(admin);
             }
             em.flush();
