@@ -28,6 +28,13 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.util.Properties;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
 /**
  *
@@ -183,6 +190,57 @@ public class UserFacadeREST {
 
     protected EntityManager getEntityManager() {
         return em;
+    }
+    
+    @GET
+    @Path("mail/sendMail/{email}")
+    public void sendEmail(@PathParam("email") String email) {
+        String smtp_host = "smtp.gmail.com";
+        Integer smtp_port = 587;
+        User user = null;
+        String password = "evyyadvsnksgsujh";
+        try {
+            Logger.getLogger(UserFacadeREST.class.getName()).info("Finding email:" + email);
+            user = ejb.findUserByEmail(email);
+            Logger.getLogger(UserFacadeREST.class.getName()).info("Setting properties");
+
+            Session session;
+            Properties properties = System.getProperties();
+            properties.put("mail.smtp.host", "smtp.gmail.com");
+            properties.put("mail.smtp.starttls.enable", "true");
+            properties.put("mail.smtp.port", "587");
+            properties.put("mail.smtp.user", "storio.service@gmail.com");
+            properties.put("mail.smtp.clave", password);
+            properties.put("mail.smtp.auth", "true");
+            
+            Logger.getLogger(UserFacadeREST.class.getName()).info("Opening session");
+            session = Session.getDefaultInstance(properties);
+            MimeMessage message = new MimeMessage(session);
+            Logger.getLogger(UserFacadeREST.class.getName()).info("A");
+
+            try {
+                Logger.getLogger(UserFacadeREST.class.getName()).info("Setting message");
+                message.setFrom(new InternetAddress((String) properties.get("mail.smtp.user")));
+                Logger.getLogger(UserFacadeREST.class.getName()).info("Setting recipient");
+                message.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
+                Logger.getLogger(UserFacadeREST.class.getName()).info("Setting subject");
+                message.setSubject("Prueba");
+                Logger.getLogger(UserFacadeREST.class.getName()).info("Setting body");
+                message.setText("Sexo");
+                Logger.getLogger(UserFacadeREST.class.getName()).info("Transporting");
+                Transport t = session.getTransport("smtp");
+                t.connect("smtp.gmail.com","storio.service@gmail.com", password);
+                Logger.getLogger(UserFacadeREST.class.getName()).info("Sending");
+                t.sendMessage(message, message.getAllRecipients());
+                Logger.getLogger(UserFacadeREST.class.getName()).info("Closing");
+                t.close();
+            } catch (MessagingException e) {
+                Logger.getLogger(UserFacadeREST.class.getName()).log(Level.SEVERE, "a", e);
+            }
+
+        } catch (FindException ex) {
+            Logger.getLogger(UserFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
 }
