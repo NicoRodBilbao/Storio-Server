@@ -572,12 +572,25 @@ public class EJBStorioManager implements StorioManagerLocal {
 	USER METHODS
 
      */
+
+	/**
+	 * Throws and exception if the user already exists
+	 * @param user The new user to check against the data store
+	 * @throws FindException 
+	 */
     private void userExists(User user) throws FindException {
-        if (this.findUserByEmail(user.getLogin()) != null) {
+        if (this.findUserByEmail(user.getEmail()) != null
+				|| this.findUserByLogin(user.getLogin()) != null) {
             throw new FindException("The user already exists");
         }
     }
 
+	/**
+	 * Hashes the user's password using the MD5 algorithm
+	 * @param user The user whose password will be hashed
+	 * @return The same user, but with the hashed password
+	 * @throws InternalServerErrorException 
+	 */
 	private User hashPassword(User user) throws InternalServerErrorException {
 		MessageDigest digest;
 		try {
