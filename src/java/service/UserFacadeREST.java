@@ -5,6 +5,7 @@
  */
 package service;
 
+import com.sun.mail.imap.IMAPBodyPart;
 import entities.User;
 import entities.UserPrivilege;
 import entities.UserStatus;
@@ -13,6 +14,7 @@ import exceptions.FindException;
 import exceptions.RemoveException;
 import exceptions.UpdateException;
 import java.util.List;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
@@ -28,6 +30,18 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.mail.Authenticator;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 
 /**
  *
@@ -120,7 +134,7 @@ public class UserFacadeREST {
     @GET
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<User> findAll() {
-        List<User> users = null; 
+        List<User> users = null;
         try {
             users = ejb.findAllUsers();
         } catch (FindException ex) {
@@ -135,7 +149,7 @@ public class UserFacadeREST {
     public List<User> findUsersByPrivilege(@PathParam("privilege") UserPrivilege privilege) {
         List<User> users = null;
         try {
-            users =  ejb.findUsersByPrivilege(privilege);
+            users = ejb.findUsersByPrivilege(privilege);
         } catch (FindException ex) {
             Logger.getLogger(UserFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -179,6 +193,60 @@ public class UserFacadeREST {
             Logger.getLogger(UserFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
         }
         return count;
+    }
+
+    @GET
+    @Path("mail/sendMail/{email}")
+    public void sendEmail(@PathParam("email") String email) {
+        String smtp_host = "smtp.gmail.com";
+        Integer smtp_port = 587;
+        User user = null;
+        String password = "evyyadvsnksgsujh";
+        try {
+            Logger.getLogger(UserFacadeREST.class.getName()).info("Finding email:" + email);
+            user = ejb.findUserByEmail(email);
+            Logger.getLogger(UserFacadeREST.class.getName()).info("Setting properties");
+
+            Session session;
+            Properties properties = System.getProperties();
+            properties.put("mail.smtp.host", "smtp.gmail.com");
+            properties.put("mail.smtp.starttls.enable", "true");
+            properties.put("mail.smtp.port", "587");
+            properties.put("mail.smtp.user", "storio.service@gmail.com");
+            properties.put("mail.smtp.clave", password);
+            properties.put("mail.smtp.auth", "true");
+            
+            Logger.getLogger(UserFacadeREST.class.getName()).info("Opening session");
+            session = Session.getDefaultInstance(properties);
+            MimeMessage message = new MimeMessage(session);
+            Logger.getLogger(UserFacadeREST.class.getName()).info("A");
+
+            try {
+                Logger.getLogger(UserFacadeREST.class.getName()).info("Setting message");
+                message.setFrom(new InternetAddress((String) properties.get("mail.smtp.user")));
+                Logger.getLogger(UserFacadeREST.class.getName()).info("Setting recipient");
+                message.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
+                Logger.getLogger(UserFacadeREST.class.getName()).info("Setting subject");
+                message.setSubject("Prueba");
+                Logger.getLogger(UserFacadeREST.class.getName()).info("Setting body");
+                message.setText("Sexo");
+                Logger.getLogger(UserFacadeREST.class.getName()).info("Transporting");
+                Transport t = session.getTransport("smtp");
+                t.connect("smtp.gmail.com","storio.service@gmail.com", password);
+                Logger.getLogger(UserFacadeREST.class.getName()).info("Sending");
+                t.sendMessage(message, message.getAllRecipients());
+                Logger.getLogger(UserFacadeREST.class.getName()).info("Closing");
+                t.close();
+            } catch (MessagingException me) {
+                //Aqui se deberia o mostrar un mensaje de error o en lugar
+                //de no hacer nada con la excepcion, lanzarla para que el modulo
+                //superior la capture y avise al usuario con un popup, por ejemplo.
+                return;
+            }
+
+        } catch (FindException ex) {
+            Logger.getLogger(UserFacadeREST.class.getName()).log(Level.SEVERE, "a", ex);
+        }
     }
 
     protected EntityManager getEntityManager() {

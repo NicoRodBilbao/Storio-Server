@@ -30,7 +30,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name="findUserById",
                 query="SELECT u FROM User u WHERE u.id = :userId"),
     @NamedQuery(name="findUserByEmail",
-                query="SELECT u FROM User u WHERE u.login = :userEmail"),
+                query="SELECT u FROM User u WHERE u.email LIKE :userEmail"),
     @NamedQuery(name="findUserByPhoneNumber",
                 query="SELECT u FROM User u WHERE u.phoneNumber = :userPhoneNumber"),
     })
@@ -45,6 +45,8 @@ public class User implements Serializable {
 	private UserStatus status;
 
 	private String login;
+        
+                   private String email;
 
 	private Integer phoneNumber;
 
@@ -109,6 +111,14 @@ public class User implements Serializable {
 
 	public void setPrivilege(UserPrivilege privilege) {
 		this.privilege = privilege;
+	}
+        
+                   public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	@Override
