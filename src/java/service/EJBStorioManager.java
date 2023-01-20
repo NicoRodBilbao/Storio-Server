@@ -20,8 +20,6 @@ import javax.persistence.PersistenceContext;
  *
  * @author Nicolás Rodríguez
  */
-
-
 @Stateless(name = "EJBStorioManager1")
 public class EJBStorioManager implements StorioManagerLocal {
 
@@ -174,8 +172,6 @@ public class EJBStorioManager implements StorioManagerLocal {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
-
     /*
 
 	REPORT METHODS
@@ -446,16 +442,18 @@ public class EJBStorioManager implements StorioManagerLocal {
         LOGGER.info("Counting all the Models.");
         return findAllModels().size();
     }
-    /**
-     * This method creates a new booking in the data store.
-     *
-     * @param booking
-     */
+
 
     /*
 
 	BOOKING METHODS
 
+     */
+    
+    /**
+     * This method creates a new booking in the data store.
+     *
+     * @param booking
      */
     @Override
     public void createBooking(Booking booking) {
@@ -511,25 +509,26 @@ public class EJBStorioManager implements StorioManagerLocal {
         }
         return bookings;
     }
+
     /**
-             * This method gets a list with all bookings of an user in the data
-             * store.
-             *
-             * @return A List of Booking entity objects..
-             */
+     * This method gets a list with all bookings of an user in the data store.
+     *
+     * @return A List of Booking entity objects..
+     */
     @Override
     public List<Booking> findUserOwnBookings(Integer id) {
         List<Booking> bookings = null;
         try {
-            bookings = em.createNamedQuery("findUserOwnedBookings").setParameter("id", id).getResultList();
+            bookings = em.createNamedQuery("findUserOwnedBookings")
+                    .setParameter("id", em.find(Client.class, id)).getResultList();
         } catch (Exception e) {
         }
         return bookings;
     }
 
     /**
-     * This method gets a list with all packs asociated to
-     * a booking. @param id @return A List of Pack entity objects..
+     * This method gets a list with all packs asociated to a booking. @param id
+     * @return A List of Pack entity objects..
      */
     @Override
     public List<Pack> listPacksForBooking(Integer id) {
