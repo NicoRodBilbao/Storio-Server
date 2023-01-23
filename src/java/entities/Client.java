@@ -7,6 +7,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
 @Table(name = "client", schema = "storio")
@@ -15,6 +16,8 @@ import javax.xml.bind.annotation.XmlRootElement;
                 query="SELECT c FROM Client c WHERE c.id = :clientId"),
     @NamedQuery(name="findAllClients",
                 query="SELECT c FROM Client c"),
+    @NamedQuery(name="findClientOwnedBookings",
+                query="SELECT bc FROM Client c JOIN c.bookings bc WHERE c.id = :id")
 })
 @XmlRootElement
 public class Client extends User {
@@ -26,6 +29,7 @@ public class Client extends User {
 		super();
 	}
 
+        @XmlTransient
 	public List<Booking> getBookings() {
 		return bookings;
 	}

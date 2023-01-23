@@ -70,6 +70,7 @@ public class Pack implements Serializable {
         this.description = description;
     }
     
+    @XmlTransient
     public List<Item> getItems() {
         return items;
     }
@@ -101,7 +102,7 @@ public class Pack implements Serializable {
     public void setType(PackType type) {
         this.type = type;
     }
-
+    
     @XmlTransient
     public List<Booking> getBookings() {
         return bookings;
