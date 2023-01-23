@@ -650,7 +650,7 @@ public class EJBStorioManager implements StorioManagerLocal {
     }
 
     @Override
-    public User findUserById(Object id) throws FindException {
+    public User findUserById(Integer id) throws FindException {
         User user = null;
         try {
             LOGGER.log(Level.INFO, "Retrieving User {0}.", id);

@@ -235,7 +235,7 @@ public interface StorioManagerLocal {
      * @return The matching user, if found
      * @throws exceptions.FindException
      */
-    public User findUserById(Object id) throws FindException;
+    public User findUserById(Integer id) throws FindException;
 
     /**
      * This method finds a user with a matching username
