@@ -57,47 +57,59 @@ public interface StorioManagerLocal {
     /**
      * This method creates a new booking in the data store.
      * @param booking
+     * @throws exceptions.CreateException
      */
-    public void createBooking (Booking booking);
+    public void createBooking (Booking booking) throws CreateException;
     
     /**
      * This method gets a list with all bookings in the data store. 
      * @return A List of Booking entity objects..
+     * @throws exceptions.FindException
      */
-    public List<Booking> findAllBookings();
+    public List<Booking> findAllBookings() throws FindException;
     
     /**
      * This method gets a booking with a selected id in the data store. 
+     * @param id
      * @return A Booking entity object
+     * @throws exceptions.FindException
      */
-    public Booking findBookingById(Integer id);
+    public Booking findBookingById(Integer id) throws FindException;
     
     /**
      * This method gets a list with all handed bookings in the data store. 
+     * @param state
      * @return A List of Booking entity objects..
+     * @throws exceptions.FindException
      */
-    public List<Booking> findBookingsByState(BookingState state);
+    public List<Booking> findBookingsByState(BookingState state) throws FindException;
     
     /**
      * This method gets a list with all bookings of one user in the data store. 
+     * @param id
      * @return A List of Booking entity objects..
+     * @throws exceptions.FindException
      */
-    public List<Booking> findUserOwnBookings(Long id);
+    public List<Booking> findUserOwnBookings(Long id) throws FindException;
     
     /**
      * This method gets a list with all packs asociated to a booking.
+     * @param id
      * @return A List of Pack entity objects..
+     * @throws exceptions.FindException
      */
-    public List<Pack> listPacksForBooking(Long id);
+    public List<Pack> listPacksForBooking(Long id) throws FindException;
     /**
      * This method updates a booking data in the data store.
      * @param booking The Booking entity object containing modified account data.
+     * @throws exceptions.UpdateException
      */
-    public void updateBooking(Booking booking);
+    public void updateBooking(Booking booking) throws UpdateException;
     
     /**
      * This method removes an account from the data store.
      * @param booking The Booking entity object to be removed.
+     * @throws exceptions.RemoveException
      */
-    public void removeBooking(Booking booking);
+    public void removeBooking(Booking booking) throws RemoveException;
 }
