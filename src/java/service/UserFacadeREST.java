@@ -306,8 +306,8 @@ public class UserFacadeREST {
 						+ "Hello " + user.getFullName() + "\n"
 						+ "As per your request your password has been reset!\n"
 						+ "Here is your new password:\n"
-						+ newPasswd
-						+ "You may change this password from the application"
+						+ newPasswd + "\n"
+						+ "You may change this password from within the application\n"
 						+ "This is email has been sent automatically, please do not reply\n"
 				);
                 Logger.getLogger(UserFacadeREST.class.getName()).info("Transporting");
