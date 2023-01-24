@@ -204,6 +204,15 @@ public interface StorioManagerLocal {
      */
     public Integer countUsers() throws FindException;
 
+	/**
+	 * Returns OK if the login and password are correct
+	 * @param login Username
+	 * @param password PlainText Password
+	 * @return OK only if the credentials are the correct ones
+	 * @throws exceptions.FindException if incorrect login credentials
+	 */
+	public boolean loginUser(String login, String password) throws FindException;
+
     /**
      * This method adds a user to the data store
      *

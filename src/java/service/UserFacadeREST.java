@@ -49,6 +49,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import javax.ws.rs.core.Response;
 
 /**
  *
@@ -64,39 +65,57 @@ public class UserFacadeREST {
     @EJB
     private StorioManagerLocal ejb;
 
+	@GET
+	@Path("login/{login}/{password}")
+	public Response login(@PathParam("login") String login, @PathParam("password") String password) {
+		try {
+			if(ejb.loginUser(login, password))
+				return Response.ok().build();
+		} catch (FindException ex) {
+			Logger.getLogger(UserFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+		}
+		return Response.serverError().build();
+	}
+
     @POST
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void create(User entity) {
+    public Response create(User entity) {
         try {
             ejb.createUser(entity);
+			return Response.ok().build();
         } catch (CreateException ex) {
             Logger.getLogger(UserFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
         }
+		return Response.serverError().build();
     }
 
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void edit(@PathParam("id") Integer id, User entity) {
+    public Response edit(@PathParam("id") Integer id, User entity) {
         try {
             ejb.editUser(entity);
+			return Response.ok().build();
         } catch (UpdateException ex) {
             Logger.getLogger(UserFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
         }
+		return Response.serverError().build();
     }
 
     @DELETE
     @Path("{id}")
-    public void remove(@PathParam("id") Integer id) {
+    public Response remove(@PathParam("id") Integer id) {
         try {
             try {
                 ejb.removeUser(ejb.findUserById(id));
+				return Response.ok().build();
             } catch (RemoveException ex) {
                 Logger.getLogger(UserFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
             }
         } catch (FindException ex) {
             Logger.getLogger(UserFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
         }
+		return Response.serverError().build();
     }
 
     @GET
@@ -119,6 +138,19 @@ public class UserFacadeREST {
         User user = null;
         try {
             user = ejb.findUserByEmail(email);
+        } catch (FindException ex) {
+            Logger.getLogger(UserFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return user;
+    }
+
+    @GET
+    @Path("login/{login}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public User findByLogin(@PathParam("login") String login) {
+        User user = null;
+        try {
+            user = ejb.findUserByLogin(login);
         } catch (FindException ex) {
             Logger.getLogger(UserFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
         }

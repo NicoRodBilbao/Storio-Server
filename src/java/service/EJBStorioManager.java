@@ -14,6 +14,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.ws.rs.InternalServerErrorException;
+import javax.ws.rs.core.Response;
 
 /**
  * EJB for all entities in the application.
@@ -605,10 +606,45 @@ public class EJBStorioManager implements StorioManagerLocal {
 		return user;
 	}
 
+	/**
+	 * Hashes a password using the MD5 algorithm
+	 * @param password The password to be hashed
+	 * @return The hashed password
+	 * @throws InternalServerErrorException 
+	 */
+	private String hashPassword(String password) throws InternalServerErrorException {
+		MessageDigest digest;
+		String hashedPasswd = "";
+		try {
+			digest = MessageDigest.getInstance("MD5");
+			byte[] hash = digest.digest(password.getBytes(StandardCharsets.UTF_8));
+			hashedPasswd = Base64.getEncoder().encodeToString(hash);
+		} catch (NoSuchAlgorithmException ex) {
+            LOGGER.log(Level.SEVERE, "UserManager: Exception hashing password \n{0}", ex.getLocalizedMessage());
+			throw new InternalServerErrorException();
+		}
+		return hashedPasswd;
+	}
+
     @Override
     public Integer countUsers() throws FindException {
         return this.findAllUsers().size();
     }
+
+	@Override
+	public boolean loginUser(String login, String password) throws FindException{
+		try {
+			User dUser = this.findUserByLogin(login);
+			if(dUser.getPassword().equals(this.hashPassword(password))) {
+				return true;
+			} else {
+				throw new FindException();
+			}
+		} catch (FindException ex) {
+			Logger.getLogger(EJBStorioManager.class.getName()).log(Level.SEVERE, "UserManager: Error loggin in:", ex);
+		}
+		return false;
+	}
 
     @Override
     public void createUser(User user) throws CreateException {
@@ -669,7 +705,7 @@ public class EJBStorioManager implements StorioManagerLocal {
 		User user = null;
 		try {
 			LOGGER.log(Level.INFO, "Retrieving User {0}.", login);
-            user = (User) em.createNamedQuery("findUserByEmail")
+            user = (User) em.createNamedQuery("findUserByLogin")
                     .setParameter("userLogin", login)
                     .getSingleResult();
         } catch (Exception e) {

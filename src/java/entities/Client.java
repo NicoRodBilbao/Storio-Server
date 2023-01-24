@@ -2,6 +2,7 @@ package entities;
 
 import java.util.List;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -19,7 +20,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class Client extends User {
 
-	@OneToMany(mappedBy="client")
+	@OneToMany(fetch = FetchType.EAGER, mappedBy="client")
 	private List<Booking> bookings;
 
 	public Client() {
