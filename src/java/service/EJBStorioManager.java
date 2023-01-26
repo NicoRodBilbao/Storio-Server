@@ -371,6 +371,7 @@ public class EJBStorioManager implements StorioManagerLocal {
     public void createModel(Model model) throws CreateException {
         try {
             LOGGER.log(Level.INFO, "Creating Model {0}.", model.getId());
+            model.setId(null);
             em.persist(model);
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error when creating Model.\n{0}", e.getLocalizedMessage());
