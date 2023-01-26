@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -35,15 +36,15 @@ public class Item implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @XmlTransient
     private Model model;
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date dateAdded;
     private String issues;
-    @OneToMany(mappedBy = "item")
+    @OneToMany(mappedBy = "item",fetch = FetchType.EAGER)
     private List<Report> report;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Pack pack;
 
     public Item() {
