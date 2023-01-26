@@ -6,7 +6,14 @@
 package service;
 
 import entities.Admin;
+import exceptions.CreateException;
+import exceptions.FindException;
+import exceptions.RemoveException;
+import exceptions.UpdateException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -26,66 +33,89 @@ import javax.ws.rs.core.MediaType;
  */
 @Stateless
 @Path("entities.admin")
-public class AdminFacadeREST extends AbstractFacade<Admin> {
+public class AdminFacadeREST {
 
 	@PersistenceContext(unitName = "StorioPU")
 	private EntityManager em;
 
-	public AdminFacadeREST() {
-		super(Admin.class);
-	}
+	@EJB
+	private StorioManagerLocal ejb;
 
 	@POST
-        @Override
-        @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public void create(Admin entity) {
-		super.create(entity);
+            try {
+                ejb.createAdmin(entity);
+            } catch (CreateException ex) {
+                Logger.getLogger(AdminFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+            }
 	}
 
 	@PUT
-        @Path("{id}")
-        @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public void edit(@PathParam("id") Integer id, Admin entity) {
-		super.edit(entity);
+	@Path("{id}")
+	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	public void edit(@PathParam("id") Integer id, Admin entity){
+            try {
+                ejb.editAdmin(entity);
+            } catch (UpdateException ex) {
+                Logger.getLogger(AdminFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+            }
 	}
 
 	@DELETE
-        @Path("{id}")
-	public void remove(@PathParam("id") Integer id) {
-		super.remove(super.find(id));
+	@Path("{id}")
+	public void remove(@PathParam("id") Integer id){
+            try {
+                try {
+                    ejb.removeAdmin(ejb.findAdminById(id));
+                } catch (RemoveException ex) {
+                    Logger.getLogger(AdminFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } catch (FindException ex) {
+                Logger.getLogger(AdminFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+            }
 	}
 
 	@GET
-        @Path("{id}")
-        @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public Admin find(@PathParam("id") Integer id) {
-		return super.find(id);
+	@Path("{id}")
+	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	public Admin find(@PathParam("id") Integer id){
+            Admin admin = null;
+            try {
+                admin = ejb.findAdminById(id);
+            } catch (FindException ex) {
+                Logger.getLogger(AdminFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            return admin;
 	}
 
 	@GET
-        @Override
-        @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public List<Admin> findAll() {
-		return super.findAll();
+            List<Admin> admins = null;
+            try {
+                admins = ejb.findAllAdmins();
+            } catch (FindException ex) {
+                Logger.getLogger(AdminFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            return admins;
 	}
 
 	@GET
-        @Path("{from}/{to}")
-        @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public List<Admin> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
-		return super.findRange(new int[]{from, to});
-	}
-
-	@GET
-        @Path("count")
-        @Produces(MediaType.TEXT_PLAIN)
+	@Path("count")
+	@Produces(MediaType.TEXT_PLAIN)
 	public String countREST() {
-		return String.valueOf(super.count());
+            String count = null;
+            try {
+                count = String.valueOf(ejb.countAdmins());
+            } catch (FindException ex) {
+                Logger.getLogger(AdminFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            return count;
 	}
 
-	@Override
 	protected EntityManager getEntityManager() {
 		return em;
 	}
-	
+
 }

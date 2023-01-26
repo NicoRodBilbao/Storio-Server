@@ -6,7 +6,14 @@
 package service;
 
 import entities.Client;
+import exceptions.CreateException;
+import exceptions.FindException;
+import exceptions.RemoveException;
+import exceptions.UpdateException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -26,66 +33,89 @@ import javax.ws.rs.core.MediaType;
  */
 @Stateless
 @Path("entities.client")
-public class ClientFacadeREST extends AbstractFacade<Client> {
+public class ClientFacadeREST {
 
 	@PersistenceContext(unitName = "StorioPU")
 	private EntityManager em;
 
-	public ClientFacadeREST() {
-		super(Client.class);
-	}
+	@EJB
+	private StorioManagerLocal ejb;
 
 	@POST
-        @Override
-        @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public void create(Client entity) {
-		super.create(entity);
+            try {
+                ejb.createClient(entity);
+            } catch (CreateException ex) {
+                Logger.getLogger(ClientFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+            }
 	}
 
 	@PUT
-        @Path("{id}")
-        @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	@Path("{id}")
+	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public void edit(@PathParam("id") Integer id, Client entity) {
-		super.edit(entity);
+            try {
+                ejb.editClient(entity);
+            } catch (UpdateException ex) {
+                Logger.getLogger(ClientFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+            }
 	}
 
 	@DELETE
-        @Path("{id}")
+	@Path("{id}")
 	public void remove(@PathParam("id") Integer id) {
-		super.remove(super.find(id));
+            try {
+                try {
+                    ejb.removeClient(ejb.findClientById(id));
+                } catch (RemoveException ex) {
+                    Logger.getLogger(ClientFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } catch (FindException ex) {
+                Logger.getLogger(ClientFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+            }
 	}
 
 	@GET
-        @Path("{id}")
-        @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	@Path("{id}")
+	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public Client find(@PathParam("id") Integer id) {
-		return super.find(id);
+            Client client = null;
+            try {
+                client = ejb.findClientById(id);
+            } catch (FindException ex) {
+                Logger.getLogger(ClientFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            return client;
 	}
 
 	@GET
-        @Override
-        @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 	public List<Client> findAll() {
-		return super.findAll();
+            List<Client> clients = null;
+            try {
+                clients = ejb.findAllClients();
+            } catch (FindException ex) {
+                Logger.getLogger(ClientFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            return clients;
 	}
 
 	@GET
-        @Path("{from}/{to}")
-        @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public List<Client> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
-		return super.findRange(new int[]{from, to});
-	}
-
-	@GET
-        @Path("count")
-        @Produces(MediaType.TEXT_PLAIN)
+	@Path("count")
+	@Produces(MediaType.TEXT_PLAIN)
 	public String countREST() {
-		return String.valueOf(super.count());
+            String count  = null;
+            try {
+                count = String.valueOf(ejb.countClients());
+            } catch (FindException ex) {
+                Logger.getLogger(ClientFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            return count;
 	}
 
-	@Override
 	protected EntityManager getEntityManager() {
 		return em;
 	}
-	
+
 }
