@@ -173,6 +173,7 @@ public class EJBStorioManager implements StorioManagerLocal {
     public void createReport(Report report) throws CreateException {
         try {
             LOGGER.log(Level.INFO, "Creating Report{0}.", report.getId());
+            report.setId(null);
             em.persist(report);
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error when creating Report.\n{0}", e.getLocalizedMessage());
@@ -259,6 +260,7 @@ public class EJBStorioManager implements StorioManagerLocal {
     public void createItem(Item item) throws CreateException {
         try {
             LOGGER.log(Level.INFO, "Creating Item {0}.", item.getId());
+            item.setId(null);
             em.persist(item);
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error when creating Item.\n{0}", e.getLocalizedMessage());

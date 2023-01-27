@@ -156,6 +156,6 @@ public class Item implements Serializable {
 
     @Override
     public String toString() {
-        return "Item{" + "id=" + id + ", model=" + model + ", dateAdded=" + dateAdded + ", issues=" + issues + ", report=" + report + ", pack=" + pack + '}';
+        return "Item {" + "id=" + id + ", model=" + model + ", dateAdded=" + dateAdded + ", issues=" + issues + ", report=" + report + ", pack=" + pack + '}';
     }
 }
