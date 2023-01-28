@@ -78,6 +78,10 @@ public class UserFacadeREST {
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response edit(@PathParam("id") Integer id, User entity) {
         try {
+			User oldUser = this.find(id);
+			entity = ejb.hashPassword(entity);
+			if(!oldUser.getPassword().equals(entity.getPassword()))
+				this.sendEmailOnPasswdChange(entity.getEmail());
             ejb.editUser(entity);
 			return Response.ok().build();
         } catch (UpdateException ex) {
@@ -228,7 +232,7 @@ public class UserFacadeREST {
     
     @GET
     @Path("mail/sendMail/{email}")
-    public void sendEmail(@PathParam("email") String email) {
+    public void sendEmailOnPasswdChange(@PathParam("email") String email) {
         String smtp_host = "smtp.gmail.com";
         Integer smtp_port = 587;
         User user = null;

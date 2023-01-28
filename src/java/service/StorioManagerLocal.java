@@ -10,6 +10,7 @@ import entities.*;
 import exceptions.*;
 import java.util.List;
 import javax.ejb.Local;
+import javax.ws.rs.InternalServerErrorException;
 
 /**
  * Local interface for StorioManager EJB.
@@ -195,6 +196,14 @@ public interface StorioManagerLocal {
      * @param booking The Booking entity object to be removed.
      */
     public void removeBooking(Booking booking);
+
+	/**
+	 * Hashes the user's password using the MD5 algorithm
+	 * @param user The user whose password will be hashed
+	 * @return The same user, but with the hashed password
+	 * @throws InternalServerErrorException 
+	 */
+	public User hashPassword(User user) throws InternalServerErrorException;
 
     /**
      * This method returns the total count of users

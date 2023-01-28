@@ -592,7 +592,8 @@ public class EJBStorioManager implements StorioManagerLocal {
 	 * @return The same user, but with the hashed password
 	 * @throws InternalServerErrorException 
 	 */
-	private User hashPassword(User user) throws InternalServerErrorException {
+	@Override
+	public User hashPassword(User user) throws InternalServerErrorException {
 		MessageDigest digest;
 		try {
 			digest = MessageDigest.getInstance("MD5");
