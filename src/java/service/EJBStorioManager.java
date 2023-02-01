@@ -6,7 +6,6 @@ import exceptions.*;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 import java.util.logging.Level;
@@ -15,7 +14,6 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.ws.rs.InternalServerErrorException;
-import javax.ws.rs.core.Response;
 
 /**
  * EJB for all entities in the application.
@@ -528,7 +526,8 @@ public class EJBStorioManager implements StorioManagerLocal {
      *
      * @return A List of Booking entity objects..
      */
-    public List<Booking> findUserOwnBookings(Long id) throws FindException {
+	@Override
+    public List<Booking> findUserOwnBookings(Integer id) throws FindException {
         List<Booking> bookings = null;
         try {
             bookings = em.createNamedQuery("findUserOwnBookings").getResultList();
@@ -544,7 +543,7 @@ public class EJBStorioManager implements StorioManagerLocal {
      * @return A List of Pack entity objects..
      */
     @Override
-    public List<Pack> listPacksForBooking(Integer id) {
+    public List<Pack> listPacksForBooking(Integer id) throws FindException {
         List<Pack> packs = null;
         try {
             packs = em.createNamedQuery("findPacksForBooking").setParameter("bookingId", id).getResultList();
