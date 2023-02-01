@@ -174,7 +174,7 @@ public interface StorioManagerLocal {
      * @return A List of Booking entity objects..
      * @throws exceptions.FindException
      */
-    public List<Booking> findUserOwnBookings(Long id) throws FindException;
+    public List<Booking> findUserOwnBookings(Integer id) throws FindException;
     /**
      * This method gets a list with all packs asociated to a booking.
      *
@@ -182,7 +182,7 @@ public interface StorioManagerLocal {
      * @return A List of Pack entity objects..
      * @throws exceptions.FindException
      */
-    public List<Pack> listPacksForBooking(Long id) throws FindException;
+    public List<Pack> listPacksForBooking(Integer id) throws FindException;
 
     /**
      * This method updates a booking data in the data store.
@@ -209,6 +209,14 @@ public interface StorioManagerLocal {
      */
     public Integer countUsers() throws FindException;
 
+	/**
+	 * Hashes the user's password using the MD5 algorithm
+	 * @param user The user whose password will be hashed
+	 * @return The same user, but with the hashed password
+	 * @throws InternalServerErrorException 
+	 */
+	public User hashPassword(User user) throws InternalServerErrorException;
+
     /**
      * This method adds a user to the data store
      *
@@ -250,31 +258,6 @@ public interface StorioManagerLocal {
      * @throws exceptions.FindException
      */
     public User findUserByEmail(String email) throws FindException;
-
-    /**
-     * This method finds a user with a matching phone number
-     *
-     * @param phoneNumber
-     * @return The matching user, if found
-     * @throws exceptions.FindException
-     */
-    public void removeBooking(Booking booking);
-
-	/**
-	 * Hashes the user's password using the MD5 algorithm
-	 * @param user The user whose password will be hashed
-	 * @return The same user, but with the hashed password
-	 * @throws InternalServerErrorException 
-	 */
-	public User hashPassword(User user) throws InternalServerErrorException;
-
-    /**
-     * This method returns the total count of users
-     *
-     * @return The number of USERs, it doesn't discriminate by user
-     * @throws exceptions.FindException
-     */
-    public Integer countUsers() throws FindException;
 
 	/**
 	 * Returns OK if the login and password are correct
@@ -286,39 +269,6 @@ public interface StorioManagerLocal {
 	public boolean loginUser(String login, String password) throws FindException;
 
     /**
-     * This method adds a user to the data store
-     *
-     * @param user The user to be added
-     * @throws exceptions.CreateException
-     */
-    public void createUser(User user) throws CreateException;
-
-    /**
-     * This method edits a user from the data store
-     *
-     * @param user The modified user
-     * @throws exceptions.UpdateException
-     */
-    public void editUser(User user) throws UpdateException;
-
-    /**
-     * This method removes a user from the data store
-     *
-     * @param user The user to be removed
-     * @throws exceptions.RemoveException
-     */
-    public void removeUser(User user) throws RemoveException;
-
-    /**
-     * This method returns a user whose id matches the given parameter
-     *
-     * @param id The user to be added
-     * @return The matching user, if found
-     * @throws exceptions.FindException
-     */
-    public User findUserById(Integer id) throws FindException;
-
-    /**
      * This method finds a user with a matching username
      *
      * @param login The username to search for
@@ -326,15 +276,6 @@ public interface StorioManagerLocal {
      * @throws exceptions.FindException
      */
     public User findUserByLogin(String login) throws FindException;
-
-    /**
-     * This method finds a user with a matching email
-     *
-     * @param email The email to search for
-     * @return The matching user, if found
-     * @throws exceptions.FindException
-     */
-    public User findUserByEmail(String email) throws FindException;
 
     /**
      * This method finds a user with a matching phone number
