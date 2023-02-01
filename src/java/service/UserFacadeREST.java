@@ -193,7 +193,7 @@ public class UserFacadeREST {
         } catch (FindException ex) {
             Logger.getLogger(UserFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return null;
+        return users;
     }
 
     @GET

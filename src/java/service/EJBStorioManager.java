@@ -21,8 +21,6 @@ import javax.ws.rs.core.Response;
  *
  * @author Nicolás Rodríguez
  */
-
-
 @Stateless(name = "EJBStorioManager1")
 public class EJBStorioManager implements StorioManagerLocal {
 
@@ -380,6 +378,7 @@ public class EJBStorioManager implements StorioManagerLocal {
     public void createModel(Model model) throws CreateException {
         try {
             LOGGER.log(Level.INFO, "Creating Model {0}.", model.getId());
+            model.setId(null);
             em.persist(model);
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error when creating Model.\n{0}", e.getLocalizedMessage());
@@ -443,16 +442,18 @@ public class EJBStorioManager implements StorioManagerLocal {
         LOGGER.info("Counting all the Models.");
         return findAllModels().size();
     }
-    /**
-     * This method creates a new booking in the data store.
-     *
-     * @param booking
-     */
+
 
     /*
 
 	BOOKING METHODS
 
+     */
+    
+    /**
+     * This method creates a new booking in the data store.
+     *
+     * @param booking
      */
     @Override
     public void createBooking(Booking booking) {
@@ -508,25 +509,26 @@ public class EJBStorioManager implements StorioManagerLocal {
         }
         return bookings;
     }
+
     /**
-             * This method gets a list with all bookings of an user in the data
-             * store.
-             *
-             * @return A List of Booking entity objects..
-             */
+     * This method gets a list with all bookings of an user in the data store.
+     *
+     * @return A List of Booking entity objects..
+     */
     @Override
     public List<Booking> findUserOwnBookings(Integer id) {
         List<Booking> bookings = null;
         try {
-            bookings = em.createNamedQuery("findUserOwnedBookings").getResultList();
+            bookings = em.createNamedQuery("findUserOwnedBookings")
+                    .setParameter("id", em.find(Client.class, id)).getResultList();
         } catch (Exception e) {
         }
         return bookings;
     }
 
     /**
-     * <<<<<<< HEAD ======= This method gets a list with all packs asociated to
-     * a booking. @param id @return A List of Pack entity objects..
+     * This method gets a list with all packs asociated to a booking. @param id
+     * @return A List of Pack entity objects..
      */
     @Override
     public List<Pack> listPacksForBooking(Integer id) {
@@ -539,7 +541,7 @@ public class EJBStorioManager implements StorioManagerLocal {
     }
 
     /**
-     * >>>>>>> main This method updates a booking data in the data store.
+     * This method updates a booking data in the data store.
      *
      * @param booking The Booking entity object containing modified account
      * data.
@@ -691,9 +693,7 @@ public class EJBStorioManager implements StorioManagerLocal {
         User user = null;
         try {
             LOGGER.log(Level.INFO, "Retrieving User {0}.", id);
-            user = (User) em.createNamedQuery("findUserById")
-                    .setParameter("userId", id)
-                    .getSingleResult();
+            user = em.find(User.class, id);
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "UserManager: Exception finding user: {0}", e.getLocalizedMessage());
             throw new FindException(e.getMessage());
@@ -854,13 +854,11 @@ public class EJBStorioManager implements StorioManagerLocal {
     }
 
     @Override
-    public Client findClientById(Object id) throws FindException {
+    public Client findClientById(Integer id) throws FindException {
         Client client = null;
         try {
             LOGGER.log(Level.INFO, "Retrieving client {0}", id);
-            client = (Client) em.createNamedQuery("findClientById")
-                    .setParameter("clientId", id)
-                    .getSingleResult();
+            client = em.find(Client.class, id);
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "UserManager: Exception finding client: {0}", e.getLocalizedMessage());
             throw new FindException(e.getMessage());
@@ -931,13 +929,11 @@ public class EJBStorioManager implements StorioManagerLocal {
     }
 
     @Override
-    public Admin findAdminById(Object id) throws FindException {
+    public Admin findAdminById(Integer id) throws FindException {
         Admin admin = null;
         try {
             LOGGER.log(Level.INFO, "Retrieving admin {0}", id);
-            admin = (Admin) em.createNamedQuery("findAdminById")
-                    .setParameter("adminId", id)
-                    .getSingleResult();
+            admin = (Admin) em.find(Admin.class, id);
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "UserManager: Exception finding admin: {0}", e.getLocalizedMessage());
             throw new FindException(e.getMessage());

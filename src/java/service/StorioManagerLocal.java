@@ -356,7 +356,7 @@ public interface StorioManagerLocal {
      * @return The matching client if found or nothing
      * @throws exceptions.FindException
      */
-    public Client findClientById(Object id) throws FindException;
+    public Client findClientById(Integer id) throws FindException;
 
     /**
      * Returns all clients
@@ -405,7 +405,7 @@ public interface StorioManagerLocal {
      * @return An admin matching the id
      * @throws exceptions.FindException
      */
-    public Admin findAdminById(Object id) throws FindException;
+    public Admin findAdminById(Integer id) throws FindException;
 
     /**
      * Returns all admins

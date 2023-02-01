@@ -39,25 +39,25 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class User implements Serializable {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Integer id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer id;
 
-	@Enumerated(EnumType.STRING)
-	private UserStatus status;
+    @Enumerated(EnumType.STRING)
+    private UserStatus status;
 
 	private String login;
         
 	private String email;
 
-	private Integer phoneNumber;
+    private Integer phoneNumber;
 
-	private String fullName;
+    private String fullName;
 
-	private String password;
+    private String password;
 
-	@Enumerated(EnumType.STRING)
-	private UserPrivilege privilege;
+    @Enumerated(EnumType.STRING)
+    private UserPrivilege privilege;
 
 	public Integer getId() {
 		return id;
@@ -122,6 +122,7 @@ public class User implements Serializable {
 	public void setPrivilege(UserPrivilege privilege) {
 		this.privilege = privilege;
 	}
+
         
 	@Override
 	public int hashCode() {
