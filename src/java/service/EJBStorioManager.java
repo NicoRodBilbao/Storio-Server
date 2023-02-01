@@ -666,7 +666,7 @@ public class EJBStorioManager implements StorioManagerLocal {
     public void editUser(User user) throws UpdateException {
         try {
             LOGGER.log(Level.INFO, "Editing User {0}.", user.getLogin());
-            if (!em.contains(user)) {
+            if (em.contains(user)) {
 				user = hashPassword(user);
                 em.merge(user);
             }
@@ -831,7 +831,7 @@ public class EJBStorioManager implements StorioManagerLocal {
     public void editClient(Client client) throws UpdateException {
         try {
             LOGGER.log(Level.INFO, "Updating client {0}", client.getLogin());
-            if (!em.contains(client)) {
+            if (em.contains(client)) {
 				client = (Client) hashPassword(client);
                 em.merge(client);
             }
@@ -906,7 +906,7 @@ public class EJBStorioManager implements StorioManagerLocal {
     public void editAdmin(Admin admin) throws UpdateException {
         try {
             LOGGER.log(Level.INFO, "Updating admin {0}", admin.getLogin());
-            if (!em.contains(admin)) {
+            if (em.contains(admin)) {
 				admin = (Admin) hashPassword(admin);
                 em.merge(admin);
             }
