@@ -1,5 +1,6 @@
 package service;
 
+
 import entities.*;
 import exceptions.*;
 import java.util.List;
@@ -362,6 +363,7 @@ public class EJBStorioManager implements StorioManagerLocal {
         return findAllItems().size();
     }
 
+
     /*
 
 	MODEL METHODS
@@ -437,22 +439,26 @@ public class EJBStorioManager implements StorioManagerLocal {
     }
 
 
+
     /*
 
 	BOOKING METHODS
 
      */
     
+
     /**
      * This method creates a new booking in the data store.
      *
      * @param booking
      */
     @Override
-    public void createBooking(Booking booking) {
+    public void createBooking(Booking booking) throws CreateException {
         try {
             em.persist(booking);
         } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Error while creating a Booking.\n{0}", e.getLocalizedMessage());
+            throw new CreateException(e.getMessage());
 
         }
     }
@@ -463,12 +469,13 @@ public class EJBStorioManager implements StorioManagerLocal {
      * @return A List of Booking entity objects..
      */
     @Override
-    public List<Booking> findAllBookings() {
+    public List<Booking> findAllBookings() throws FindException {
         List<Booking> bookings = null;
         try {
             bookings = em.createNamedQuery("findAllBookings").getResultList();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            LOGGER.log(Level.SEVERE, "Error while listing all Bookings.\n{0}", e.getLocalizedMessage());
+            throw new FindException(e.getMessage());
         }
         return bookings;
     }
@@ -479,11 +486,13 @@ public class EJBStorioManager implements StorioManagerLocal {
      * @return A Booking entity object
      */
     @Override
-    public Booking findBookingById(Integer id) {
+    public Booking findBookingById(Integer id) throws FindException {
         Booking booking = null;
         try {
             booking = em.find(Booking.class, id);
         } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Error while listing a Booking by Id.\n{0}", e.getLocalizedMessage());
+            throw new FindException(e.getMessage());
         }
         return booking;
     }
@@ -494,11 +503,13 @@ public class EJBStorioManager implements StorioManagerLocal {
      * @return A List of Booking entity objects..
      */
     @Override
-    public List<Booking> findBookingsByState(BookingState state) {
+    public List<Booking> findBookingsByState(BookingState state) throws FindException {
         List<Booking> bookings = null;
         try {
             bookings = em.createNamedQuery("findBookingsByState").setParameter("bookingState", state).getResultList();
         } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Error while listing a Booking by State.\n{0}", e.getLocalizedMessage());
+            throw new FindException(e.getMessage());
         }
         return bookings;
     }
@@ -508,13 +519,13 @@ public class EJBStorioManager implements StorioManagerLocal {
      *
      * @return A List of Booking entity objects..
      */
-    @Override
-    public List<Booking> findUserOwnBookings(Integer id) {
+    public List<Booking> findUserOwnBookings(Long id) throws FindException {
         List<Booking> bookings = null;
         try {
-            bookings = em.createNamedQuery("findUserOwnedBookings")
-                    .setParameter("id", em.find(Client.class, id)).getResultList();
+            bookings = em.createNamedQuery("findUserOwnBookings").getResultList();
         } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Error while listing the User's owned Bookings.\n{0}", e.getLocalizedMessage());
+            throw new FindException(e.getMessage());
         }
         return bookings;
     }
@@ -529,6 +540,8 @@ public class EJBStorioManager implements StorioManagerLocal {
         try {
             packs = em.createNamedQuery("findPacksForBooking").setParameter("bookingId", id).getResultList();
         } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Error while listing Packs for a Booking.\n{0}", e.getLocalizedMessage());
+            throw new FindException(e.getMessage());
         }
         return packs;
     }
@@ -540,13 +553,15 @@ public class EJBStorioManager implements StorioManagerLocal {
      * data.
      */
     @Override
-    public void updateBooking(Booking booking) {
+    public void updateBooking(Booking booking) throws UpdateException {
         try {
             if (!em.contains(booking)) {
                 em.merge(booking);
             }
             em.flush();
         } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Error while updating a Booking.\n{0}", e.getLocalizedMessage());
+            throw new UpdateException(e.getMessage());
         }
     }
 
@@ -556,10 +571,12 @@ public class EJBStorioManager implements StorioManagerLocal {
      * @param booking The Booking entity object to be removed.
      */
     @Override
-    public void removeBooking(Booking booking) {
+    public void removeBooking(Booking booking) throws RemoveException {
         try {
             em.remove(em.merge(booking));
         } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Error while deleting a Booking.\n{0}", e.getLocalizedMessage());
+            throw new RemoveException(e.getMessage());
         }
     }
 
@@ -658,7 +675,6 @@ public class EJBStorioManager implements StorioManagerLocal {
         }
         return user;
     }
-
     @Override
     public List<User> findAllUsers() throws FindException {
         List<User> users = null;
@@ -719,9 +735,7 @@ public class EJBStorioManager implements StorioManagerLocal {
     }
 
     /*
-
 	CLIENT METHODS
-
      */
     @Override
     public Integer countClients() throws FindException {
@@ -792,9 +806,7 @@ public class EJBStorioManager implements StorioManagerLocal {
     }
 
     /*
-
 	ADMIN METHODS
-
      */
     @Override
     public Integer countAdmins() throws FindException {
