@@ -12,21 +12,24 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @Table(name = "client", schema = "storio")
 @NamedQueries({
-    @NamedQuery(name="findClientBookings",
-                query="SELECT b FROM Booking b JOIN b.client c WHERE c.id = :id "),
-	})
+    @NamedQuery(name="findClientById",
+                query="SELECT c FROM Client c WHERE c.id = :clientId"),
+    @NamedQuery(name="findAllClients",
+                query="SELECT c FROM Client c"),
+    @NamedQuery(name="findClientOwnedBookings",
+                query="SELECT bc FROM Client c JOIN c.bookings bc WHERE c.id = :id")
+})
 @XmlRootElement
 public class Client extends User {
 
 	@OneToMany(mappedBy="client")
-	@XmlTransient
 	private List<Booking> bookings;
 
 	public Client() {
 		super();
 	}
 
-	@XmlTransient
+        @XmlTransient
 	public List<Booking> getBookings() {
 		return bookings;
 	}

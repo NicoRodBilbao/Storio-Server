@@ -1,3 +1,9 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
 package service;
 
 import entities.*;
@@ -10,9 +16,78 @@ import javax.ejb.Local;
  *
  * @author Nicolás Rodríguez
  */
+
+
 @Local
 public interface StorioManagerLocal {
+    /**
+     * Search all pack created and return the list of them
+     *
+     * @return packs
+     * @throws exceptions.FindException
+     */
+    public List<Pack> findALlPacks() throws FindException;
 
+    /**
+     * Search packs by the state and return the list of them
+     *
+     * @param state
+     * @return packs
+     * @throws exceptions.FindException
+     */
+    public List<Pack> findPacksByState(PackState state) throws FindException;
+
+    /**
+     * Search packs by the state and return the list of them
+     *
+     * @param id
+     * @return packs
+     * @throws exceptions.FindException
+     */
+    public List<Pack> listPacksByBooking(Integer id) throws FindException;
+
+    /**
+     * Search packs by the type of pack and return the list of them
+     *
+     * @param type
+     * @return packs
+     * @throws exceptions.FindException
+     */
+    public List<Pack> findPacksByType(PackType type) throws FindException;
+
+    /**
+     * Create a new pack
+     *
+     * @param pack
+     * @throws exceptions.CreateException
+     */
+    public void createPack(Pack pack) throws CreateException;
+
+    /**
+     * update the pack
+     *
+     * @param pack
+     * @throws exceptions.UpdateException
+     */
+    public void updatePack(Pack pack) throws UpdateException;
+
+    /**
+     * by the id find one pack
+     *
+     * @param id
+     * @return pack
+     * @throws exceptions.FindException
+     */
+    public Pack findPackById(Integer id) throws FindException;
+
+    /**
+     * delete the pack
+     *
+     * @param pack
+     * @throws exceptions.RemoveException
+     */
+    public void deletePack(Pack pack) throws RemoveException;
+    
     public void createReport(Report report) throws CreateException;
 
     public void createItem(Item item) throws CreateException;
@@ -99,7 +174,6 @@ public interface StorioManagerLocal {
      * @throws exceptions.FindException
      */
     public List<Booking> findUserOwnBookings(Long id) throws FindException;
-
     /**
      * This method gets a list with all packs asociated to a booking.
      *
@@ -125,6 +199,65 @@ public interface StorioManagerLocal {
      * @throws exceptions.RemoveException
      */
     public void removeBooking(Booking booking) throws RemoveException;
+
+    /**
+     * This method returns the total count of users
+     *
+     * @return The number of USERs, it doesn't discriminate by user
+     * @throws exceptions.FindException
+     */
+    public Integer countUsers() throws FindException;
+
+    /**
+     * This method adds a user to the data store
+     *
+     * @param user The user to be added
+     * @throws exceptions.CreateException
+     */
+    public void createUser(User user) throws CreateException;
+
+    /**
+     * This method edits a user from the data store
+     *
+     * @param user The modified user
+     * @throws exceptions.UpdateException
+     */
+    public void editUser(User user) throws UpdateException;
+
+    /**
+     * This method removes a user from the data store
+     *
+     * @param user The user to be removed
+     * @throws exceptions.RemoveException
+     */
+    public void removeUser(User user) throws RemoveException;
+
+    /**
+     * This method returns a user whose id matches the given parameter
+     *
+     * @param id The user to be added
+     * @return The matching user, if found
+     * @throws exceptions.FindException
+     */
+    public User findUserById(Integer id) throws FindException;
+
+    /**
+     * This method finds a user with a matching email
+     *
+     * @param email The email to search for
+     * @return The matching user, if found
+     * @throws exceptions.FindException
+     */
+    public User findUserByEmail(String email) throws FindException;
+
+    /**
+     * This method finds a user with a matching phone number
+     *
+     * @param phoneNumber
+     * @return The matching user, if found
+     * @throws exceptions.FindException
+     */
+    public void removeBooking(Booking booking);
 
     /**
      * This method returns the total count of users

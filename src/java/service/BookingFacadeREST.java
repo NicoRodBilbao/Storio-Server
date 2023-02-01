@@ -7,7 +7,6 @@ package service;
 
 import entities.Booking;
 import entities.BookingState;
-import entities.Pack;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -100,23 +99,9 @@ public class BookingFacadeREST {
     }
     
     @GET
-    @Path("findPacksForBooking/{id}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Pack> findPacksForBooking(@PathParam("id") Long id) {
-        List<Pack> packs = null;
-         try {
-            LOGGER.log(Level.INFO,"Reading pack data for booking{0}",id);
-            packs = ejb.listPacksForBooking(id);
-        } catch (Exception ex) {
-            LOGGER.severe(ex.getMessage());       
-        }
-        return packs;
-    }
-    
-    @GET
     @Path("findBookingsForUser/{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Booking> findUserOwnBookings(@PathParam("id") Long id) {
+    public List<Booking> findUserOwnBookings(@PathParam("id") Integer id) {
         List<Booking> bookings = null;
          try {
             LOGGER.log(Level.INFO,"Reading booking data for user{0}",id);
