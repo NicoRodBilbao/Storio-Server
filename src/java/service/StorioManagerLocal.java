@@ -10,6 +10,7 @@ import entities.*;
 import exceptions.*;
 import java.util.List;
 import javax.ejb.Local;
+import javax.ws.rs.InternalServerErrorException;
 
 /**
  * Local interface for StorioManager EJB.
@@ -259,6 +260,14 @@ public interface StorioManagerLocal {
      */
     public void removeBooking(Booking booking);
 
+	/**
+	 * Hashes the user's password using the MD5 algorithm
+	 * @param user The user whose password will be hashed
+	 * @return The same user, but with the hashed password
+	 * @throws InternalServerErrorException 
+	 */
+	public User hashPassword(User user) throws InternalServerErrorException;
+
     /**
      * This method returns the total count of users
      *
@@ -266,6 +275,15 @@ public interface StorioManagerLocal {
      * @throws exceptions.FindException
      */
     public Integer countUsers() throws FindException;
+
+	/**
+	 * Returns OK if the login and password are correct
+	 * @param login Username
+	 * @param password PlainText Password
+	 * @return OK only if the credentials are the correct ones
+	 * @throws exceptions.FindException if incorrect login credentials
+	 */
+	public boolean loginUser(String login, String password) throws FindException;
 
     /**
      * This method adds a user to the data store
@@ -299,6 +317,15 @@ public interface StorioManagerLocal {
      * @throws exceptions.FindException
      */
     public User findUserById(Integer id) throws FindException;
+
+    /**
+     * This method finds a user with a matching username
+     *
+     * @param login The username to search for
+     * @return The matching user, if found
+     * @throws exceptions.FindException
+     */
+    public User findUserByLogin(String login) throws FindException;
 
     /**
      * This method finds a user with a matching email

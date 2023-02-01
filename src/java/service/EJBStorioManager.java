@@ -3,12 +3,19 @@ package service;
 
 import entities.*;
 import exceptions.*;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.ws.rs.InternalServerErrorException;
+import javax.ws.rs.core.Response;
 
 /**
  * EJB for all entities in the application.
@@ -585,22 +592,86 @@ public class EJBStorioManager implements StorioManagerLocal {
 	USER METHODS
 
      */
+
+	/**
+	 * Throws and exception if the user already exists
+	 * @param user The new user to check against the data store
+	 * @throws FindException 
+	 */
     private void userExists(User user) throws FindException {
-        if (this.findUserByEmail(user.getLogin()) != null) {
+        if (this.findUserByEmail(user.getEmail()) != null
+				|| this.findUserByLogin(user.getLogin()) != null) {
             throw new FindException("The user already exists");
         }
     }
+
+	/**
+	 * Hashes the user's password using the MD5 algorithm
+	 * @param user The user whose password will be hashed
+	 * @return The same user, but with the hashed password
+	 * @throws InternalServerErrorException 
+	 */
+	@Override
+	public User hashPassword(User user) throws InternalServerErrorException {
+		MessageDigest digest;
+		try {
+			digest = MessageDigest.getInstance("MD5");
+			byte[] hash = digest.digest(user.getPassword().getBytes(StandardCharsets.UTF_8));
+			String hashedPasswd = Base64.getEncoder().encodeToString(hash);
+			user.setPassword(hashedPasswd);
+		} catch (NoSuchAlgorithmException ex) {
+            LOGGER.log(Level.SEVERE, "UserManager: Exception hashing user password \n{0}", ex.getLocalizedMessage());
+			throw new InternalServerErrorException();
+		}
+		return user;
+	}
+
+	/**
+	 * Hashes a password using the MD5 algorithm
+	 * @param password The password to be hashed
+	 * @return The hashed password
+	 * @throws InternalServerErrorException 
+	 */
+	private String hashPassword(String password) throws InternalServerErrorException {
+		MessageDigest digest;
+		String hashedPasswd = "";
+		try {
+			digest = MessageDigest.getInstance("MD5");
+			byte[] hash = digest.digest(password.getBytes(StandardCharsets.UTF_8));
+			hashedPasswd = Base64.getEncoder().encodeToString(hash);
+		} catch (NoSuchAlgorithmException ex) {
+            LOGGER.log(Level.SEVERE, "UserManager: Exception hashing password \n{0}", ex.getLocalizedMessage());
+			throw new InternalServerErrorException();
+		}
+		return hashedPasswd;
+	}
 
     @Override
     public Integer countUsers() throws FindException {
         return this.findAllUsers().size();
     }
 
+	@Override
+	public boolean loginUser(String login, String password) throws FindException{
+		try {
+			User dUser = this.findUserByLogin(login);
+			if(dUser.getPassword().equals(this.hashPassword(password))) {
+				return true;
+			} else {
+				throw new FindException();
+			}
+		} catch (FindException ex) {
+			Logger.getLogger(EJBStorioManager.class.getName()).log(Level.SEVERE, "UserManager: Error loggin in:", ex);
+		}
+		return false;
+	}
+
     @Override
     public void createUser(User user) throws CreateException {
         try {
             LOGGER.log(Level.INFO, "Creating User {0}.", user.getLogin());
             userExists(user);
+			user = hashPassword(user);
             em.persist(user);
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "UserManager: Exception creating user\n{0}", e.getLocalizedMessage());
@@ -612,7 +683,8 @@ public class EJBStorioManager implements StorioManagerLocal {
     public void editUser(User user) throws UpdateException {
         try {
             LOGGER.log(Level.INFO, "Editing User {0}.", user.getLogin());
-            if (!em.contains(user)) {
+            if (em.contains(user)) {
+				user = hashPassword(user);
                 em.merge(user);
             }
             em.flush();
@@ -645,6 +717,21 @@ public class EJBStorioManager implements StorioManagerLocal {
         }
         return user;
     }
+
+	@Override
+    public User findUserByLogin(String login) throws FindException {
+		User user = null;
+		try {
+			LOGGER.log(Level.INFO, "Retrieving User {0}.", login);
+            user = (User) em.createNamedQuery("findUserByLogin")
+                    .setParameter("userLogin", login)
+                    .getSingleResult();
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "UserManager: Exception finding user: {0}", e.getLocalizedMessage());
+            throw new FindException(e.getMessage());
+        }
+        return user;
+	}
 
     @Override
     public User findUserByEmail(String email) throws FindException {
@@ -746,6 +833,7 @@ public class EJBStorioManager implements StorioManagerLocal {
     public void createClient(Client client) throws CreateException {
         try {
             LOGGER.log(Level.INFO, "Creating client {0}", client.getLogin());
+			client = (Client) hashPassword(client);
             em.persist(client);
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "UserManager: Exception creating client:{0}", e.getLocalizedMessage());
@@ -757,7 +845,8 @@ public class EJBStorioManager implements StorioManagerLocal {
     public void editClient(Client client) throws UpdateException {
         try {
             LOGGER.log(Level.INFO, "Updating client {0}", client.getLogin());
-            if (!em.contains(client)) {
+            if (em.contains(client)) {
+				client = (Client) hashPassword(client);
                 em.merge(client);
             }
             em.flush();
@@ -817,6 +906,7 @@ public class EJBStorioManager implements StorioManagerLocal {
     public void createAdmin(Admin admin) throws CreateException {
         try {
             LOGGER.log(Level.INFO, "Creating admin {0}", admin.getLogin());
+			admin = (Admin) hashPassword(admin);
             em.persist(admin);
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "UserManager: Exception creating admin: {0}", e.getLocalizedMessage());
@@ -828,7 +918,8 @@ public class EJBStorioManager implements StorioManagerLocal {
     public void editAdmin(Admin admin) throws UpdateException {
         try {
             LOGGER.log(Level.INFO, "Updating admin {0}", admin.getLogin());
-            if (!em.contains(admin)) {
+            if (em.contains(admin)) {
+				admin = (Admin) hashPassword(admin);
                 em.merge(admin);
             }
             em.flush();

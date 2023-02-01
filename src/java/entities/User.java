@@ -19,24 +19,23 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "storio_user", schema = "storio")
 @Inheritance(strategy = InheritanceType.JOINED)
 @NamedQueries({
-    @NamedQuery(name = "findAllUsers",
-            query = "SELECT u FROM User u")
-    ,
-    @NamedQuery(name = "findUsersByPrivilege",
-            query = "SELECT u FROM User u WHERE u.privilege = :userPrivilege")
-    ,
-    @NamedQuery(name = "findUsersByStatus",
-            query = "SELECT u FROM User u WHERE u.status = :userStatus")
-    ,
-    @NamedQuery(name = "findUsersByFullName",
-            query = "SELECT u FROM User u WHERE u.fullName LIKE :userFullName")
-    ,
-    @NamedQuery(name = "findUserByEmail",
-            query = "SELECT u FROM User u WHERE u.login = :userEmail")
-    ,
-    @NamedQuery(name = "findUserByPhoneNumber",
-            query = "SELECT u FROM User u WHERE u.phoneNumber = :userPhoneNumber"),})
-
+    @NamedQuery(name="findAllUsers",
+                query="SELECT u FROM User u"),
+    @NamedQuery(name="findUsersByPrivilege",
+                query="SELECT u FROM User u WHERE u.privilege = :userPrivilege"),
+    @NamedQuery(name="findUsersByStatus",
+                query="SELECT u FROM User u WHERE u.status = :userStatus"),
+    @NamedQuery(name="findUsersByFullName",
+                query="SELECT u FROM User u WHERE u.fullName LIKE :userFullName"),
+    @NamedQuery(name="findUserById",
+                query="SELECT u FROM User u WHERE u.id = :userId"),
+    @NamedQuery(name="findUserByLogin",
+                query="SELECT u FROM User u WHERE u.login = :userLogin"),
+    @NamedQuery(name="findUserByEmail",
+                query="SELECT u FROM User u WHERE u.email LIKE :userEmail"),
+    @NamedQuery(name="findUserByPhoneNumber",
+                query="SELECT u FROM User u WHERE u.phoneNumber = :userPhoneNumber"),
+    })
 @XmlRootElement
 public class User implements Serializable {
 
@@ -47,9 +46,9 @@ public class User implements Serializable {
     @Enumerated(EnumType.STRING)
     private UserStatus status;
 
-    private String login;
-
-    private String email;
+	private String login;
+        
+	private String email;
 
     private Integer phoneNumber;
 
@@ -60,126 +59,127 @@ public class User implements Serializable {
     @Enumerated(EnumType.STRING)
     private UserPrivilege privilege;
 
-    public String getEmail() {
-        return email;
-    }
+	public Integer getId() {
+		return id;
+	}
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
-    public Integer getId() {
-        return id;
-    }
+	public UserStatus getStatus() {
+		return status;
+	}
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+	public void setStatus(UserStatus status) {
+		this.status = status;
+	}
 
-    public UserStatus getStatus() {
-        return status;
-    }
+	public String getLogin() {
+		return login;
+	}
 
-    public void setStatus(UserStatus status) {
-        this.status = status;
-    }
+	public void setLogin(String login) {
+		this.login = login;
+	}
 
-    public String getLogin() {
-        return login;
-    }
+	public String getEmail() {
+		return email;
+	}
 
-    public void setLogin(String login) {
-        this.login = login;
-    }
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
-    public Integer getPhoneNumber() {
-        return phoneNumber;
-    }
+	public Integer getPhoneNumber() {
+		return phoneNumber;
+	}
 
-    public void setPhoneNumber(Integer phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
+	public void setPhoneNumber(Integer phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
 
-    public String getFullName() {
-        return fullName;
-    }
+	public String getFullName() {
+		return fullName;
+	}
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
+	}
 
-    public String getPassword() {
-        return password;
-    }
+	public String getPassword() {
+		return password;
+	}
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+	public void setPassword(String password) {
+		this.password = password;
+	}
 
-    public UserPrivilege getPrivilege() {
-        return privilege;
-    }
+	public UserPrivilege getPrivilege() {
+		return privilege;
+	}
 
-    public void setPrivilege(UserPrivilege privilege) {
-        this.privilege = privilege;
-    }
+	public void setPrivilege(UserPrivilege privilege) {
+		this.privilege = privilege;
+	}
 
-    @Override
-    public int hashCode() {
-        int hash = 3;
-        hash = 37 * hash + Objects.hashCode(this.id);
-        hash = 37 * hash + Objects.hashCode(this.status);
-        hash = 37 * hash + Objects.hashCode(this.login);
-        hash = 37 * hash + Objects.hashCode(this.email);
-        hash = 37 * hash + Objects.hashCode(this.phoneNumber);
-        hash = 37 * hash + Objects.hashCode(this.fullName);
-        hash = 37 * hash + Objects.hashCode(this.password);
-        hash = 37 * hash + Objects.hashCode(this.privilege);
-        return hash;
-    }
+        
+	@Override
+	public int hashCode() {
+		int hash = 3;
+		hash = 53 * hash + Objects.hashCode(this.id);
+		hash = 53 * hash + Objects.hashCode(this.status);
+		hash = 53 * hash + Objects.hashCode(this.login);
+		hash = 53 * hash + Objects.hashCode(this.email);
+		hash = 53 * hash + Objects.hashCode(this.phoneNumber);
+		hash = 53 * hash + Objects.hashCode(this.fullName);
+		hash = 53 * hash + Objects.hashCode(this.password);
+		hash = 53 * hash + Objects.hashCode(this.privilege);
+		return hash;
+	}
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final User other = (User) obj;
-        if (!Objects.equals(this.login, other.login)) {
-            return false;
-        }
-        if (!Objects.equals(this.email, other.email)) {
-            return false;
-        }
-        if (!Objects.equals(this.fullName, other.fullName)) {
-            return false;
-        }
-        if (!Objects.equals(this.password, other.password)) {
-            return false;
-        }
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        if (this.status != other.status) {
-            return false;
-        }
-        if (!Objects.equals(this.phoneNumber, other.phoneNumber)) {
-            return false;
-        }
-        if (this.privilege != other.privilege) {
-            return false;
-        }
-        return true;
-    }
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final User other = (User) obj;
+		if (!Objects.equals(this.login, other.login)) {
+			return false;
+		}
+		if (!Objects.equals(this.email, other.email)) {
+			return false;
+		}
+		if (!Objects.equals(this.fullName, other.fullName)) {
+			return false;
+		}
+		if (!Objects.equals(this.password, other.password)) {
+			return false;
+		}
+		if (!Objects.equals(this.id, other.id)) {
+			return false;
+		}
+		if (this.status != other.status) {
+			return false;
+		}
+		if (!Objects.equals(this.phoneNumber, other.phoneNumber)) {
+			return false;
+		}
+		if (this.privilege != other.privilege) {
+			return false;
+		}
+		return true;
+	}
 
-    @Override
-    public String toString() {
-        return "User{" + "id=" + id + ", status=" + status + ", login=" + login + ", email=" + email + ", phoneNumber=" + phoneNumber + ", fullName=" + fullName + ", password=" + password + ", privilege=" + privilege + '}';
-    }
+	@Override
+	public String toString() {
+		return "User{" + "id=" + id + ", status=" + status + ", login=" + login + ", email=" + email + ", phoneNumber=" + phoneNumber + ", fullName=" + fullName + ", password=" + password + ", privilege=" + privilege + '}';
+	}
 
 }
