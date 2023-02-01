@@ -7,6 +7,9 @@ import exceptions.CreateException;
 import exceptions.FindException;
 import exceptions.RemoveException;
 import exceptions.UpdateException;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -34,6 +37,7 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.ws.rs.core.Response;
+import util.SymetricCypher;
 
 /**
  *
@@ -49,28 +53,29 @@ public class UserFacadeREST {
     @EJB
     private StorioManagerLocal ejb;
 
-	@GET
-	@Path("login/{login}/{password}")
-	public Response login(@PathParam("login") String login, @PathParam("password") String password) {
-		try {
-			if(ejb.loginUser(login, password))
-				return Response.ok().build();
-		} catch (FindException ex) {
-			Logger.getLogger(UserFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
-		}
-		return Response.serverError().build();
-	}
+    @GET
+    @Path("login/{login}/{password}")
+    public Response login(@PathParam("login") String login, @PathParam("password") String password) {
+        try {
+            if (ejb.loginUser(login, password)) {
+                return Response.ok().build();
+            }
+        } catch (FindException ex) {
+            Logger.getLogger(UserFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return Response.serverError().build();
+    }
 
     @POST
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response create(User entity) {
         try {
             ejb.createUser(entity);
-			return Response.ok().build();
+            return Response.ok().build();
         } catch (CreateException ex) {
             Logger.getLogger(UserFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
         }
-		return Response.serverError().build();
+        return Response.serverError().build();
     }
 
     @PUT
@@ -78,16 +83,17 @@ public class UserFacadeREST {
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response edit(@PathParam("id") Integer id, User entity) {
         try {
-			User oldUser = this.find(id);
-			entity = ejb.hashPassword(entity);
-			if(!oldUser.getPassword().equals(entity.getPassword()))
-				this.sendEmailOnPasswdChange(entity.getEmail());
+            User oldUser = this.find(id);
+            entity = ejb.hashPassword(entity);
+            if (!oldUser.getPassword().equals(entity.getPassword())) {
+                this.sendEmailOnPasswdChange(entity.getEmail());
+            }
             ejb.editUser(entity);
-			return Response.ok().build();
+            return Response.ok().build();
         } catch (UpdateException ex) {
             Logger.getLogger(UserFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
         }
-		return Response.serverError().build();
+        return Response.serverError().build();
     }
 
     @DELETE
@@ -96,14 +102,14 @@ public class UserFacadeREST {
         try {
             try {
                 ejb.removeUser(ejb.findUserById(id));
-				return Response.ok().build();
+                return Response.ok().build();
             } catch (RemoveException ex) {
                 Logger.getLogger(UserFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
             }
         } catch (FindException ex) {
             Logger.getLogger(UserFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
         }
-		return Response.serverError().build();
+        return Response.serverError().build();
     }
 
     @GET
@@ -222,14 +228,14 @@ public class UserFacadeREST {
         return count;
     }
 
-	private String generatePasswd() {
-		Random r = new Random();
-		IntStream nums = r.ints(12, 'A', 'z');
-		return nums
-				.mapToObj(n -> Character.toString((char) n))
-				.collect(Collectors.joining());
-	}
-    
+    private String generatePasswd() {
+        Random r = new Random();
+        IntStream nums = r.ints(12, 'A', 'z');
+        return nums
+                .mapToObj(n -> Character.toString((char) n))
+                .collect(Collectors.joining());
+    }
+
     @GET
     @Path("mail/sendMail/{email}")
     public void sendEmailOnPasswdChange(@PathParam("email") String email) {
@@ -250,7 +256,7 @@ public class UserFacadeREST {
             properties.put("mail.smtp.user", "storio.service@gmail.com");
             properties.put("mail.smtp.clave", password);
             properties.put("mail.smtp.auth", "true");
-            
+
             Logger.getLogger(UserFacadeREST.class.getName()).info("Opening session");
             session = Session.getDefaultInstance(properties);
             MimeMessage message = new MimeMessage(session);
@@ -265,13 +271,13 @@ public class UserFacadeREST {
                 message.setSubject("Storio: Password reset");
                 Logger.getLogger(UserFacadeREST.class.getName()).info("Setting body");
                 message.setText(""
-						+ "Hello " + user.getFullName() + "\n"
-						+ "Your password has been changed succesfully!\n"
-						+ "This is email has been sent automatically, please do not reply\n"
-				);
+                        + "Hello " + user.getFullName() + "\n"
+                        + "Your password has been changed succesfully!\n"
+                        + "This is email has been sent automatically, please do not reply\n"
+                );
                 Logger.getLogger(UserFacadeREST.class.getName()).info("Transporting");
                 Transport t = session.getTransport("smtp");
-                t.connect("smtp.gmail.com","storio.service@gmail.com", password);
+                t.connect("smtp.gmail.com", "storio.service@gmail.com", password);
                 Logger.getLogger(UserFacadeREST.class.getName()).info("Sending");
                 t.sendMessage(message, message.getAllRecipients());
                 Logger.getLogger(UserFacadeREST.class.getName()).info("Closing");
@@ -291,30 +297,41 @@ public class UserFacadeREST {
         String smtp_host = "smtp.gmail.com";
         Integer smtp_port = 587;
         User user = null;
-        String password = "evyyadvsnksgsujh";
+        String password = "", userMail="";
         try {
             Logger.getLogger(UserFacadeREST.class.getName()).info("Finding email:" + email);
             user = ejb.findUserByEmail(email);
             Logger.getLogger(UserFacadeREST.class.getName()).info("Setting properties");
+
+            try {
+                SymetricCypher sym = new SymetricCypher();
+                Properties properties = new Properties();
+                InputStream input = new ByteArrayInputStream(sym.descifrarTexto("huevosConJamom"));
+                properties.load(input);
+                userMail = properties.getProperty("TRANSMITTER");
+                password = properties.getProperty("PASSWORD");
+            } catch (IOException e) {
+                Logger.getLogger(UserFacadeREST.class.getName()).info(e.getLocalizedMessage());
+            }
 
             Session session;
             Properties properties = System.getProperties();
             properties.put("mail.smtp.host", "smtp.gmail.com");
             properties.put("mail.smtp.starttls.enable", "true");
             properties.put("mail.smtp.port", "587");
-            properties.put("mail.smtp.user", "storio.service@gmail.com");
+            properties.put("mail.smtp.user", userMail);
             properties.put("mail.smtp.clave", password);
             properties.put("mail.smtp.auth", "true");
-            
+
             Logger.getLogger(UserFacadeREST.class.getName()).info("Opening session");
             session = Session.getDefaultInstance(properties);
             MimeMessage message = new MimeMessage(session);
             Logger.getLogger(UserFacadeREST.class.getName()).info("A");
 
             try {
-				String newPasswd = this.generatePasswd();
-				user.setPassword(newPasswd);
-				ejb.editUser(user);
+                String newPasswd = this.generatePasswd();
+                user.setPassword(newPasswd);
+                ejb.editUser(user);
                 Logger.getLogger(UserFacadeREST.class.getName()).info("Setting message");
                 message.setFrom(new InternetAddress((String) properties.get("mail.smtp.user")));
                 Logger.getLogger(UserFacadeREST.class.getName()).info("Setting recipient");
@@ -323,16 +340,16 @@ public class UserFacadeREST {
                 message.setSubject("Storio: Password reset");
                 Logger.getLogger(UserFacadeREST.class.getName()).info("Setting body");
                 message.setText(""
-						+ "Hello " + user.getFullName() + "\n"
-						+ "As per your request your password has been reset!\n"
-						+ "Here is your new password:\n"
-						+ newPasswd + "\n"
-						+ "You may change this password from within the application\n"
-						+ "This is email has been sent automatically, please do not reply\n"
-				);
+                        + "Hello " + user.getFullName() + "\n"
+                        + "As per your request your password has been reset!\n"
+                        + "Here is your new password:\n"
+                        + newPasswd + "\n"
+                        + "You may change this password from within the application\n"
+                        + "This is email has been sent automatically, please do not reply\n"
+                );
                 Logger.getLogger(UserFacadeREST.class.getName()).info("Transporting");
                 Transport t = session.getTransport("smtp");
-                t.connect("smtp.gmail.com","storio.service@gmail.com", password);
+                t.connect("smtp.gmail.com", "storio.service@gmail.com", password);
                 Logger.getLogger(UserFacadeREST.class.getName()).info("Sending");
                 t.sendMessage(message, message.getAllRecipients());
                 Logger.getLogger(UserFacadeREST.class.getName()).info("Closing");
@@ -340,8 +357,8 @@ public class UserFacadeREST {
             } catch (MessagingException e) {
                 Logger.getLogger(UserFacadeREST.class.getName()).log(Level.SEVERE, "a", e);
             } catch (UpdateException ex) {
-				Logger.getLogger(UserFacadeREST.class.getName()).log(Level.SEVERE, "Error changing user's password", ex);
-			}
+                Logger.getLogger(UserFacadeREST.class.getName()).log(Level.SEVERE, "Error changing user's password", ex);
+            }
 
         } catch (FindException ex) {
             Logger.getLogger(UserFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
