@@ -83,11 +83,6 @@ public class UserFacadeREST {
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response edit(@PathParam("id") Integer id, User entity) {
         try {
-            User oldUser = this.find(id);
-            entity = ejb.hashPassword(entity);
-            if (!oldUser.getPassword().equals(entity.getPassword())) {
-                this.sendEmailOnPasswdChange(entity.getEmail());
-            }
             ejb.editUser(entity);
             return Response.ok().build();
         } catch (UpdateException ex) {
@@ -237,15 +232,12 @@ public class UserFacadeREST {
     }
 
     @GET
-    @Path("mail/sendMail/{email}")
-    public void sendEmailOnPasswdChange(@PathParam("email") String email) {
+    @Path("mail/changePassword/{email}/{newPassword}")
+    public void changePassword(@PathParam("email") String email, @PathParam("newPassword") String newPassword) {
         String smtp_host = "smtp.gmail.com";
         Integer smtp_port = 587;
-        User user = null;
         String password = "evyyadvsnksgsujh";
         try {
-            Logger.getLogger(UserFacadeREST.class.getName()).info("Finding email:" + email);
-            user = ejb.findUserByEmail(email);
             Logger.getLogger(UserFacadeREST.class.getName()).info("Setting properties");
 
             Session session;
@@ -257,16 +249,19 @@ public class UserFacadeREST {
             properties.put("mail.smtp.clave", password);
             properties.put("mail.smtp.auth", "true");
 
+			User user = ejb.findUserByEmail(email);
             Logger.getLogger(UserFacadeREST.class.getName()).info("Opening session");
             session = Session.getDefaultInstance(properties);
             MimeMessage message = new MimeMessage(session);
             Logger.getLogger(UserFacadeREST.class.getName()).info("A");
 
             try {
+				user.setPassword(newPassword);
+				ejb.editUserAndHash(user);
                 Logger.getLogger(UserFacadeREST.class.getName()).info("Setting message");
                 message.setFrom(new InternetAddress((String) properties.get("mail.smtp.user")));
                 Logger.getLogger(UserFacadeREST.class.getName()).info("Setting recipient");
-                message.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
+                message.addRecipient(Message.RecipientType.TO, new InternetAddress(user.getEmail()));
                 Logger.getLogger(UserFacadeREST.class.getName()).info("Setting subject");
                 message.setSubject("Storio: Password reset");
                 Logger.getLogger(UserFacadeREST.class.getName()).info("Setting body");
@@ -286,7 +281,7 @@ public class UserFacadeREST {
                 Logger.getLogger(UserFacadeREST.class.getName()).log(Level.SEVERE, "a", e);
             }
 
-        } catch (FindException ex) {
+        } catch (FindException | UpdateException ex) {
             Logger.getLogger(UserFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
