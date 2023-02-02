@@ -685,6 +685,20 @@ public class EJBStorioManager implements StorioManagerLocal {
         try {
             LOGGER.log(Level.INFO, "Editing User {0}.", user.getLogin());
             if (em.contains(user)) {
+                em.merge(user);
+            }
+            em.flush();
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "UserManager: Exception updating user: {0}", e.getLocalizedMessage());
+            throw new UpdateException(e.getMessage());
+        }
+    }
+
+    @Override
+    public void editUserAndHash(User user) throws UpdateException {
+        try {
+            LOGGER.log(Level.INFO, "Editing User {0}.", user.getLogin());
+            if (em.contains(user)) {
 				user = hashPassword(user);
                 em.merge(user);
             }

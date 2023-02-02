@@ -234,6 +234,15 @@ public interface StorioManagerLocal {
     public void editUser(User user) throws UpdateException;
 
     /**
+     * This method edits a user from the data store
+	 * and hashes their password
+     *
+     * @param user The modified user
+     * @throws exceptions.UpdateException
+     */
+    public void editUserAndHash(User user) throws UpdateException;
+
+    /**
      * This method removes a user from the data store
      *
      * @param user The user to be removed
