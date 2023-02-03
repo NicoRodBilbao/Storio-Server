@@ -3,6 +3,7 @@ package util;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.security.spec.KeySpec;
 import java.util.Arrays;
@@ -13,6 +14,7 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
+import org.hibernate.validator.internal.util.privilegedactions.GetResource;
 
 public class SymetricCypher {
 
@@ -56,8 +58,9 @@ public class SymetricCypher {
             byte[] iv = c.getIV();
             
             // Escribimos el fichero cifrado 
-            fileWriter("./src/java/util/secret_key.key", iv);
-            fileWriter("./src/java/util/email_properties.properties", encodedMessage);
+            //"/java/util/secret_key.key"
+            fileWriter(getClass().getResource("secret_key.key").getPath(), iv);
+            fileWriter(getClass().getResource("email_properties.properties").getPath(), encodedMessage);
 
             // Retornamos el texto cifrado
             ret = new String(encodedMessage);
@@ -78,8 +81,9 @@ public class SymetricCypher {
         byte[] decodedMessage = null;
 
         // Fichero leído
-        byte[] ivContent = fileReader("./src/java/util/secret_key.key");
-        byte[] fileContent = fileReader("./src/java/util/email_properties.properties"); // Path del fichero EjemploAES.dat
+        
+        byte[] ivContent = fileReader(getClass().getResource("secret_key.key").getPath());
+        byte[] fileContent = fileReader(getClass().getResource("email_properties.properties").getPath()); // Path del fichero EjemploAES.dat
         KeySpec keySpec = null;
         SecretKeyFactory secretKeyFactory = null;
         try {
@@ -162,5 +166,7 @@ public class SymetricCypher {
         SymetricCypher sym = new SymetricCypher();
         sym.cifrarTexto(sSalt, "EMAIL=storio.service@gmail.com"
                 + "\nPASSWORD=evyyadvsnksgsujh");
+        
+        System.err.println(new String(sym.descifrarTexto(sSalt), StandardCharsets.UTF_8));
     }
 }

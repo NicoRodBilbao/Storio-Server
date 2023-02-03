@@ -10,6 +10,7 @@ import exceptions.UpdateException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -236,16 +237,28 @@ public class UserFacadeREST {
     public void changePassword(@PathParam("email") String email, @PathParam("newPassword") String newPassword) {
         String smtp_host = "smtp.gmail.com";
         Integer smtp_port = 587;
-        String password = "evyyadvsnksgsujh";
+        String password = "", userMail = "";
         try {
             Logger.getLogger(UserFacadeREST.class.getName()).info("Setting properties");
-
+            
+             try {
+                SymetricCypher sym = new SymetricCypher();
+                Properties properties = new Properties();
+                System.err.println(new String(sym.descifrarTexto("huevosConJamom"), StandardCharsets.UTF_8));
+                InputStream input = new ByteArrayInputStream(new String(sym.descifrarTexto("huevosConJamom"), StandardCharsets.UTF_8).getBytes());
+                properties.load(input);
+                userMail = properties.getProperty("EMAIL");
+                password = properties.getProperty("PASSWORD");
+            } catch (IOException e) {
+                Logger.getLogger(UserFacadeREST.class.getName()).info(e.getLocalizedMessage());
+            }
+             
             Session session;
             Properties properties = System.getProperties();
             properties.put("mail.smtp.host", "smtp.gmail.com");
             properties.put("mail.smtp.starttls.enable", "true");
             properties.put("mail.smtp.port", "587");
-            properties.put("mail.smtp.user", "storio.service@gmail.com");
+            properties.put("mail.smtp.user", userMail);
             properties.put("mail.smtp.clave", password);
             properties.put("mail.smtp.auth", "true");
 
@@ -301,9 +314,10 @@ public class UserFacadeREST {
             try {
                 SymetricCypher sym = new SymetricCypher();
                 Properties properties = new Properties();
-                InputStream input = new ByteArrayInputStream(sym.descifrarTexto("huevosConJamom"));
+                System.err.println(new String(sym.descifrarTexto("huevosConJamom"), StandardCharsets.UTF_8));
+                InputStream input = new ByteArrayInputStream(new String(sym.descifrarTexto("huevosConJamom"), StandardCharsets.UTF_8).getBytes());
                 properties.load(input);
-                userMail = properties.getProperty("TRANSMITTER");
+                userMail = properties.getProperty("EMAIL");
                 password = properties.getProperty("PASSWORD");
             } catch (IOException e) {
                 Logger.getLogger(UserFacadeREST.class.getName()).info(e.getLocalizedMessage());
