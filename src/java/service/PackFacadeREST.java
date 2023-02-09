@@ -13,7 +13,6 @@ import entities.PackType;
 import java.util.List;
 import java.util.logging.Level;
 import javax.ejb.EJB;
-import javax.persistence.EntityManager;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -81,7 +80,7 @@ public class PackFacadeREST {
             LOGGER.log(Level.INFO, "PackREST service: delete Pack.", id);
             ejb.deletePack(ejb.findPackById(id));
         } catch (FindException | RemoveException ex) {
-            LOGGER.log(Level.SEVERE, "PackREST service: Exception updating pack", ex.getMessage());
+            LOGGER.log(Level.SEVERE, "PackREST service: Exception deleting pack", ex.getMessage());
             throw new InternalServerErrorException(ex);
         }
     }
@@ -141,7 +140,7 @@ public class PackFacadeREST {
             LOGGER.log(Level.INFO, "PackREST service: find packs by state.");
             packs = ejb.findPacksByState(PackState.valueOf(state));
         } catch (FindException ex) {
-            LOGGER.log(Level.SEVERE, "PackREST service: Exception reading all packs available", ex.getMessage());
+            LOGGER.log(Level.SEVERE, "PackREST service: Exception reading all packs by state", ex.getMessage());
             throw new InternalServerErrorException(ex);
         }
         return packs;

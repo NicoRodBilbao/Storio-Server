@@ -37,13 +37,14 @@ public class EJBStorioManager implements StorioManagerLocal {
      * @return packs
      */
     @Override
-    public List<Pack> findALlPacks() {
+    public List<Pack> findALlPacks() throws FindException {
         List<Pack> packs = null;
         try {
             LOGGER.info("Reading Packs");
             packs = em.createNamedQuery("listAllPacks").getResultList();
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "UserManager: Exception reading all packs:", e.getMessage());
+            throw new FindException(e.getMessage());
         }
         return packs;
     }
@@ -55,13 +56,14 @@ public class EJBStorioManager implements StorioManagerLocal {
      * @return packs
      */
     @Override
-    public List<Pack> findPacksByState(PackState state) {
+    public List<Pack> findPacksByState(PackState state) throws FindException {
         List<Pack> packs = null;
         try {
             LOGGER.info("Reading Packs");
             packs = em.createNamedQuery("listPacksByState").setParameter("state", state).getResultList();
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "PackManager: Exception reading all packs available:", e.getMessage());
+            LOGGER.log(Level.SEVERE, "PackManager: Exception reading all packs by state:", e.getMessage());
+            throw new FindException(e.getMessage());
         }
         return packs;
     }
@@ -73,13 +75,14 @@ public class EJBStorioManager implements StorioManagerLocal {
      * @return packs
      */
     @Override
-    public List<Pack> findPacksByType(PackType type) {
+    public List<Pack> findPacksByType(PackType type) throws FindException  {
         List<Pack> packs = null;
         try {
             LOGGER.info("Reading Packs");
             packs = em.createNamedQuery("listPacksByType").setParameter("type", type).getResultList();
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "PackManager: Exception reading all packs available:", e.getMessage());
+            LOGGER.log(Level.SEVERE, "PackManager: Exception reading all packs by type:", e.getMessage());
+            throw new FindException(e.getMessage());
         }
         return packs;
     }
@@ -91,11 +94,14 @@ public class EJBStorioManager implements StorioManagerLocal {
      * @return A List of Pack.
      */
     @Override
-    public List<Pack> listPacksByBooking(Integer id) {
+    public List<Pack> listPacksByBooking(Integer id) throws FindException {
         List<Pack> packs = null;
         try {
             packs = em.createNamedQuery("listPackByBooking").setParameter("id", id).getResultList();
         } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "PackManager: Exception searching pack by booking.",
+                    e.getMessage());
+            throw new FindException(e.getMessage());
         }
         return packs;
     }
@@ -106,12 +112,13 @@ public class EJBStorioManager implements StorioManagerLocal {
      * @param pack
      */
     @Override
-    public void createPack(Pack pack) {
+    public void createPack(Pack pack) throws CreateException {
         try {
             em.persist(pack);
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "PackManager: Exception creating pack.",
                     e.getMessage());
+            throw new CreateException(e.getMessage());
         }
     }
 
@@ -121,7 +128,7 @@ public class EJBStorioManager implements StorioManagerLocal {
      * @param pack
      */
     @Override
-    public void updatePack(Pack pack) {
+    public void updatePack(Pack pack) throws UpdateException {
         try {
             if (!em.contains(pack)) {
                 em.merge(pack);
@@ -131,6 +138,7 @@ public class EJBStorioManager implements StorioManagerLocal {
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "PackManager: Exception update user.",
                     e.getMessage());
+            throw new UpdateException(e.getMessage());
         }
     }
 
@@ -140,12 +148,13 @@ public class EJBStorioManager implements StorioManagerLocal {
      * @param pack
      */
     @Override
-    public void deletePack(Pack pack) {
+    public void deletePack(Pack pack) throws RemoveException {
         try {
             em.remove(em.merge(pack));
             LOGGER.info("PackManager: Pack deleted.");
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "PackManager: Exception deleting user.", e.getMessage());
+            throw new RemoveException(e.getMessage());
         }
     }
 
@@ -156,7 +165,7 @@ public class EJBStorioManager implements StorioManagerLocal {
      * @return pack
      */
     @Override
-    public Pack findPackById(Integer id) {
+    public Pack findPackById(Integer id) throws FindException {
         Pack pack = null;
         try {
             LOGGER.info("PackManager: Finding pack by login.");
@@ -165,7 +174,8 @@ public class EJBStorioManager implements StorioManagerLocal {
                 LOGGER.log(Level.INFO, "PackManager: pack", pack.getId());
             }
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "PackManager: Exception Finding pack by login:", e.getMessage());
+            LOGGER.log(Level.SEVERE, "PackManager: Exception Finding pack by id:", e.getMessage());
+            throw new FindException(e.getMessage());
         }
         return pack;
     }
